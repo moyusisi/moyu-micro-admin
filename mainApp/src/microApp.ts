@@ -11,11 +11,11 @@ registerMicroApps([
     // - 生产环境：子应用打包后的静态资源地址（如 CDN 或主应用的子路径）
     entry: process.env.NODE_ENV === 'dev'
       ? '//localhost:82'  // 子应用的 Vite 开发端口
-      : '/app1/', // 生产环境子应用的访问路径（需与子应用 base 配置一致）
+      : '/subApp1/', // 生产环境子应用的访问路径（需与子应用 base 配置一致）
     // 主应用中挂载子应用的容器 DOM 节点（需在主应用模板中定义）
     container: '#microApp',
     // 子应用的激活规则：当主应用路由匹配到该路径时，自动挂载子应用
-    activeRule: '/app1',
+    activeRule: '/subApp1',
     // 可选：传递给子应用的自定义参数（子应用在 mount 生命周期中可接收）
     props: {
       token: localStorage.getItem('TOKEN'),
