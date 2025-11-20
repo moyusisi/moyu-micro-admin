@@ -1,0 +1,88 @@
+.body, html {
+	width: 100%;
+	height: 100%;
+	background-color: #f6f8f9;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	outline: none;
+}
+
+#app {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	flex: 1;
+}
+
+/* 布局样式 */
+.admin-ui {
+	overflow: hidden;
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+}
+
+.admin-ui-main {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	flex: 1;
+}
+.main-content-wrapper {
+	padding: 3px 3px 0 3px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	flex: auto;
+}
+
+.main-bottom-wrapper {
+	height: 60px;
+	margin-top: 25px;
+	text-align: center;
+	flex: auto;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	padding-bottom: 25px;
+}
+
+/* 单个操作图标Bar */
+.bar-item {
+	width: 40px;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.bar-item:hover {
+	background: rgba(0, 0, 0, 0.08);
+}
+
+/* 重写antdv的表格滚动条 */
+.ant-table-body, .ant-table-content {
+	/* 滚动条整体样式 */
+	&::-webkit-scrollbar {
+		/* 垂直滚动条的宽度 */
+		height: 8px;
+		/* 水平滚动条高度 */
+		width: 8px;
+	}
+	/* 滚动条滑块（可拖动部分）*/
+	&::-webkit-scrollbar-thumb {
+		border-radius: 10px;
+		-webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
+		background: #e7e7e7;
+	}
+	/* 滚动条轨道（背景部分） */
+	&::-webkit-scrollbar-track {
+		border-radius: 10px;
+		background: #f5f5f5;
+	}
+}
+
