@@ -5,7 +5,11 @@ import AutoImport from 'unplugin-auto-import/vite'
 import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
+import qiankun from 'vite-plugin-qiankun'
 import { resolve } from 'path'
+
+// 微应用的唯一标识（需与主应用注册的名称一致）
+const appName = 'subApp1'
 
 export default defineConfig(({ mode }): UserConfig => {
   // const env = loadEnv(mode, './')
@@ -15,6 +19,8 @@ export default defineConfig(({ mode }): UserConfig => {
     '@': `${resolve(__dirname, 'src')}`
   }
   return {
+    // 1. 微应用配置，配置基础路径：开发环境为绝对路径，生产环境为主应用配置的子应用路径
+    base: mode === 'dev' ? '/': '/subApp1/',
     resolve: {
       alias
     },
@@ -23,6 +29,8 @@ export default defineConfig(({ mode }): UserConfig => {
       host: "0.0.0.0",
       // 应用端口 (默认:3000)
       port: Number(env.VITE_PORT),
+      // 允许跨域（主应用访问子应用时的跨域问题）
+      cors: true,
       // 运行是否自动打开浏览器
       open: true,
       proxy: {
@@ -35,10 +43,17 @@ export default defineConfig(({ mode }): UserConfig => {
         }
       }
     },
+    // 4. 构建配置：输出兼容的资源名称
     build: {
       manifest: true,
+      // 生成静态资源的存放路径
+      assetsDir: 'assets',
       rollupOptions: {
         output: {
+          // 静态资源命名规则
+          assetFileNames: 'assets/[name].[hash].[ext]',
+          chunkFileNames: 'js/[name].[hash].js',
+          entryFileNames: 'js/[name].[hash].js',
           manualChunks: {
             'ant-design-vue': ['ant-design-vue'],
             vue: ['vue', 'vue-router', 'pinia', 'vue-i18n']
@@ -49,6 +64,11 @@ export default defineConfig(({ mode }): UserConfig => {
     },
     plugins: [
       vue(),
+      // 2. 注册 qiankun 插件
+      qiankun(appName, {
+        // 开发环境是否开启沙箱（默认 true）
+        useDevMode: true
+      }),
       viteMockServe({
         // 模拟数据的配置
         mockPath: 'mock',
@@ -65,5 +85,12 @@ export default defineConfig(({ mode }): UserConfig => {
         dts: "src/types/auto-imports.d.ts",
       })
     ],
+
+    // 定义全局变量：解决 qiankun 沙箱中 window 指向问题
+    define: {
+      'process.env': process.env,
+      '__VUE_OPTIONS_API__': true,
+      '__VUE_PROD_DEVTOOLS__': false
+    }
   }
 })
