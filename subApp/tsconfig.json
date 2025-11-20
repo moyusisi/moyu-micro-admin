@@ -1,0 +1,73 @@
+// TypeScript配置详解：https://blog.csdn.net/mengran_code/article/details/142187042
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    // 编译生成的目标版本代码
+    "target": "esnext",
+    // 指定我们需要用到的库，也可以不配置，直接根据 target 来获取
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
+    "useDefineForClassFields": true,
+    // 生成代码使用的模块化
+    "module": "ESNext",
+    // 跳过对所有.d.ts files的类型检测，而仅检测你用到的类型
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    // jsx 的处理方式(保留原有的jsx格式)
+    "jsx": "preserve",
+
+    /* Linting */
+    // 打开严格模式检查
+    "strict": true,
+    // 是否为为具有隐含"any"类型的表达式和声明启用错误报告
+    "noImplicitAny": false,
+    // 是否检查未使用的本地变量
+    "noUnusedLocals": false,
+    // 是否检查未使用的参数
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    // 配置项用于禁用自动包含任何库文件。如果设置了此选项，lib 配置将被忽略。
+    "noLib": false,
+    // 是否要生成 sourcemap 文件
+    "sourceMap": true,
+    // 是否支持解析JSON文件，TypeScript默认不支持解析JSON文件
+    "resolveJsonModule": true,
+    // 支持es module 和 commonjs 混合使用
+    "esModuleInterop": true,
+    // 允许在项目中导入 JavaScript 文件
+    "allowJs": true,
+    // checkJs 选项与 allowJs 选项配合使用。当 checkJs 被启用时，TypeScript 编译器会在 JavaScript 文件中报告类型错误。
+    // 这相当于在项目的所有 JavaScript 文件顶部自动添加了 TypeScript 的类型检查注释 // @ts-check
+    "checkJs": false,
+    // 文件路径在解析时的基本url
+    "baseUrl": ".",
+    // 路径的映射设置，类似于webpack中的 alias
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    // 指定需要加载哪些 types 文件(默认都会进行加载)
+    "types": ["vite/client"],
+    // 允许合成默认模块导出
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment"
+  },
+  // 指定编译时包含的文件
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/types/**/*.d.ts",
+    "mock/**/*.ts",
+    "vite.config.ts"
+  ],
+  // 指定编译时应跳过的文件
+  "exclude": ["node_modules", "dist", "**/*.js"]
+}
