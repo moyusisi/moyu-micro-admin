@@ -3,6 +3,8 @@
     <a-app id="app" class="app">
       <a-watermark :content="watermarkEnabled && userInfo ? [userInfo.name, userInfo.account] : undefined" class="admin-ui">
         <router-view/>
+        <!-- 微应用挂载容器：子应用会被渲染到这里 -->
+        <div id="microApp"></div>
       </a-watermark>
     </a-app>
   </a-config-provider>

@@ -4,6 +4,7 @@ import router from './router'
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
+import { startQiankun } from './microApp.ts';
 
 // style
 import 'ant-design-vue/dist/reset.css'
@@ -30,3 +31,6 @@ app.use(hljsVuePlugin)
 
 // 挂载app
 app.mount('#app')
+
+// 启动 qiankun 微前端
+startQiankun();

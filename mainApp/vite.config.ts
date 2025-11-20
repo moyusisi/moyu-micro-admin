@@ -23,6 +23,8 @@ export default defineConfig(({ mode }): UserConfig => {
       host: "0.0.0.0",
       // 应用端口 (默认:3000)
       port: Number(env.VITE_PORT),
+      // 允许跨域
+      cors: true,
       // 运行是否自动打开浏览器
       open: true,
       proxy: {
