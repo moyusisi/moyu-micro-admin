@@ -1,5 +1,5 @@
 {
-  "name": "moyu-antdv-admin",
+  "name": "main-app",
   "private": true,
   "version": "1.0.0",
   "description": "基于Antdv4+Vue3+Vite6.0",
@@ -28,6 +28,7 @@
     "js-pinyin": "0.2.7",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",
+    "qiankun": "^2.10.16",
     "screenfull": "6.0.2",
     "vue": "^3.5.22",
     "vue-i18n": "11.1.12",
