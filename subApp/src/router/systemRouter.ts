@@ -45,8 +45,9 @@ const routes = [
 		component: () => import('@/views/auth/login/login.vue'),
 		meta: { title: '登录', hidden: true }
 	},
+	// 兜底路由，最后匹配的路由
 	{
-		path: '/404',
+		path: '/:pathMatch(.*)*',
 		name: 'NotFound',
 		component: () => import('@/views/other/404.vue'),
 		meta: { title: '404', hidden: true }

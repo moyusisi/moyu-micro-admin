@@ -67,10 +67,10 @@ router.beforeEach(async (to, from) => {
     return { ...to, replace: true }
   }
 
-  // 未匹配到任何路由，跳转404
-  if (to.matched.length === 0) {
-    return { path: "/404" }
-  }
+  // 未匹配到任何路由，跳转404 --> 使用兜底路由处理404，不再从守卫中处理
+  // if (to.matched.length === 0) {
+  //   return { path: "/404" }
+  // }
   // 已登录访问登陆页，则跳转到首页
   if (to.path === "/login") {
     // 如果已登录，则重定向，跳转首页
