@@ -29,8 +29,15 @@ export default defineConfig(({ mode }): UserConfig => {
       host: "0.0.0.0",
       // 应用端口 (默认:3000)
       port: Number(env.VITE_PORT),
-      // 允许跨域（主应用访问子应用时的跨域问题）
-      cors: true,
+      // 允许跨域（允许主应用域名跨域访问）
+      cors: {
+        origin: [
+          'http://localhost:81',   // 主应用开发环境域名
+          'https://main-app.com'   // 主应用生产环境域名
+        ],
+        // 允许携带 cookie（如需）
+        credentials: true
+      },
       // 运行是否自动打开浏览器
       open: true,
       proxy: {
