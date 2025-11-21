@@ -1,5 +1,9 @@
 import { registerMicroApps, start, setDefaultMountApp } from 'qiankun'
 
+// 打印 import.meta.env
+console.log('===== 打印 import.meta.env =====', import.meta.env)
+console.log('当前环境模式：', import.meta.env.MODE)
+console.log('是否为开发环境：', import.meta.env.DEV)
 
 // 注册微应用列表
 registerMicroApps([
@@ -9,11 +13,10 @@ registerMicroApps([
     // 子应用入口地址：
     // - 开发环境：子应用的 Vite 开发服务器地址（需先启动子应用）
     // - 生产环境：子应用打包后的静态资源地址（如 CDN 或主应用的子路径）
-    entry: process.env.NODE_ENV === 'dev'
-      ? '//localhost:82'  // 子应用的 Vite 开发端口
-      : '/subApp1/', // 生产环境子应用的访问路径（需与子应用 base 配置一致）
+    // entry: '//localhost:82/',
+    entry: import.meta.env.MODE === 'dev' ? '//localhost:82/' : '/subApp1/',
     // 主应用中挂载子应用的容器 DOM 节点（需在主应用模板中定义）
-    container: '#microApp',
+    container: '#app',
     // 子应用的激活规则：当主应用路由匹配到该路径时，自动挂载子应用
     activeRule: '/subApp1',
     // 可选：传递给子应用的自定义参数（子应用在 mount 生命周期中可接收）
