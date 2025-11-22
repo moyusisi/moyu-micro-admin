@@ -12,11 +12,25 @@
 
 <script setup lang="ts">
   import { theme } from 'ant-design-vue';
+  import { useRoute } from 'vue-router'
   import { useUserStore, useSettingsStore } from '@/store'
   import i18n from "@/locale"
 
+  // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
+  const route = useRoute()
+
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
+
+  const microApp = ref(false)
+  // 仅监听路由路径的变化
+  watch(() => route.path, (newPath) => {
+    console.log('当前路由路径：', newPath)
+    // 定义子应用的路由前缀列表
+    const microAppRules = ['/subApp1', '/subApp2']
+    // 判断当前路由是否属于子应用
+    microApp.value = microAppRules.some(prefix => route.path.startsWith(prefix))
+  })
 
   // 获取用户信息
   const userInfo = computed(() => {
