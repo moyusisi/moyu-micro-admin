@@ -152,6 +152,13 @@
       width: 150,
     },
     {
+      title: "组件",
+      dataIndex: "component",
+      align: "center",
+      resizable: true,
+      width: 150,
+    },
+    {
       title: "排序顺序",
       dataIndex: "sortNum",
       align: "center",
