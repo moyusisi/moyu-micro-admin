@@ -33,10 +33,8 @@ registerMicroApps([
 // 启动 qiankun 微前端
 export const startQiankun = () => {
   start({
-    // 可选：开启严格的样式隔离（避免子应用样式污染主应用）
-    sandbox: { strictStyleIsolation: true },
-    // 可选：开启沙箱的实验性特性（如全局变量隔离）
-    // sandbox: { experimentalStyleIsolation: true },
+    // 可选：开启严格的样式隔离
+    sandbox: { experimentalStyleIsolation: true },
     // 可选：禁用预加载（开发环境可关闭，生产环境建议开启）
     prefetch: false,
     // 可选：自定义 fetch 方法（解决跨域或请求拦截）
