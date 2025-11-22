@@ -61,16 +61,12 @@ router.beforeEach(async (to, from) => {
     // 生成动态路由
     await menuStore.generateRoutes();
     console.log("动态加载异步路由...")
-    // console.log(asyncRoutes)
     // console.log(router.getRoutes())
     // 由于新增加了路由，所以重新导航
-    return { ...to, replace: true }
+    console.log("重新导航...", to)
+    return { path: to.fullPath, replace: true }
   }
 
-  // 未匹配到任何路由，跳转404 --> 使用兜底路由处理404，不再从守卫中处理
-  // if (to.matched.length === 0) {
-  //   return { path: "/404" }
-  // }
   // 已登录访问登陆页，则跳转到首页
   if (to.path === "/login") {
     // 如果已登录，则重定向，跳转首页
