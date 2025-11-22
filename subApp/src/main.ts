@@ -40,7 +40,7 @@ if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
 // 封装渲染函数
 function render(props: any = {}) {
   const { container } = props
-  // 微应用模式：挂载到主应用提供的容器；独立运行：挂载到 #app
+  // 微应用模式：挂载到主应用提供的容器；独立运行：挂载到自身的节点 #app
   const mountNode = container ? container.querySelector('#app') : '#app'
   app.mount(mountNode!)
 }
