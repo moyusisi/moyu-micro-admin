@@ -163,10 +163,10 @@ export const useMenuStore = defineStore('menuStore', () => {
     } else if (component?.toString() === "Layout") {
       // 1. 独立运行时直接渲染
       if (qiankunWindow.__POWERED_BY_QIANKUN__) {
-        // item = () => import('@/layout/components/AppMain/index.vue')
+        item = Empty
       } else {
+        item = Layout
       }
-      item = Layout
     } else {
       item = modules[`/src/views/${component}.vue`] ||
         modules[`/src/views/${component}/index.vue`] ||
