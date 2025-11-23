@@ -1,5 +1,6 @@
 <template>
   <div class="admin-ui-main">
+    <div id="microApp"></div>
     <router-view v-slot="{ Component, route }">
       <keep-alive :include="cachedViews">
         <component :is="currentComponent(Component, route)" :key="route.fullPath"/>

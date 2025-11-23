@@ -16,7 +16,7 @@ registerMicroApps([
     // entry: '//localhost:82/',
     entry: import.meta.env.MODE === 'dev' ? '//localhost:82/' : '/subApp1/',
     // 主应用中挂载子应用的容器 DOM 节点（需在主应用模板中定义）
-    container: '#app',
+    container: '#microApp',
     // 子应用的激活规则：当主应用路由匹配到该路径时，自动挂载子应用
     activeRule: '/subApp1',
     // 可选：传递给子应用的自定义参数（子应用在 mount 生命周期中可接收）

@@ -2,9 +2,10 @@
   <a-config-provider :locale="locale" :theme="customTheme">
     <a-app id="app" class="app">
       <a-watermark :content="watermarkEnabled && userInfo ? [userInfo.name, userInfo.account] : undefined" class="admin-ui">
-        <router-view/>
+<!--        <router-view/>-->
         <!-- 微应用挂载容器：子应用会被渲染到这里 -->
-        <div id="microApp"></div>
+<!--        <div id="microApp"></div>-->
+        <Layout/>
       </a-watermark>
     </a-app>
   </a-config-provider>
@@ -15,6 +16,7 @@
   import { useRoute } from 'vue-router'
   import { useUserStore, useSettingsStore } from '@/store'
   import i18n from "@/locale"
+  import Layout from '@/layout/index.vue'
 
   // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
   const route = useRoute()
