@@ -17,6 +17,8 @@ const router = createRouter({
 
 // 白名单路由
 const whiteList = ["/login", "/callback"]
+// 进度条配置
+NProgress.configure({ showSpinner: false, speed: 500 })
 
 
 // 导航守卫 参考：https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
