@@ -10,21 +10,8 @@ import Layout from '@/layout/index.vue'
  */
 const routes = [
 	{
-		path: "/redirect",
-		name: 'redirect',
-		component: Layout,
-		meta: { hidden: true },
-		children: [
-			{
-				path: "/redirect/:path(.*)",
-				component: () => import("@/views/redirect/index.vue"),
-				meta: { title: '重定向', hidden: true }
-			},
-		],
-	},
-	{
-		path: '/',
 		name: 'layout',
+		path: '/',
 		component: Layout,
 		redirect: '/index',
 		meta: { title: '系统菜单', hidden: false, alwaysShow: false, icon: 'home-outlined' },
@@ -40,16 +27,16 @@ const routes = [
 		]
 	},
 	{
-		path: '/login',
 		name: 'Login',
+		path: '/login',
 		component: () => import('@/views/auth/login/login.vue'),
 		meta: { title: '登录', hidden: true }
 	},
 	// 兜底路由，最后匹配的路由，将不会存在无匹配的情况
 	{
-		path: '/:pathMatch(.*)*',
 		name: 'NotFound',
-		component: () => import('@/views/other/404.vue'),
+		path: '/:pathMatch(.*)*',
+		component: () => import('@/layout/other/404.vue'),
 		meta: { title: '404', hidden: true }
 	}
 ]

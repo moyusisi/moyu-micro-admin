@@ -12,7 +12,7 @@
 <script setup>
 import IframeView from "./iframeView.vue"
 import { useTagsViewStore } from "@/store"
-const Error404  = () => import('@/views/other/404.vue')
+const Error404  = () => import('@/layout/other/404.vue')
 
 const tagsViewStore = useTagsViewStore()
 
