@@ -3,6 +3,8 @@ import { useSearchStore } from '@/store/search'
 import userCenterApi from '@/api/system/userCenterApi'
 import router, { constRoutes } from '@/router'
 import { RouteRecordRaw } from "vue-router"
+import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
+
 // 布局组件, 一般顶层目录使用
 import Layout from '@/layout/index.vue'
 
@@ -158,6 +160,11 @@ export const useMenuStore = defineStore('menuStore', () => {
       // 如果没有组件，则将组件设置为 undefined 防止404 例如(多级菜单的父菜单)
       item = undefined;
     } else if (component?.toString() === "Layout") {
+      // 1. 独立运行时直接渲染
+      if (qiankunWindow.__POWERED_BY_QIANKUN__) {
+        // item = () => import('@/layout/components/AppMain/index.vue')
+      } else {
+      }
       item = Layout
     } else {
       // @ts-ignore
