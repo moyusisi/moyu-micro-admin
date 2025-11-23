@@ -18,12 +18,11 @@
   import i18n from "@/locale"
   import Layout from '@/layout/index.vue'
 
-  // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
-  const route = useRoute()
-
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
 
+  // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
+  const route = useRoute()
   const microApp = ref(false)
   // 仅监听路由路径的变化
   watch(() => route.path, (newPath) => {
