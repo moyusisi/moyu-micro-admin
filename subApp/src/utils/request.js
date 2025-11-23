@@ -25,7 +25,7 @@ service.interceptors.request.use(
 			config.params = config.params || {}
 			config.params._ = new Date().getTime()
 		}
-		console.log('请求URL:', config.url)
+		console.log('supApp请求URL:', config.url)
 		return config
 	},
 	(error) => {
