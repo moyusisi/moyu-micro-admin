@@ -158,8 +158,8 @@ export const useMenuStore = defineStore('menuStore', () => {
     let item;
     const component = menu.component
     if (!component) {
-      // 如果没有组件，则将组件设置为 Empty
-      item = EmptyLayout;
+      // 如果没有组件，则将组件设置为 undefined 防止错误加载
+      item = undefined;
     } else if (component?.toString() === "Layout") {
       // 1. 独立运行时直接渲染
       if (qiankunWindow.__POWERED_BY_QIANKUN__) {
