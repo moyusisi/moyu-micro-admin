@@ -5,6 +5,7 @@ import router, { constRoutes } from '@/router'
 import { RouteRecordRaw } from "vue-router"
 // 布局组件, 一般顶层目录使用
 import Layout from '@/layout/index.vue'
+import Empty from '@/layout/other/empty.vue'
 
 // login和findPwd路由组件已静态加载，此处不在进行异步加载
 const modules = import.meta.glob([
@@ -155,15 +156,14 @@ export const useMenuStore = defineStore('menuStore', () => {
     let item;
     const component = menu.component
     if (!component) {
-      // 如果没有组件，则将组件设置为 undefined 防止404 例如(多级菜单的父菜单)
-      item = undefined;
+      // 如果没有组件，则将组件设置为 Empty
+      item = Empty;
     } else if (component?.toString() === "Layout") {
       item = Layout
     } else {
-      // @ts-ignore
       item = modules[`/src/views/${component}.vue`] ||
         modules[`/src/views/${component}/index.vue`] ||
-        modules[`/src/views/other/404.vue`]
+        Empty
     }
     return item
   }
