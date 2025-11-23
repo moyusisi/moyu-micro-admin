@@ -54,20 +54,20 @@ router.beforeEach(async (to, from) => {
   }
 
   // fullPath是包括 路径、查询参数和哈希值的完整地址。
-  console.log("subApp1 访问地址: " + to.fullPath)
+  console.log("subApp 访问地址: " + to.fullPath)
   // 如果未加载用户信息，则先加载用户信息
   if (!userStore.userInfo.account) {
-    console.log("subApp1 加载userInfo...")
+    console.log("subApp 加载userInfo...")
     await userStore.initUserInfo();
   }
   // 如果未加载动态路由，则需先加载路由
   if (!menuStore.dynamicRouter) {
     // 生成动态路由
     await menuStore.generateRoutes();
-    console.log("subApp1 动态加载异步路由...")
+    console.log("subApp 动态加载异步路由...")
     // console.log(router.getRoutes())
     // 由于新增加了路由，所以重新导航
-    console.log("subApp1 重新导航...", to)
+    console.log("subApp 重新导航...", to)
     return { path: to.fullPath, replace: true }
   }
 
