@@ -73,6 +73,8 @@ onMounted(() => {
 
 // 非首次加载则不再调用onMounted，但route会改变。任何地方改变路由时都会被监听到
 watch(route, (to) => {
+  // 模块菜单
+  showModuleMenu()
   showThisMenuItem()
 })
 
@@ -88,7 +90,7 @@ function showModuleMenu() {
     }
   })
   // 有moduleCode则切换，否则保持原样
-  if (moduleCode) {
+  if (moduleCode && moduleCode !== menuStore.module) {
     // 路由到模块的首页
     menuStore.switchModule(moduleCode)
   }

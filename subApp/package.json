@@ -1,5 +1,5 @@
 {
-  "name": "moyu-antdv-admin",
+  "name": "sub-app",
   "private": true,
   "version": "1.0.0",
   "description": "基于Antdv4+Vue3+Vite6.0",
