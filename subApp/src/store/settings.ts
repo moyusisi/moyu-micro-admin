@@ -9,6 +9,8 @@ export const useSettingsStore = defineStore('settings', () => {
 	const lang = ref(config.lang);
 	// 菜单是否折叠
 	const menuCollapsed = ref(config.menuCollapsed);
+	// 菜单是否折叠
+	const moduleOpen = ref(config.moduleOpen);
 	// 侧边栏菜单是否排他展开
 	const sideUniqueOpen = useStorage("sideUniqueOpen", config.sideUniqueOpen);
 	// 是否显示面包屑
@@ -32,6 +34,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
 	// 值为bool类型的配置组成的开关map
 	const switchMap = {
+		moduleOpen,
 		menuCollapsed,
 		sideUniqueOpen,
 		breadcrumbView,
@@ -50,6 +53,7 @@ export const useSettingsStore = defineStore('settings', () => {
 	return {
 		title,
 		lang,
+		moduleOpen,
 		menuCollapsed,
 		sideUniqueOpen,
 		breadcrumbView,

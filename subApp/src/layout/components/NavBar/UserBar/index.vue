@@ -30,9 +30,8 @@
 
 <script setup>
   import { h, createVNode } from 'vue'
-  import { ExclamationCircleOutlined, FullscreenOutlined, UserSwitchOutlined } from '@ant-design/icons-vue'
+  import { ExclamationCircleOutlined, UserSwitchOutlined } from '@ant-design/icons-vue'
   import { Modal } from 'ant-design-vue'
-  import screenFull from 'screenfull'
   import { message } from 'ant-design-vue'
   import { useMenuStore, useTagsViewStore, useUserStore } from '@/store/index.js'
   import { useRoute, useRouter } from 'vue-router'

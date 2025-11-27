@@ -1,30 +1,36 @@
 <template>
-	<div class="admin-ui-navbar">
-		<!-- 左侧面板 -->
-		<div class="left-panel">
-			<!-- 汉堡包 -->
-			<Hamburger/>
-			<!-- 面包屑 -->
-			<Breadcrumb />
-		</div>
-		<!-- 右侧面板 -->
-		<div class="right-panel">
-      <SearchBar />
+  <div class="admin-ui-navbar">
+    <!-- 左侧面板 -->
+    <div class="left-panel">
+      <!-- 汉堡包 -->
+      <Hamburger/>
+      <!-- 面包屑 -->
+      <Breadcrumb/>
+    </div>
+    <!-- 右侧面板 -->
+    <div class="right-panel">
+      <!-- 模块坞 -->
+      <ModuleMenu/>
+      <SearchBar/>
       <!-- 全屏 -->
       <div class="bar-item" @click="fullscreen">
-        <FullscreenOutlined />
+        <FullscreenOutlined/>
       </div>
-			<UserBar />
-		</div>
-	</div>
+      <UserBar/>
+      <SettingBar/>
+    </div>
+  </div>
 </template>
 <script setup>
-	import Breadcrumb from '@/layout/components/Breadcrumb/index.vue'
-  import Hamburger from "@/layout/components/NavBar/Hamburger/index.vue"
-  import SearchBar from "@/layout/components/NavBar/SearchBar/index.vue"
-	import UserBar from "@/layout/components/NavBar/UserBar/index.vue"
   import screenFull from "screenfull";
   import { FullscreenOutlined } from "@ant-design/icons-vue";
+  import { useSettingsStore } from "@/store/index.js";
+  import Breadcrumb from '@/layout/components/Breadcrumb/index.vue'
+  import Hamburger from "@/layout/components/NavBar/Hamburger/index.vue"
+  import ModuleMenu from "@/layout/components/NavBar/ModuleMenu/index.vue"
+  import SearchBar from "@/layout/components/NavBar/SearchBar/index.vue"
+  import UserBar from "@/layout/components/NavBar/UserBar/index.vue"
+  import SettingBar from "@/layout/components/NavBar/SettingBar/index.vue";
 
   // 全屏
   const fullscreen = () => {

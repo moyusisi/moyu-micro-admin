@@ -48,7 +48,7 @@
             </a-col>
             <a-col :span="8" v-if="formData.resourceType !== 6">
               <a-form-item name="component" label="组件" tooltip="前端页面组件" >
-                <span><a-tag>{{ formData.component }}</a-tag></span>
+                <span><a-tag v-if="formData.component">{{ formData.component }}</a-tag></span>
               </a-form-item>
             </a-col>
             <a-col :span="8" v-if="formData.resourceType === 6">
