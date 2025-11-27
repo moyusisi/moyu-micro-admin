@@ -16,6 +16,8 @@ export interface AppSettings {
   theme: string,
   // 默认主题色
   themeColor: string,
+  // 模块是否展开
+  moduleOpen: boolean,
   // 菜单是否折叠
   menuCollapsed: boolean,
   // 侧边菜单是否排他展开

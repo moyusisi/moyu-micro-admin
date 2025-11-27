@@ -18,10 +18,12 @@ const defaultSettings: AppSettings = {
   theme: "light",
   // 默认主题色
   themeColor: "#1677FF",
+  // 模块是否展开
+  moduleOpen: true,
   // 菜单是否折叠
   menuCollapsed: false,
   // 侧边菜单是否排他展开
-  sideUniqueOpen: false,
+  sideUniqueOpen: true,
   // 是否展示面包屑
   breadcrumbView: true,
   // 是否展示多标签页

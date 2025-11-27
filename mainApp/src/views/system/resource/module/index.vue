@@ -159,6 +159,13 @@
       width: 150,
     },
     {
+      title: "模块主页",
+      dataIndex: "link",
+      align: "center",
+      resizable: true,
+      width: 200,
+    },
+    {
       title: "排序顺序",
       dataIndex: "sortNum",
       align: "center",

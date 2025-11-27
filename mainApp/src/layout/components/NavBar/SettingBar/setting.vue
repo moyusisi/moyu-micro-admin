@@ -15,6 +15,9 @@
     </div>
     <a-divider/>
     <a-form ref="formRef" class="text-right">
+      <a-form-item label="模块坞">
+        <a-switch :checked="moduleOpen" @change="toggleState('moduleOpen')"/>
+      </a-form-item>
       <a-form-item label="面包屑">
         <a-switch :checked="breadcrumbView" @change="toggleState('breadcrumbView')"/>
       </a-form-item>
@@ -38,48 +41,52 @@
   </div>
 </template>
 <script setup>
-	import { useSettingsStore } from '@/store'
-	const settingsStore = useSettingsStore()
-	const sideStyleList = ref([
-		{
-			tips: '暗色主题风格',
-			value: 'dark',
-			style: 'setting-checkbox-item-dark'
-		},
-		{
-			tips: '亮色主题风格',
-			value: 'light',
-			style: 'setting-checkbox-item-light'
-		}
-	])
-	const theme = computed(() => {
-		return settingsStore.theme
-	})
-	const breadcrumbView = computed(() => {
-		return settingsStore.breadcrumbView
-	})
-	const tagsView = computed(() => {
-		return settingsStore.tagsView
-	})
-	const menuCollapsed = computed(() => {
-		return settingsStore.menuCollapsed
-	})
-	const sideUniqueOpen = computed(() => {
-		return settingsStore.sideUniqueOpen
-	})
-	const watermarkEnabled = computed(() => {
-		return settingsStore.watermarkEnabled
-	})
-	const toggleState = (stateName) => {
-		settingsStore.toggleConfig(stateName)
-	}
-	// 设置整体风格主题
-	const setSideStyle = (value) => {
-		settingsStore.setTheme(value)
-	}
+  import { useSettingsStore } from '@/store'
 
-	onMounted(() => {
-	})
+  const settingsStore = useSettingsStore()
+  const sideStyleList = ref([
+    {
+      tips: '暗色主题风格',
+      value: 'dark',
+      style: 'setting-checkbox-item-dark'
+    },
+    {
+      tips: '亮色主题风格',
+      value: 'light',
+      style: 'setting-checkbox-item-light'
+    }
+  ])
+  const theme = computed(() => {
+    return settingsStore.theme
+  })
+  const moduleOpen = computed(() => {
+    return settingsStore.moduleOpen
+  })
+  const breadcrumbView = computed(() => {
+    return settingsStore.breadcrumbView
+  })
+  const tagsView = computed(() => {
+    return settingsStore.tagsView
+  })
+  const menuCollapsed = computed(() => {
+    return settingsStore.menuCollapsed
+  })
+  const sideUniqueOpen = computed(() => {
+    return settingsStore.sideUniqueOpen
+  })
+  const watermarkEnabled = computed(() => {
+    return settingsStore.watermarkEnabled
+  })
+  const toggleState = (stateName) => {
+    settingsStore.toggleConfig(stateName)
+  }
+  // 设置整体风格主题
+  const setSideStyle = (value) => {
+    settingsStore.setTheme(value)
+  }
+
+  onMounted(() => {
+  })
 </script>
 
 <style scoped>

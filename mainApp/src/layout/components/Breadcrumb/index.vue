@@ -1,10 +1,10 @@
 <template>
 	<div v-if="breadcrumbView" class="admin-ui-breadcrumb">
 		<a-breadcrumb>
-			<template v-for="item in breadList" :key="item.title">
+			<template v-for="item in breadList" :key="item.path">
 				<a-breadcrumb-item>
-					<a v-if="item.redirect" @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
-					<span v-else>{{ item.meta.title }}</span>
+					<a v-if="item.redirect" @click.prevent="handleLink(item)">{{ item.title }}</a>
+					<span v-else>{{ item.title }}</span>
 				</a-breadcrumb-item>
 			</template>
 		</a-breadcrumb>
@@ -35,13 +35,15 @@
 
 	// 获取面包屑
 	const getBreadcrumb = () => {
-		let matched = route.matched.filter(
-			(item) => item.meta && item.meta.title
-		);
-		// console.log(route.matched)
-		breadList.value = matched.filter((item) => {
-			return item.meta && item.meta.title && item.meta.breadcrumb !== false;
-		});
+    breadList.value = route.meta.breadcrumb
+		// 下面的面包屑是route匹配的形式，得到的是route的列表
+    // let matched = route.matched.filter(
+		// 	(item) => item.meta && item.meta.title
+		// );
+		// // console.log(route.matched)
+		// breadList.value = matched.filter((item) => {
+		// 	return item.meta && item.meta.title && item.meta.breadcrumb !== false;
+		// });
 		// console.log(breadList.value)
 	}
 

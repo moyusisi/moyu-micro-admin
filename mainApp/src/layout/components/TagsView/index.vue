@@ -29,7 +29,7 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons-vue";
 const route = useRoute()
 const router = useRouter()
 const tagsViewStore = useTagsViewStore()
-const menuStore = useMenuStore()
+
 // 解构 store中的属性
 const { visitedViews } = toRefs(tagsViewStore)
 

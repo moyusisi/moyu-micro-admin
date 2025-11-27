@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useStorage } from "@vueuse/core"
 import { useSearchStore } from '@/store/search'
 import userCenterApi from '@/api/system/userCenterApi'
 import router, { constRoutes } from '@/router'
@@ -19,7 +20,12 @@ export const useMenuStore = defineStore('menuStore', () => {
   // 所有路由(静态路由 + 动态路由)
   const routes = ref<RouteRecordRaw[]>([]);
   const dynamicRouter = ref<boolean>(false)
-  // 所有模块的menu,用于保存后端返回的原始数据
+  // 所有module的所有menu,用于保存后端返回的原始数据
+  const moduleList = ref([])
+  // 当前使用的module
+  // 侧边栏菜单是否排他展开
+  const module = useStorage("MODULE_ID", "");
+  // 当前module的菜单(即module的子节点)
   const menuList = ref([])
 
   // actions
@@ -31,7 +37,8 @@ export const useMenuStore = defineStore('menuStore', () => {
     const menu = localStorage.getItem('MENU')
     let localMenu = JSON.parse(menu as string)
     if (localMenu) {
-      menuList.value = localMenu
+      moduleList.value = localMenu
+      initMenuList()
     } else {
       // 本地无则从api获取
       await refreshModuleMenu()
@@ -48,14 +55,49 @@ export const useMenuStore = defineStore('menuStore', () => {
       res.data = []
     }
     localStorage.setItem('MENU', JSON.stringify(res.data))
-    menuList.value = res.data
+    moduleList.value = res.data
+    initMenuList()
   };
+
+  /**
+   * 初始化module对应的菜单menuList
+   */
+  function initMenuList() {
+    if (!module.value) {
+      // @ts-ignore
+      module.value = moduleList.value[0].code
+    }
+    // @ts-ignore
+    const moduleItem = moduleList.value.find((item) => item.code === module.value)
+    // @ts-ignore
+    menuList.value = moduleItem ? moduleItem.children : []
+  }
+
+  /**
+   * 清空菜单及路由数据
+   */
+  const switchModule = (moduleCode: string) => {
+    if (module.value === moduleCode) {
+      console.log("module未发生变化...")
+      return
+    }
+    // @ts-ignore
+    const moduleItem = moduleList.value.filter((item) => item.code === moduleCode)
+    if (!moduleItem) {
+      console.log("未找到到要切换的module...", moduleCode)
+      return
+    }
+    // module赋值
+    module.value = moduleCode
+    // 加载module的菜单
+    initMenuList()
+  }
 
   /**
    * 清空菜单及路由数据
    */
   const clear = async () => {
-    menuList.value = []
+    moduleList.value = []
     routes.value = []
     dynamicRouter.value = false
     localStorage.removeItem('MENU')
@@ -68,14 +110,14 @@ export const useMenuStore = defineStore('menuStore', () => {
     // 加载菜单数据(优先本地，其次接口)
     await initModuleMenu()
     // 生成动态路由
-    const asyncRoutes: RouteRecordRaw[] = parseAsyncRoutes(menuList.value);
+    const asyncRoutes: RouteRecordRaw[] = parseAsyncRoutes(moduleList.value);
     // 设置routes
     routes.value = [...constRoutes, ...asyncRoutes];
     // 添加到路由组件中
     addToRouter(asyncRoutes)
     dynamicRouter.value = true
     // 初始化面包屑
-    initTitlePath(routes.value)
+    initBreadcrumb(routes.value)
     // 初始化搜索
     const searchStore = useSearchStore()
     searchStore.init(routes.value)
@@ -155,6 +197,9 @@ export const useMenuStore = defineStore('menuStore', () => {
     // 资源类型（字典 1模块 2目录 3菜单 4内链 5外链）
     let item;
     const component = menu.component
+    if (component) {
+    } else {
+    }
     if (!component) {
       // 如果没有组件，则将组件设置为 undefined 防止错误加载
       item = undefined;
@@ -169,9 +214,9 @@ export const useMenuStore = defineStore('menuStore', () => {
   }
 
   /**
-   * 根据当前routes生成title组成的层级列表(主要用于搜索时显示菜单路径)
+   * 根据当前routes初始化面包屑(面包屑、搜索、模块菜单等组件均要使用)
    */
-  const initTitlePath = (routes: RouteRecordRaw[], titlePath:object[] = []) => {
+  const initBreadcrumb = (routes: RouteRecordRaw[], titlePath: object[] = []) => {
     routes.forEach((route) => {
       // 生成当前route的titleList
       const titleList = [...titlePath]
@@ -180,14 +225,16 @@ export const useMenuStore = defineStore('menuStore', () => {
         route.meta = {}
       }
       titleList.push({
+        "name": route.name,
+        "path": route.path,
         "title": route.meta?.title,
         "redirect": route.redirect,
       })
       // 设置在route的meta中
-      route.meta.fullTitlePath = titleList
+      route.meta.breadcrumb = titleList
       // 若有子路由则递归设置子路由
       if (route.children) {
-        initTitlePath(route.children, titleList)
+        initBreadcrumb(route.children, titleList)
       }
     })
   }
@@ -195,7 +242,11 @@ export const useMenuStore = defineStore('menuStore', () => {
   return {
     routes,
     dynamicRouter,
+    moduleList,
+    module,
+    menuList,
     clear,
+    switchModule,
     generateRoutes,
     reloadRoutes
   }

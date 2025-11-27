@@ -3,7 +3,6 @@ import systemRouter from './systemRouter'
 import NProgress from '@/utils/nprogress'
 import settings from "@/config/settings.ts"
 import { useMenuStore, useUserStore } from "@/store";
-import { message } from "ant-design-vue";
 
 export const constRoutes: RouteRecordRaw[] = [...systemRouter]
 

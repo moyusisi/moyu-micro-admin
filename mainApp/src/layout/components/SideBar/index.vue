@@ -1,6 +1,6 @@
 <template>
   <!-- 左侧侧边栏 -->
-  <a-layout-sider class="side-menu" :collapsed="menuCollapsed" :theme="sideTheme" collapsible width="210" @collapse="onCollapse">
+  <a-layout-sider class="side-menu" :collapsed="menuCollapsed" :theme="sideTheme" :trigger="null" collapsible width="210" @collapse="onCollapse">
     <!-- 侧边栏logo标题 -->
     <a-layout-header class="side-menu-header">
         <img class="logo" :src="defaultSettings.logo"/>
@@ -13,6 +13,7 @@
         <MenuItem v-for="route in menuList" :key="route.path" :item="route"/>
       </a-menu>
     </div>
+    <!--  侧边栏footer  -->
     <template #trigger>
       <div class="side-menu-footer">
         <SettingBar/>
@@ -31,6 +32,7 @@ import { useRoute, useRouter } from "vue-router";
 import MenuItem from "@/layout/components/SideBar/MenuItem.vue";
 import Hamburger from "@/layout/components/NavBar/Hamburger/index.vue";
 import SettingBar from "@/layout/components/NavBar/SettingBar/index.vue";
+import { constRoutes } from '@/router'
 
 const settingsStore = useSettingsStore()
 const menuStore = useMenuStore()
@@ -41,8 +43,9 @@ const openKeys = ref([])
 const selectedKeys = ref([])
 
 const menuList = computed(() => {
-  // 这里使用的是所有路由(静态+动态), 若使用menuStore.menuList.value.children则只有动态菜单
-  return menuStore.routes
+  // 这里使用的是静态+动态路由, 若使用menuStore.menuList则只有动态菜单
+  return [...constRoutes, ...menuStore.menuList]
+  // return [...menuStore.menuList]
 })
 
 const menuCollapsed = computed(() => {
@@ -60,8 +63,39 @@ const sideTheme = computed(() => {
   return theme.value
 })
 
+// 首次加载会调用onMounted但route不会改变
+onMounted(() => {
+  // 模块菜单
+  showModuleMenu()
+  // 首次加载时，只有当前菜单的目录为openKeys
+  showThisMenuItem()
+})
+
+// 非首次加载则不再调用onMounted，但route会改变。任何地方改变路由时都会被监听到
+watch(route, (to) => {
+  showThisMenuItem()
+})
+
+// 根据当前路由判断显示哪个module的menu
+function showModuleMenu() {
+  // 依靠面包屑获取当前路由的顶层模块
+  const moduleItem = route.meta.breadcrumb ? route.meta.breadcrumb[0] : {}
+  // 路由到模块首页
+  let moduleCode = null
+  menuStore.moduleList.filter((item) => {
+    if (item.path === moduleItem.path) {
+      moduleCode = item.code
+    }
+  })
+  // 有moduleCode则切换，否则保持原样
+  if (moduleCode) {
+    // 路由到模块的首页
+    menuStore.switchModule(moduleCode)
+  }
+}
+
 // 监听路由处理需要展示的内容，如高亮选中、菜单展开等
-const showThisRoute = () => {
+const showThisMenuItem = () => {
   // 从根路由到当前路径的完整路由层级结构
   let matched = route.matched
   // 每一层级的路径列表
@@ -88,28 +122,17 @@ const showThisRoute = () => {
         // 非排他打开时，即将新open的keys要加入到原来的openKey中去
         let newKeys = pathList.filter(e => !openKeys.value.includes(e));
         openKeys.value = openKeys.value.concat(newKeys);
-        // console.log('openKeys', openKeys.value)
       }
+      // console.log('openKeys', openKeys.value)
     })
   }
 }
-
-// 首次加载会调用onMounted但route不会改变
-onMounted(() => {
-  // 首次加载时，只有当前菜单的目录为openKeys
-  showThisRoute()
-})
-
-// 非首次加载则不再调用onMounted，但route会改变。任何地方改变路由时都会被监听到
-watch(route, (to) => {
-  showThisRoute()
-})
 
 // 展开-收起时的回调函数
 const onCollapse = (collapsed, type) => {
   // console.log("onCollapse", collapsed)
   // 处理选中菜单及打开菜单所在目录
-  showThisRoute()
+  showThisMenuItem()
 }
 
 // 当设置trigger="null"时@collapse会不生效，通过监听状态变更达到@collapse事件的效果
@@ -204,8 +227,9 @@ const traverse = (array, key) => {
 }
 
 .side-menu-body {
-  /** 高度为 页面100% - header高度 - trigger(footer)高度 */
-  height: calc(100vh - 50px - 48px);
+  /** 高度为 页面100% - header高度 - trigger(footer)高度
+  height: calc(100vh - 50px - 48px); */
+  height: calc(100vh - 50px);
   /** scroll在body中,注释掉则出现在side-menu，即header也会滑动 */
   overflow: auto;
 }

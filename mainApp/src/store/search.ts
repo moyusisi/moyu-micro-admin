@@ -22,9 +22,9 @@ export const useSearchStore = defineStore('search', () => {
 	const init = (menus: RouteRecordRaw[]) => {
 		const poolList: SearchItem[] = []
 		const getFullName = function (meta) {
-			if (meta.fullTitlePath) {
+			if (meta.breadcrumb) {
 				let list: string[] = []
-				meta.fullTitlePath.forEach((item) => {
+				meta.breadcrumb.forEach((item) => {
 					list.push(item.title)
 				})
 				return list.join(' / ')
