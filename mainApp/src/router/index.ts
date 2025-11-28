@@ -49,6 +49,7 @@ router.beforeEach(async (to, from) => {
     // 如果已登录，则重定向，跳转首页
     return { path: "/", replace: true }
   }
+
   // console.log(history.state)
   // fullPath是包括 路径、查询参数和哈希值的完整地址。
   console.log("访问地址: " + to.fullPath)
