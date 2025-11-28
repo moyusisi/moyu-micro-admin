@@ -126,6 +126,24 @@
             <span>{{ text }}</span>
           </a-tooltip>
         </template>
+        <template v-if="column.dataIndex === 'opBrowser'">
+          <!-- 长文本省略提示 -->
+          <a-tooltip :title="text" placement="topLeft">
+            <span>{{ text }}</span>
+          </a-tooltip>
+        </template>
+        <template v-if="column.dataIndex === 'opPlatform'">
+          <!-- 长文本省略提示 -->
+          <a-tooltip :title="text" placement="topLeft">
+            <span>{{ text }}</span>
+          </a-tooltip>
+        </template>
+        <template v-if="column.dataIndex === 'opOs'">
+          <!-- 长文本省略提示 -->
+          <a-tooltip :title="text" placement="topLeft">
+            <span>{{ text }}</span>
+          </a-tooltip>
+        </template>
         <template v-if="column.dataIndex === 'requestContent'">
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">

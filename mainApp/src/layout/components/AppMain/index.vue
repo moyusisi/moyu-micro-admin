@@ -15,7 +15,7 @@ import IframeView from "./iframeView.vue"
 import { useTagsViewStore } from "@/store"
 import { useRoute } from "vue-router";
 import { watch } from "vue";
-const Error404  = () => import('@/layout/other/404.vue')
+const NotFound  = () => import('@/layout/other/404.vue')
 
 const tagsViewStore = useTagsViewStore()
 
@@ -63,7 +63,7 @@ const currentComponent = (component, route) => {
           return h(component);
         } catch (error) {
           console.error(`Error rendering component for route: ${componentName}`, error);
-          return h(Error404);
+          return h(NotFound);
         }
       },
     };
