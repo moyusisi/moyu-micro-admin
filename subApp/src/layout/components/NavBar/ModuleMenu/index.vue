@@ -62,11 +62,8 @@
     return settingsStore.moduleOpen
   })
   // 选中的module
-  const selectedKeys = ref([])
-
-  onMounted(() => {
-    // 选中模块
-    selectedKeys.value = [module.value]
+  const selectedKeys = computed(() => {
+    return [module.value]
   })
 
   // 切换模块

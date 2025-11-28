@@ -3,7 +3,7 @@
   <a-tree-select
       v-model:value="selectValue"
       v-model:treeExpandedKeys="defaultExpandedKeys"
-      listHeight="400"
+      :listHeight="400"
       placeholder="请选择"
       allow-clear
       :tree-data="treeData"
@@ -55,7 +55,7 @@ const treeData = ref()
 onMounted(() => {
   loadTreeData()
   selectValue.value = props.defaultValue
-  console.log(selectValue.value)
+  // console.log(selectValue.value)
 })
 
 // 加载左侧的树

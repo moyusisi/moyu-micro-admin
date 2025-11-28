@@ -9,6 +9,7 @@ import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 // 布局组件, 一般顶层目录使用
 import Layout from '@/layout/index.vue'
 import EmptyLayout from '@/layout/other/empty.vue'
+const NotFound  = () => import('@/layout/other/404.vue')
 
 // login和findPwd路由组件已静态加载，此处不在进行异步加载
 const modules = import.meta.glob([
@@ -212,7 +213,7 @@ export const useMenuStore = defineStore('menuStore', () => {
     } else {
       item = modules[`/src/views/${component}.vue`] ||
         modules[`/src/views/${component}/index.vue`] ||
-        EmptyLayout
+        NotFound
     }
     return item
   }
