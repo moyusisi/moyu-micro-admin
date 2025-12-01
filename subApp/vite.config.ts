@@ -39,12 +39,17 @@ export default defineConfig(({ mode }): UserConfig => {
       // 运行是否自动打开浏览器
       open: true,
       proxy: {
+        // 配置代理规则：所有 /api/ 开头的请求(未被 Mock 拦截的)转发到真实后端
         '/api': {
-          target: env.VITE_API_BASEURL,
-          // target: 'http://127.0.0.1:8080',
+          // 请求转发到的后端地址(未被mock拦截的请求),
+          target: 'http://127.0.0.1:8080',
           ws: false,
+          // 跨域时修改 Origin 头
           changeOrigin: true,
+          // 可选：重写路径（如后端接口无 /api 前缀时）
           // rewrite: (path) => path.replace(/^\/api/, '')
+          // 可选：忽略证书错误（本地开发用）
+          // secure: false
         }
       }
     },
@@ -75,9 +80,12 @@ export default defineConfig(({ mode }): UserConfig => {
         useDevMode: true
       }),
       viteMockServe({
-        // 模拟数据的配置
+        // mock文件存放路径（默认是 src/mock）
         mockPath: 'mock',
+        // 是否启用mock
         enable: mode === 'dev',
+        // 是否在控制台打印 mock 接口请求日志
+        logger: true,
       }),
       viteCompression(),
       vueSetupExtend(),
