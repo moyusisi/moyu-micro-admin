@@ -19,8 +19,6 @@ export default defineConfig(({ mode }): UserConfig => {
     '@': `${resolve(__dirname, 'src')}`
   }
   return {
-    // 1. 微应用配置，配置基础路径：开发环境为绝对路径，生产环境为主应用配置的子应用路径
-    base: mode === 'dev' ? '/': '/subApp1/',
     resolve: {
       alias
     },
@@ -29,7 +27,7 @@ export default defineConfig(({ mode }): UserConfig => {
       host: "0.0.0.0",
       // 应用端口 (默认:3000)
       port: Number(env.VITE_PORT),
-      // 允许跨域（允许主应用域名跨域访问）
+      // 2.允许跨域（允许qiankun主应用域名跨域访问）
       cors: {
         origin: [
           'http://localhost:81',   // 主应用开发环境域名
@@ -50,7 +48,7 @@ export default defineConfig(({ mode }): UserConfig => {
         }
       }
     },
-    // 4. 构建配置：输出兼容的资源名称
+    // 3. 构建配置：输出兼容的资源名称
     build: {
       manifest: true,
       // 生成静态资源的存放路径
@@ -71,7 +69,7 @@ export default defineConfig(({ mode }): UserConfig => {
     },
     plugins: [
       vue(),
-      // 2. 注册 qiankun 插件
+      // 1. 注册 qiankun 插件
       qiankun(appName, {
         // 开发环境是否开启沙箱（默认 true）
         useDevMode: true
@@ -93,7 +91,7 @@ export default defineConfig(({ mode }): UserConfig => {
       })
     ],
 
-    // 定义全局变量：解决 qiankun 沙箱中 window 指向问题
+    // 4.定义全局变量：解决 qiankun 沙箱中 window 指向问题
     define: {
       'process.env': process.env,
       '__VUE_OPTIONS_API__': true,

@@ -204,7 +204,7 @@ export const useMenuStore = defineStore('menuStore', () => {
       // 如果没有组件，则将组件设置为 undefined 防止错误加载
       item = undefined;
     } else if (component?.toString() === "Layout") {
-      // 1. 独立运行时直接渲染
+      // 微应用模式使用EmptyLayout，独立运行时使用Layout
       if (qiankunWindow.__POWERED_BY_QIANKUN__) {
         item = EmptyLayout
       } else {
