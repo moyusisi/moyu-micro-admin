@@ -33,4 +33,4 @@ app.use(hljsVuePlugin)
 app.mount('#app')
 
 // 启动 qiankun 微前端
-startQiankun();
+// startQiankun();
