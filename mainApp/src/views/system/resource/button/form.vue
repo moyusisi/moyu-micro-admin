@@ -29,6 +29,10 @@
       <a-form-item name="permission" label="权限标识" tooltip="对应接口的权限标识，如'sys:user:add'" required>
         <a-input v-model:value="formData.permission" placeholder="请输入权限标识" allow-clear/>
       </a-form-item>
+      <!-- 按钮:有无数据范围 -->
+      <a-form-item name="visible" label="数据权限" tooltip="是否有数据权限，通常列表查询才有数据权限" required>
+        <a-radio-group v-model:value="formData.visible" option-type="button" button-style="solid" :options="visibleOptions"/>
+      </a-form-item>
       <a-form-item name="sortNum" label="排序顺序" tooltip="排序顺序" required>
         <a-input-number v-model:value="formData.sortNum" style="width: 100%"/>
       </a-form-item>
@@ -49,7 +53,6 @@
 <script setup>
   import resourceApi from '@/api/system/resourceApi.js'
 
-  import { required } from '@/utils/formRules'
   import { message } from "ant-design-vue"
   import { useSettingsStore } from "@/store"
   import MenuTreeSelect from "@/views/system/components/menuTreeSelect.vue"
@@ -73,11 +76,18 @@
   const formRef = ref()
   const formData = ref({
     resourceType: 6,
+    visible: 0,
     sortNum: 99
   })
   const dataLoading = ref(false)
   const submitLoading = ref(false)
   const treeData = ref([])
+
+  // 有无数据范围options
+  const visibleOptions = [
+    { label: "有", value: 1 },
+    { label: "无", value: 0 }
+  ]
 
   // 打开抽屉
   const onOpen = (row, module) => {

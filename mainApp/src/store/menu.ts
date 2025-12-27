@@ -66,7 +66,7 @@ export const useMenuStore = defineStore('menuStore', () => {
   function initMenuList() {
     if (!module.value) {
       // @ts-ignore
-      module.value = moduleList.value[0].code
+      module.value = moduleList.value[0]?.code
     }
     // @ts-ignore
     const moduleItem = moduleList.value.find((item) => item.code === module.value)

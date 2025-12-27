@@ -3,7 +3,8 @@
     title="角色授权-功能权限"
     :open="visible"
     :width="drawerWidth"
-    :footerStyle="{'display': 'flex', 'justify-content': 'flex-end' }"
+    :closable="false"
+    :maskClosable="false"
     :destroy-on-close="true"
     @close="onClose"
   >
@@ -13,40 +14,63 @@
     <a-spin :spinning="spinningLoading">
       <a-space style="margin-bottom: 10px;">
         <a-radio-group v-model:value="moduleId" button-style="solid">
-          <a-radio-button v-for="module in moduleDataList" :key="module.code" :value="module.code" @click="moduleClock(module.code)">
+          <a-radio-button v-for="module in moduleDataList" :key="module.code" :value="module.code" @click="moduleChange(module.code)">
             <component :is="module.icon" /> {{ module.name }}
           </a-radio-button>
         </a-radio-group>
       </a-space>
       <!-- 菜单权限授权表格 -->
-      <a-table size="small"
-           :columns="columns"
-           :data-source="tableData"
-           :row-key="(record) => record.code"
-           :row-selection="rowSelection"
-           :pagination="paginationRef"
-           :defaultExpandedRowKeys="defaultExpandedRowKeys"
-           bordered>
-        <template #bodyCell="{ column, record }">
+      <a-table size="small" ref="tableRef"
+               :columns="columns"
+               :data-source="tableData"
+               :row-key="(record) => record.code"
+               :row-selection="rowSelection"
+               :pagination="false"
+               :defaultExpandedRowKeys="defaultExpandedRowKeys"
+               bordered>
+        <template #bodyCell="{ column, record, index, text }">
           <template v-if="column.dataIndex === 'name'">
-            <span v-if="record.resourceType === 1">
-              <a-tag color="orange">模块</a-tag>{{ record.name }}
+            <!-- 长文本省略提示 -->
+            <a-tooltip :title="text" placement="top">
+              <span v-if="record.resourceType === 1">
+                <a-tag color="orange">模块</a-tag>{{ record.name }}
+              </span>
+              <span v-if="record.resourceType === 2">
+                <a-tag color="cyan">目录</a-tag>{{ record.name }}
+              </span>
+              <span v-if="record.resourceType === 3">
+                <a-tag color="blue">菜单</a-tag>{{ record.name }}
+              </span>
+              <span v-if="record.resourceType === 4">
+                <a-tag color="gold">内链</a-tag>{{ record.name }}
+              </span>
+              <span v-if="record.resourceType === 5">
+                <a-tag color="green">链接</a-tag>{{ record.name }}
+              </span>
+              <span v-if="record.resourceType === 6">
+                <a-tag color="purple">按钮</a-tag>{{ record.name }}
+              </span>
+            </a-tooltip>
+          </template>
+          <template v-if="column.dataIndex === 'resourceType'">
+            <a-tag v-if="record.resourceType === 1" color="orange">模块</a-tag>
+            <a-tag v-if="record.resourceType === 2" color="cyan">目录</a-tag>
+            <a-tag v-if="record.resourceType === 3" color="blue">菜单</a-tag>
+            <a-tag v-if="record.resourceType === 4" color="gold">内链</a-tag>
+            <a-tag v-if="record.resourceType === 5" color="green">链接</a-tag>
+            <a-tag v-if="record.resourceType === 6" color="purple">按钮</a-tag>
+          </template>
+          <template v-if="column.dataIndex === 'icon'">
+            <span v-if="record.icon && record.icon !== '#'" >
+              <component :is="record.icon"/>
             </span>
-            <span v-if="record.resourceType === 2">
-              <a-tag color="cyan">目录</a-tag>{{ record.name }}
-            </span>
-            <span v-if="record.resourceType === 3">
-              <a-tag color="blue">菜单</a-tag>{{ record.name }}
-            </span>
-            <span v-if="record.resourceType === 4">
-              <a-tag color="gold">内链</a-tag>{{ record.name }}
-            </span>
-            <span v-if="record.resourceType === 5">
-              <a-tag color="green">链接</a-tag>{{ record.name }}
-            </span>
-            <span v-if="record.resourceType === 6">
-              <a-tag color="purple">按钮</a-tag>{{ record.name }}
-            </span>
+            <span v-else />
+          </template>
+          <template v-if="column.dataIndex === 'code'">
+            <!-- 唯一键点击查看详情 -->
+            <a-tooltip :title="text" placement="topLeft">
+              <a @click="null">{{ text }}</a>
+            </a-tooltip>
           </template>
           <template v-if="column.dataIndex === 'buttonList'">
             <a-space v-if="record.allButtonList">
@@ -63,36 +87,44 @@
       </a-table>
     </a-spin>
     <template #footer>
-      <a-space>
+      <a-flex gap="small" justify="flex-end">
         <a-button @click="onClose">关闭</a-button>
         <a-button type="primary" :loading="submitLoading" @click="onSubmit">保存</a-button>
-      </a-space>
+      </a-flex>
     </template>
   </a-drawer>
 </template>
 
 <script setup>
   import roleApi from '@/api/system/roleApi'
+  import { ref } from "vue";
+  import { message } from "ant-design-vue";
+  import { CloseOutlined, DeleteOutlined } from "@ant-design/icons-vue"
   import { useMenuStore } from '@/store/menu'
   import { useUserStore } from '@/store/user'
-  import { useSettingsStore } from "@/store";
-  import { message } from "ant-design-vue";
+  import { useSettingsStore } from "@/store/settings";
 
+  // store
   const settingsStore = useSettingsStore()
   const userStore = useUserStore()
   const menuStore = useMenuStore()
 
-  const visible = ref(false)
-  const spinningLoading = ref(false)
+  // 抽屉参数
   const emit = defineEmits({ successful: null })
-  const submitLoading = ref(false)
+  const visible = ref(false)
   // 抽屉宽度
   const drawerWidth = computed(() => {
     return settingsStore.menuCollapsed ? `calc(100% - 80px)` : `calc(100% - 210px)`
   })
 
+  // 表单数据
   const roleCode = ref('')
   const moduleId = ref('')
+  const spinningLoading = ref(false)
+  const submitLoading = ref(false)
+
+  /***** 表格相关对象 start *****/
+  const tableRef = ref()
   // 所有模块的菜单数据(loadData中会更新)
   const moduleDataList = ref([])
   // 表格中的数据(loadData中会更新)
@@ -101,18 +133,6 @@
   const selectedRowKeys = ref([])
   // 默认展开的行(loadData中会更新)
   const defaultExpandedRowKeys = ref([])
-  const columns = [
-    {
-      title: '菜单权限',
-      dataIndex: 'name',
-      resizable: true,
-      width: 300
-    },
-    {
-      title: '按钮权限',
-      dataIndex: 'buttonList'
-    }
-  ]
   // 列表选择配置
   const rowSelection = ref({
     checkStrictly: false,
@@ -128,11 +148,22 @@
       }
     }
   });
-  // 表格的分页配置
-  const paginationRef = ref({
-    // 只有一页或没有数据时隐藏分页栏
-    hideOnSinglePage: true,
-  })
+  // 表格列配置
+  const columns = [
+    {
+      title: '菜单权限',
+      dataIndex: 'name',
+      resizable: true,
+      ellipsis: true,
+      width: 200
+    },
+    {
+      title: '按钮权限',
+      dataIndex: 'buttonList',
+      resizable: true,
+      ellipsis: true,
+    }
+  ]
 
   // 打开抽屉
   const onOpen = (record) => {
@@ -161,7 +192,7 @@
   }
 
   // 通过应用分菜单
-  const moduleClock = (value) => {
+  const moduleChange = (value) => {
     moduleId.value = value
     loadData()
   }
@@ -249,15 +280,9 @@
     submitLoading.value = true
     roleApi.roleGrantMenu(param).then((res) => {
       message.success(res.message)
-      refreshCache()
     }).finally(() => {
       submitLoading.value = false
     })
-  }
-  // 刷新缓存
-  const refreshCache = () => {
-    userStore.refreshUserInfo()
-    menuStore.reloadRoutes()
   }
   // 调用这个函数将子组件的一些数据和方法暴露出去
   defineExpose({

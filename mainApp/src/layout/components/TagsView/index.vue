@@ -84,7 +84,7 @@ const closeSelectedTag = (tag, autoPushLatestView = true) => {
     const latestView = tagList.value.slice(-1)[0]
     // console.log('isActive', latestView)
     if (latestView) {
-      router.push(latestView.path)
+      router.push(latestView.fullPath)
     } else {
       router.push('/')
     }

@@ -32,31 +32,25 @@
                 <OrgTreeSelect :tree-data="treeData" :defaultValue="formData.orgCode" @onChange="parentChange"/>
               </a-form-item>
             </a-col>
-            <a-col :span="12">
-              <a-form-item name="dataScope" label="数据范围" tooltip="用于控制本岗位人员的数据权限" required>
-                <a-radio-group v-model:value="formData.dataScope" option-type="button" button-style="solid">
-                  <!-- 数据范围(字典 1本人 2本机构 3本机构及以下 4自定义) -->
-                  <a-radio-button :value="1">仅本人</a-radio-button>
-                  <a-radio-button :value="2">仅本机构</a-radio-button>
-                  <a-radio-button :value="3">本机构及以下</a-radio-button>
-                  <a-radio-button :value="4">自定义</a-radio-button>
-                </a-radio-group>
-              </a-form-item>
-            </a-col>
             <!-- 使用状态 -->
             <a-col :span="12">
               <a-form-item name="status" label="使用状态" tooltip="" required>
                 <a-radio-group v-model:value="formData.status" option-type="button" button-style="solid" :options="statusOptions" />
               </a-form-item>
             </a-col>
-            <a-col :span="12" v-if="formData.dataScope === 4">
-              <a-form-item name="scopeList" label="自定义范围" tooltip="自定义数据范围时必填">
-                <OrgTreeSelect :tree-data="treeData" :defaultValue="scopeList" multiSelect @onChange="scopeChange"/>
-              </a-form-item>
-            </a-col>
             <a-col :span="12">
               <a-form-item name="sortNum" label="排序顺序" tooltip="排序顺序" required>
                 <a-input-number v-model:value="formData.sortNum" style="width: 100%"/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item name="extJson" label="扩展信息" tooltip="扩展信息,json格式" >
+                <a-textarea v-model:value="formData.extJson" placeholder="扩展信息" allowClear />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item name="remark" label="备注" tooltip="备注" >
+                <a-textarea v-model:value="formData.remark" placeholder="备注" allowClear showCount :maxlength="100" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -94,8 +88,6 @@
 
   // 组织树
   const treeData = ref([])
-  // 自定义数据范围列表
-  const scopeList = ref([])
 
   // 是否为编辑
   const edit = ref(false)
@@ -140,9 +132,6 @@
     let param = { id: row.id }
     groupApi.groupDetail(param).then((res) => {
       formData.value = res.data
-      if(res.data.scopeSet) {
-        scopeList.value = res.data.scopeSet.split(',')
-      }
     }).finally(() => {
       dataLoading.value = false
       // 数据就绪之后显示
@@ -153,10 +142,6 @@
   const parentChange = (value) => {
     formData.value.orgCode = value
   }
-  // 自定义数据范围变更
-  const scopeChange = (value) => {
-    scopeList.value = value
-  }
 
   // 验证并提交数据
   const onSubmit = () => {
@@ -164,9 +149,6 @@
       submitLoading.value = true
       // formData.value 加工处理 add/edit
       const param = formData.value
-      if (scopeList.value) {
-        param.scopeSet = scopeList.value.join(',');
-      }
       let fun = groupApi.addGroup
       if (edit.value) {
         fun = groupApi.editGroup

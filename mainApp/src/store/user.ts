@@ -34,17 +34,23 @@ export const useUserStore = defineStore('userStore', () => {
 
   // 初始化用户信息
   const initUserInfo = async () => {
-    const res = await userCenterApi.loginUserInfo()
-    if (!res.data.roles || res.data.roles.length <= 0) {
-      // 这等价于 Promise.reject(new Error("Rejected value"))
-      throw new Error("initUserInfo: 用户权限不能为空");
+    // 优先获取本地数据
+    let localUserInfo = JSON.parse(localStorage.getItem('USER_INFO') as string)
+    if (localUserInfo) {
+      console.log("load localUserInfo...")
+      userInfo.value = localUserInfo
+    } else {
+      // 本地无则从api获取
+      await refreshUserInfo()
     }
-    userInfo.value = res.data
-    localStorage.setItem('USER_INFO', JSON.stringify(userInfo.value))
   }
   // 刷新登录用户信息
   const refreshUserInfo = async () => {
     const res = await userCenterApi.loginUserInfo()
+    if (!res.data) {
+      // 这等价于 Promise.reject(new Error("Rejected value"))
+      throw new Error("更新用户信息失败");
+    }
     userInfo.value = res.data
     localStorage.setItem('USER_INFO', JSON.stringify(userInfo.value))
   }

@@ -9,6 +9,7 @@ const route = useRoute();
 const router = useRouter();
 
 const { params, query } = route;
+// "/redirect/:path(.*)" 匹配path
 const { path } = params;
 
 router.replace({ path: "/" + path, query })

@@ -1,10 +1,10 @@
 <template>
   <!-- 上方查询区 -->
   <a-card size="small">
-    <a-form ref="queryFormRef" :model="queryFormData" :label-col="{span: 6}">
+    <a-form ref="queryFormRef" :model="queryFormData">
       <a-row :gutter="24">
         <a-col :span="6">
-          <a-form-item name="module" label="唯一ID">
+          <a-form-item name="id" label="日志ID">
             <a-input v-model:value="queryFormData.id" placeholder="请输入唯一ID" allowClear />
           </a-form-item>
         </a-col>
@@ -92,8 +92,8 @@
         <template v-if="column.dataIndex === 'id'">
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">
-            <!--<a style="text-decoration: underline;" @click="detailRef.onOpen(record)">{{ text }}</a>-->
-            <a @click="detailRef.onOpen(record)">{{ text }}</a>
+            <!--<a style="text-decoration: underline;" @click="openDetail(record)">{{ text }}</a>-->
+            <a @click="openDetail(record)">{{ text }}</a>
           </a-tooltip>
         </template>
         <template v-if="column.dataIndex === 'requestUrl'">
@@ -180,15 +180,13 @@
 
   import { h, ref } from "vue"
   import { useRoute, useRouter } from "vue-router"
-  import { useSettingsStore } from "@/store"
-  import { DeleteOutlined, DownOutlined, RedoOutlined, SearchOutlined, UpOutlined } from "@ant-design/icons-vue"
+  import { DeleteOutlined, RedoOutlined, SearchOutlined, DownOutlined, UpOutlined } from "@ant-design/icons-vue"
   import { message } from "ant-design-vue"
+  import MTable from "@/components/MTable/index.vue"
   import Form from "./form.vue"
   import Detail from "./detail.vue"
-  import MTable from "@/components/MTable/index.vue"
 
   // store
-  const settingsStore = useSettingsStore()
   const route = useRoute();
   const router = useRouter();
 
@@ -209,7 +207,7 @@
   // 表格列配置
   const columns = ref([
     {
-      title: "唯一ID",
+      title: "日志ID",
       dataIndex: "id",
       align: "center",
       width: 100,
@@ -225,7 +223,7 @@
       dataIndex: "createBy",
       align: "center",
       resizable: true,
-      width: 150,
+      width: 100,
     },
     {
       title: "系统/模块",
@@ -349,7 +347,7 @@
   onMounted(() => {
     if (route.query.id || history.state.id) {
       const row = { id: route.query.id || history.state.id }
-      detailRef.value.onOpen(row)
+      openDetail(row)
     }
   })
 
@@ -400,6 +398,12 @@
     })
   }
 
+  // 打开详情页
+  const openDetail = (row) => {
+    detailRef.value.onOpen(row)
+    // 独立页面打开(与抽屉打开二选一)
+    // router.push({ path: "/ops/sys/logDetail", query: { id: row.id } })
+  }
 </script>
 
 <style scoped>

@@ -4,6 +4,7 @@
       title="系统日志详情"
       :width="drawerWidth"
       :closable="false"
+      :maskClosable="false"
       :destroy-on-close="true"
       @close="onClose"
   >
@@ -14,8 +15,16 @@
     <!--  数据区  -->
     <a-spin :spinning="dataLoading">
       <a-form ref="formRef" :model="formData" :label-col="{span: 6}">
-        <a-card title="基本信息">
+        <a-card>
+          <template #title>
+            <span><RightSquareFilled style="color: dodgerblue;"/>基本信息</span>
+          </template>
           <a-row :gutter="24">
+            <a-col :span="8">
+              <a-form-item name="id" label="日志ID" tooltip="" >
+                <span><a>{{ formData.id }}</a></span>
+              </a-form-item>
+            </a-col>
             <a-col :span="8">
               <a-form-item name="module" label="系统/模块" tooltip="系统/模块" >
                 {{ formData.module }}
@@ -88,7 +97,10 @@
             </a-col>
           </a-row>
         </a-card>
-        <a-card title="请求信息">
+        <a-card>
+          <template #title>
+            <span><RightSquareFilled style="color: dodgerblue;"/>请求信息</span>
+          </template>
           <a-row :gutter="24">
             <a-col :span="24">
               <a-form-item name="requestUrl" label="请求地址" tooltip="" :label-col="{span: 2}" >
@@ -106,7 +118,7 @@
           <a-row :gutter="24">
             <a-col :span="24">
               <a-form-item name="responseContent" label="返回结果" tooltip="" :label-col="{span: 2}" >
-                <highlightjs v-if="formData.responseContent" autodetect :code="formData.requestContent" />
+                <highlightjs v-if="formData.responseContent" autodetect :code="formData.responseContent" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -125,8 +137,11 @@
   import logApi from '@/api/system/logApi.js'
 
   import { useSettingsStore } from "@/store"
+  import { useRoute, useRouter } from "vue-router";
 
   // store
+  const route = useRoute();
+  const router = useRouter();
   const settingsStore = useSettingsStore()
 
   const emit = defineEmits({ successful: null })
@@ -142,6 +157,14 @@
   const formData = ref({})
   const dataLoading = ref(false)
   const submitLoading = ref(false)
+
+  // 挂载后读取路由中的query参数
+  // onMounted(() => {
+  //   if (route.query.id || history.state.id) {
+  //     const row = { id: route.query.id || history.state.id }
+  //     loadData(row)
+  //   }
+  // })
 
   // 打开抽屉
   const onOpen = (row) => {
@@ -162,6 +185,12 @@
     let param = { id: row.id }
     logApi.logDetail(param).then((res) => {
       formData.value = res.data
+      try {
+        // json 格式化 设置tab为两个空格
+        formData.value.requestContent = JSON.stringify(JSON.parse(formData.value.requestContent), null, 2)
+        formData.value.responseContent = JSON.stringify(JSON.parse(formData.value.responseContent), null, 2)
+      } catch (e) {
+      }
     }).finally(() => {
       dataLoading.value = false
       // 数据就绪之后显示

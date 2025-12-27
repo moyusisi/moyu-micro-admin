@@ -18,7 +18,6 @@
         <OrgTree ref="treeRef" @onSelect="treeSelect"></OrgTree>
       </a-col>
       <a-col :span="19">
-        <a-alert message="角色直接授权的用户，数据权限为仅限本人数据。一旦拥有岗位权限，则将优先使用岗位权限。" type="error" />
         <a-card size="small">
           <a-form ref="searchFormRef" :model="searchFormData">
             <a-row :gutter="16">

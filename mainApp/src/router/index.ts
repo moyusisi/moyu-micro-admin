@@ -50,7 +50,7 @@ router.beforeEach(async (to, from) => {
     return { path: "/", replace: true }
   }
 
-  // console.log(history.state)
+  // console.log("history.state", history.state)
   // fullPath是包括 路径、查询参数和哈希值的完整地址。
   console.log("访问地址: " + to.fullPath)
   // 如果未加载用户信息，则先加载用户信息
@@ -66,7 +66,7 @@ router.beforeEach(async (to, from) => {
     // console.log(router.getRoutes())
     // 由于新增加了路由，所以重新导航
     console.log("重新导航...", to)
-    return { path: to.fullPath, replace: true }
+    return { path: to.path, query: to.query, replace: true }
   }
 
   // 已登录访问登陆页，则跳转到首页

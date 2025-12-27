@@ -117,9 +117,6 @@
 		margin-left: 5px;
 		cursor: pointer;
 	}
-	.setting {
-		margin-right: 10px;
-	}
   .mr8 {
     margin-right: 8px;
   }
