@@ -3,7 +3,7 @@
   <div class="module-menu-wrapper" v-if="moduleList && moduleList.length > 1">
     <!-- 展开 -->
     <div class="" v-if="moduleOpen">
-      <a-menu v-model:selectedKeys="selectedKeys" mode="horizontal" class="module-menu">
+      <a-menu v-bind:selectedKeys="selectedKeys" mode="horizontal" class="module-menu">
         <a-menu-item
             v-for="item in moduleList"
             :key="item.code"
@@ -47,10 +47,11 @@
 <script setup>
   import { h, toRefs } from 'vue'
   import { useRoute, useRouter } from "vue-router";
-  import { useMenuStore, useSettingsStore } from '@/store/index.js'
+  import { useMenuStore, useSettingsStore, useTagsViewStore } from '@/store/index.js'
   import { AppstoreOutlined, FullscreenOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
 
   const settingsStore = useSettingsStore()
+  const tagsViewStore = useTagsViewStore()
   const menuStore = useMenuStore()
   const route = useRoute()
   const router = useRouter()
@@ -85,6 +86,7 @@
     }
     // 路由到模块的首页
     menuStore.switchModule(code)
+    tagsViewStore.initTags()
     router.push({ path: moduleHome })
   }
 

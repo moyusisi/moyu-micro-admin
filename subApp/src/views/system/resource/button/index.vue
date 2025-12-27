@@ -83,6 +83,13 @@
             <a-tag v-if="record.permission" :bordered="false">{{ record.permission }}</a-tag>
           </a-tooltip>
         </template>
+        <template v-if="column.dataIndex === 'visible'">
+          <span v-if="record.resourceType === 6" >
+            <a-tag v-if="record.visible === 1" color="green">有</a-tag>
+            <a-tag v-else>无</a-tag>
+          </span>
+          <span v-else ></span>
+        </template>
         <template v-if="column.dataIndex === 'remark'">
           <a-tooltip :title="text" placement="topLeft">
             <span>{{ text }}</span>
@@ -166,11 +173,17 @@
       width: 150,
     },
     {
-      title: "权限",
+      title: "权限标识",
       dataIndex: "permission",
       resizable: true,
       ellipsis: true,
       width: 150,
+    },
+    {
+      title: '数据权限',
+      dataIndex: 'visible',
+      align: 'center',
+      width: 80
     },
     {
       title: "排序顺序",
@@ -184,7 +197,7 @@
       align: "center",
       resizable: true,
       ellipsis: true,
-      width: 150,
+      width: 100,
     },
     {
       title: '变更时间',
@@ -196,7 +209,7 @@
       title: '操作',
       dataIndex: 'action',
       align: 'center',
-      width: 150
+      width: 100
     }
   ]
   /***** 表格相关对象 end *****/
@@ -239,22 +252,16 @@
     tableRef.value.refresh(true)
   }
   const loadData = async (parameter) => {
-    // 分页参数
-    let param = Object.assign(parameter, queryFormData.value)
     if (!moduleId.value) {
       await init()
-      param.module = moduleId.value
-      return resourceApi.resourcePage(param).then((res) => {
-        // res.data 为 {total, records}
-        return res.data
-      })
-    } else {
-      param.module = moduleId.value
-      return resourceApi.resourcePage(param).then((res) => {
-        // res.data 为 {total, records}
-        return res.data
-      })
     }
+    // 分页参数
+    let param = Object.assign(parameter, queryFormData.value)
+    param.module = moduleId.value
+    return resourceApi.resourcePage(param).then((res) => {
+      // res.data 为 {total, records}
+      return res.data
+    })
   }
   // 选中行发生变化
   const onSelectedChange = (selectedKeys, selectedRows) => {

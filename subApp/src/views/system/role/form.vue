@@ -27,7 +27,7 @@
           <a-radio-group v-model:value="formData.status" option-type="button" button-style="solid" :options="statusOptions"/>
         </a-form-item>
         <a-form-item name="sortNum" label="排序顺序" tooltip="排序顺序" >
-          <a-input-number v-model:value="formData.sortNum" placeholder="排序顺序" />
+          <a-input-number v-model:value="formData.sortNum" placeholder="排序顺序" style="width: 100%"/>
         </a-form-item>
         <a-form-item name="extJson" label="扩展信息" tooltip="扩展信息,json格式" >
           <a-textarea v-model:value="formData.extJson" placeholder="扩展信息" allowClear />

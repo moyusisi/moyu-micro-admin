@@ -32,7 +32,7 @@ export const useTagsViewStore = defineStore('tagsView', () => {
       return;
     }
     // 已存在于已访问的视图列表中，则不再添加
-    if (visitedViews.value.some((v) => v.path === view.path)) {
+    if (visitedViews.value.some((v) => v.fullPath === view.fullPath)) {
       return;
     }
     // 如果视图是固定的（affix），则在已访问的视图列表的开头添加
@@ -61,7 +61,7 @@ export const useTagsViewStore = defineStore('tagsView', () => {
     // visitedViews中移除
     for (const [i, v] of visitedViews.value.entries()) {
       // 找到与指定视图路径匹配的视图，在已访问视图列表中删除该视图
-      if (v.path === view.path) {
+      if (v.fullPath === view.fullPath) {
         visitedViews.value.splice(i, 1);
         break;
       }

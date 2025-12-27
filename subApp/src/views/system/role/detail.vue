@@ -1,7 +1,7 @@
 <template>
   <a-drawer
       :open="visible"
-      title="资源详情"
+      title="角色信息详情"
       :width="drawerWidth"
       :closable="false"
       :maskClosable="false"
@@ -21,62 +21,21 @@
           </template>
           <a-row :gutter="24">
             <a-col :span="8">
-              <a-form-item name="resourceType" label="资源类型" tooltip="">
-                <a-tag v-if="formData.resourceType === 1" color="orange">模块/应用</a-tag>
-                <a-tag v-if="formData.resourceType === 2" color="cyan">目录</a-tag>
-                <a-tag v-if="formData.resourceType === 3" color="blue">菜单</a-tag>
-                <a-tag v-if="formData.resourceType === 4" color="gold">内链</a-tag>
-                <a-tag v-if="formData.resourceType === 5" color="green">链接</a-tag>
-                <a-tag v-if="formData.resourceType === 6" color="purple">按钮/接口</a-tag>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item name="name" label="名称" tooltip="" >
+              <a-form-item name="name" label="角色名称" tooltip="" >
                 <span>{{ formData.name }}</span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="code" label="唯一编码" tooltip="" >
+              <a-form-item name="code" label="角色编码" tooltip="" >
                 <span><a>{{ formData.code }}</a></span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="parentCode" label="上级菜单" tooltip="">
-                <MenuTreeSelect :moduleCode="formData.module" :defaultValue="formData.parentCode" disabled/>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item name="path" label="路由地址" tooltip="" >
-                <span>{{ formData.path }}</span>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8" v-if="formData.resourceType !== 6">
-              <a-form-item name="component" label="组件" tooltip="前端页面组件" >
-                <span><a-tag v-if="formData.component">{{ formData.component }}</a-tag></span>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8" v-if="formData.resourceType === 6">
-              <a-form-item name="permission" label="权限标识" tooltip="访问后端接口所必需的权限标识" >
-                <span><a-tag>{{ formData.permission }}</a-tag></span>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item v-if="formData.resourceType !== 6" name="visible" label="是否可见" tooltip="隐藏时不会出现在菜单中" >
+              <a-form-item name="status" label="使用状态" tooltip="使用状态（0正常 1停用）" >
                 <span>
-                  <a-tag v-if="formData.visible === 1" color="green">可见</a-tag>
-                  <a-tag v-else>隐藏</a-tag>
+                  <a-tag v-if="formData.status === 0" color="green">正常</a-tag>
+                  <a-tag v-else>已停用</a-tag>
                 </span>
-              </a-form-item>
-              <a-form-item  v-if="formData.resourceType === 6" name="visible" label="数据权限" tooltip="是否有数据权限" >
-                <span>
-                  <a-tag v-if="formData.visible === 1" color="green">有</a-tag>
-                  <a-tag v-else>无</a-tag>
-                </span>
-              </a-form-item>
-            </a-col>
-            <a-col :span="8" v-if="formData.resourceType !== 6">
-              <a-form-item name="icon" label="图标" tooltip="">
-                <span v-if="formData.icon"><a-tag>{{ formData.icon }}</a-tag></span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -122,10 +81,9 @@
   </a-drawer>
 </template>
 <script setup>
-  import resourceApi from '@/api/system/resourceApi.js'
+  import roleApi from '@/api/system/roleApi'
 
   import { useSettingsStore } from "@/store"
-  import MenuTreeSelect from "@/views/system/components/menuTreeSelect.vue";
 
   // store
   const settingsStore = useSettingsStore()
@@ -165,8 +123,8 @@
   const loadData = (row) => {
     dataLoading.value = true
     // 组装请求参数
-    let param = { id: row.id, code: row.code }
-    resourceApi.resourceDetail(param).then((res) => {
+    let param = { code: row.code }
+    roleApi.roleDetail(param).then((res) => {
       formData.value = res.data
     }).finally(() => {
       dataLoading.value = false

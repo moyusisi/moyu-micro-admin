@@ -86,9 +86,12 @@
           </a-col>
         </a-row>
         <a-row :gutter="24">
-          <!-- 目录、菜单、内链、外链:是否可见 -->
-          <a-col :span="12" v-if="formData.resourceType === 2 || formData.resourceType === 3 || formData.resourceType === 4 || formData.resourceType === 5">
-            <a-form-item name="visible" label="是否可见" tooltip="仅目录菜单生效" required>
+          <!-- 目录、菜单、内链、外链:是否可见, 按钮:数据权限 -->
+          <a-col :span="12">
+            <a-form-item v-if="formData.resourceType === 6" name="visible" label="数据权限" tooltip="是否有数据权限" required>
+              <a-radio-group v-model:value="formData.visible" option-type="button" button-style="solid" :options="scopeOptions"/>
+            </a-form-item>
+            <a-form-item v-else name="visible" label="是否可见" tooltip="仅目录菜单生效" required>
               <a-radio-group v-model:value="formData.visible" option-type="button" button-style="solid" :options="visibleOptions"/>
             </a-form-item>
           </a-col>
@@ -149,6 +152,16 @@
   const submitLoading = ref(false)
   const treeData = ref([])
   const iconSelector = ref()
+  // 是否有数据权限
+  const scopeOptions = [
+    { label: "有", value: 1 },
+    { label: "无", value: 0 }
+  ]
+  // 是否可见options
+  const visibleOptions = [
+    { label: "可见", value: 1 },
+    { label: "隐藏", value: 0 }
+  ]
 
   // 打开抽屉
   const onOpen = (node, module, resourceType, parentCode) => {
@@ -167,6 +180,11 @@
       // 若指定了resourceType则赋值  1模块 2目录 3菜单 4内链 5外链 6按钮
       if (resourceType) {
         formData.value.resourceType = resourceType
+        if (resourceType === 6) {
+          formData.value.visible = 0
+        } else {
+          formData.value.visible = 1
+        }
       }
       // 数据就绪之后显示
       visible.value = true
@@ -209,11 +227,6 @@
     }
     formData.value.icon = value
   }
-  // 是否可见options
-  const visibleOptions = [
-    { label: "可见", value: 1 },
-    { label: "不可见", value: 0 }
-  ]
   // 验证并提交数据
   const onSubmit = () => {
     formRef.value.validate().then(() => {

@@ -93,7 +93,7 @@
         // 登录
         await userStore.login(loginData)
         // 初始化用户信息
-        await userStore.initUserInfo()
+        await userStore.refreshUserInfo()
         message.success('登录成功')
         const redirectPath = (route.query.redirect) || "/"
         await router.push(redirectPath)
