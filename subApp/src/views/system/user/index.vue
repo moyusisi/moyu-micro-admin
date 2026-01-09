@@ -46,9 +46,9 @@
           </template>
           <template #bodyCell="{ column, record, index, text }">
             <template v-if="column.dataIndex === 'account'">
-              <!-- 长文本省略提示 -->
+              <!-- 唯一键点击查看详情 -->
               <a-tooltip :title="text" placement="topLeft">
-                <a-tag v-if="record.account" :bordered="false">{{ record.account }}</a-tag>
+                <a @click="openDetail(record)">{{ text }}</a>
               </a-tooltip>
             </template>
             <template v-if="column.dataIndex === 'name'">
@@ -82,9 +82,13 @@
                   </a-popconfirm>
                 </a-tooltip>
                 <a-divider type="vertical" />
+                <a-tooltip title="岗位列表">
+                  <a style="color:#1980FF;" @click="userGroupRef.onOpen(record)"><TeamOutlined /></a>
+                </a-tooltip>
+                <a-divider type="vertical" />
                 <a-tooltip title="重置密码">
                   <a-popconfirm title="确定要重置吗？" @confirm="resetPassword(record)">
-                  <a style="color:darkorange;"><LockOutlined/></a>
+                  <a style="color:darkorange;"><KeyOutlined/></a>
                   </a-popconfirm>
                 </a-tooltip>
               </a-space>
@@ -95,6 +99,8 @@
     </a-col>
   </a-row>
   <Form ref="formRef" @successful="tableRef.refresh()" />
+  <Detail ref="detailRef"/>
+  <UserGroup ref="userGroupRef"/>
 </template>
 
 <script setup>
@@ -108,6 +114,8 @@
   import OrgTree from "../components/orgTree.vue"
   import BatchDeleteButton from "@/components/BatchDeleteButton/index.vue"
   import MTable from "@/components/MTable/index.vue"
+  import Detail from "./detail.vue"
+  import UserGroup from './userGroup.vue'
 
   // 查询表单相关对象
   const queryFormRef = ref()
@@ -120,6 +128,8 @@
 
   // 其他页面操作
   const formRef = ref()
+  const detailRef = ref()
+  const userGroupRef = ref()
 
   /***** 表格相关对象 start *****/
   const tableRef = ref()
@@ -174,7 +184,7 @@
       title: '操作',
       dataIndex: 'action',
       align: 'center',
-      width: 150
+      width: 200
     }
   ])
   /***** 表格相关对象 end *****/
@@ -250,6 +260,12 @@
       message.success(res.message)
       tableRef.value.refresh()
     })
+  }
+  // 打开详情页
+  const openDetail = (row) => {
+    detailRef.value.onOpen(row)
+    // 独立页面打开(与抽屉打开二选一)
+    // router.push({ path: "/system/sysUser/detail", query: { id: row.id } })
   }
   // 批量导出
   const batchExport = (params) => {

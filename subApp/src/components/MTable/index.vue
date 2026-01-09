@@ -114,6 +114,7 @@ const dataLoading = ref(false)
 const selectedRowKeys = ref([])
 // 表格行选择配置
 const rowSelection = ref({
+  checkStrictly: false,
   selectedRowKeys: selectedRowKeys,
   onChange: (selectedKeys, selectedRows) => {
     selectedRowKeys.value = selectedKeys

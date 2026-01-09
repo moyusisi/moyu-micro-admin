@@ -16,9 +16,8 @@
 </template>
 
 <script setup lang="ts">
-
+import orgApi from "@/api/system/orgApi";
 import { TreeSelect } from "ant-design-vue"
-import userCenterApi from "@/api/system/userCenterApi"
 
 const props = defineProps({
   // 是否多选
@@ -62,7 +61,7 @@ onMounted(() => {
 // 加载左侧的树
 const loadTreeData = () => {
   // 获取当前登陆者的orgTree 获取所有组织机构可使用orgApi.orgTree
-  userCenterApi.loginUserOrgTree().then((res) => {
+  orgApi.orgTree().then((res) => {
     if (res.data !== null) {
       treeData.value = res.data
       defaultExpandedKeys.value = [res.data[0]?.code]

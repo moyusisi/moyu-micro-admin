@@ -32,7 +32,7 @@
       message.warning('请至少选择一条数据')
       return
     }
-    let data = { ids: selectedRowKeys.value }
+    let data = { ids: props.selectedRowKeys }
 		// 产生 batchDelete 事件
 		emit('batchDelete', data)
 	}

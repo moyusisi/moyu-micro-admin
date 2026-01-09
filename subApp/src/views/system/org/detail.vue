@@ -1,7 +1,7 @@
 <template>
   <a-drawer
       :open="visible"
-      title="岗位信息详情"
+      title="组织机构详情"
       :width="drawerWidth"
       :closable="false"
       :maskClosable="false"
@@ -21,28 +21,58 @@
           </template>
           <a-row :gutter="24">
             <a-col :span="8">
-              <a-form-item name="name" label="岗位名称" tooltip="" >
+              <a-form-item name="name" label="组织名称" tooltip="" >
                 <span>{{ formData.name }}</span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="code" label="唯一编码" tooltip="" >
+              <a-form-item name="code" label="组织编码" tooltip="" >
                 <span><a>{{ formData.code }}</a></span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="status" label="使用状态" tooltip="使用状态（0正常 1停用）" >
+              <a-form-item name="staffCode" label="员工编码" tooltip="" >
+                <span>{{ formData.staffCode }}</span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="parentCode" label="上级组织" tooltip="">
+                <OrgTreeSelect :tree-data="treeData" :defaultValue="formData.parentCode" disabled/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="orgType" label="组织类型" tooltip="">
+                <span>
+                  <a-tag v-if="formData.orgType === 1" color="cyan">公司组织</a-tag>
+                  <a-tag v-if="formData.orgType === 2" color="blue">部门机构</a-tag>
+                  <a-tag v-if="formData.orgType === 3" color="purple">虚拟节点</a-tag>
+                </span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8" v-if="formData.orgType === 1">
+              <a-form-item name="orgLevel" label="公司层级" tooltip="">
+                <span>
+                  <a-tag v-if="formData.orgLevel === 1" color="blue">总部</a-tag>
+                  <a-tag v-if="formData.orgLevel === 2" color="blue">二级公司</a-tag>
+                  <a-tag v-if="formData.orgLevel === 3" color="blue">三级公司</a-tag>
+                </span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="status" label="使用状态" tooltip="" >
                 <span>
                   <a-tag v-if="formData.status === 0" color="green">正常</a-tag>
                   <a-tag v-else>已停用</a-tag>
                 </span>
               </a-form-item>
             </a-col>
-            <a-col :span="8">
-              <a-form-item name="orgCode" label="直属组织" tooltip="">
-                <OrgTreeSelect :defaultValue="formData.orgCode" disabled/>
-              </a-form-item>
-            </a-col>
+          </a-row>
+        </a-card>
+        <a-card>
+          <template #title>
+            <span><RightSquareFilled style="color: dodgerblue;"/>更多信息</span>
+          </template>
+          <a-row :gutter="24">
             <a-col :span="8">
               <a-form-item name="remark" label="备注" tooltip="" >
                 <span style="white-space: pre-wrap;">{{ formData.remark }}</span>
@@ -86,7 +116,7 @@
   </a-drawer>
 </template>
 <script setup>
-  import groupApi from '@/api/system/groupApi'
+  import orgApi from "@/api/system/orgApi.js";
 
   import { useSettingsStore } from "@/store"
   import OrgTreeSelect from "@/views/system/components/orgTreeSelect.vue";
@@ -106,9 +136,13 @@
   const formData = ref({})
   const dataLoading = ref(false)
   const submitLoading = ref(false)
+  // 组织树
+  const treeData = ref([])
 
   // 打开抽屉
-  const onOpen = (row) => {
+  const onOpen = (row, tree) => {
+    // 组织树赋值并展开顶级节点
+    treeData.value = tree
     if (row) {
       // 表单数据赋值
       loadData(row)
@@ -123,8 +157,8 @@
   const loadData = (row) => {
     dataLoading.value = true
     // 组装请求参数
-    let param = { code: row.code }
-    groupApi.groupDetail(param).then((res) => {
+    let param = { id: row.id }
+    orgApi.orgDetail(param).then((res) => {
       formData.value = res.data
     }).finally(() => {
       dataLoading.value = false

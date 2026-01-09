@@ -12,7 +12,7 @@ export default {
 	orgPage(data) {
 		return service.postJson('/api/sys/org/page', data)
 	},
-	// 获取组织机构树
+	// 获取组织机构树(需登录)
 	orgTree(data) {
 		return service.postJson('/api/sys/org/tree', data)
 	},

@@ -54,8 +54,9 @@
               </a-tooltip>
             </template>
             <template v-if="column.dataIndex === 'code'">
+              <!-- 唯一键点击查看详情 -->
               <a-tooltip :title="text" placement="topLeft">
-                <a-tag v-if="record.code" :bordered="false">{{ record.code }}</a-tag>
+                <a @click="openDetail(record)">{{ text }}</a>
               </a-tooltip>
             </template>
             <template v-if="column.dataIndex === 'orgType'">
@@ -86,6 +87,7 @@
     </a-col>
   </a-row>
   <Form ref="formRef" @successful="handleSuccess" />
+  <Detail ref="detailRef"/>
 </template>
 
 <script setup>
@@ -94,10 +96,11 @@
   import { onActivated, h, ref } from "vue"
   import { PlusOutlined, DeleteOutlined, RedoOutlined, SearchOutlined } from "@ant-design/icons-vue"
   import { message } from "ant-design-vue"
-  import Form from './form.vue'
   import OrgTree from "../components/orgTree.vue"
   import BatchDeleteButton from "@/components/BatchDeleteButton/index.vue"
   import MTable from "@/components/MTable/index.vue"
+  import Form from "./form.vue"
+  import Detail from "./detail.vue"
 
   // 查询表单相关对象
   const queryFormRef = ref()
@@ -109,6 +112,7 @@
   ]
   // 其他页面操作
   const formRef = ref()
+  const detailRef = ref()
   // 定义treeRef
   const treeRef = ref()
 
@@ -119,16 +123,16 @@
   // 表格列配置
   const columns = ref([
     {
-      title: '组织名称',
-      dataIndex: 'name',
+      title: '组织编码',
+      dataIndex: 'code',
       align: "center",
       resizable: true,
       ellipsis: true,
-      width: 150
+      width: 120
     },
     {
-      title: '组织编码',
-      dataIndex: 'code',
+      title: '组织名称',
+      dataIndex: 'name',
       align: "center",
       resizable: true,
       ellipsis: true,
@@ -230,6 +234,12 @@
       message.success(res.message)
       tableRef.value.refresh()
     })
+  }
+  // 打开详情页
+  const openDetail = (row) => {
+    detailRef.value.onOpen(row, treeRef.value)
+    // 独立页面打开(与抽屉打开二选一)
+    // router.push({ path: "/system/sysOrg/detail", query: { id: row.id } })
   }
   // 成功回调
   const handleSuccess = () => {

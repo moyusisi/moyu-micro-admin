@@ -51,6 +51,8 @@
                :data-source="tableData"
                :loading="dataLoading"
                :row-key="(record) => record.code"
+               @resizeColumn="onResizeColumn"
+               :scroll="{ x: tableWidth }"
                :pagination="false"
                bordered>
         <template #bodyCell="{ column, record, index, text }">
@@ -66,7 +68,7 @@
           <template v-if="column.dataIndex === 'code'">
             <!-- 唯一键点击查看详情 -->
             <a-tooltip :title="text" placement="topLeft">
-              <a-tag v-if="text" :bordered="false">{{ text }}</a-tag>
+              <a>{{ text }}</a>
             </a-tooltip>
           </template>
           <template v-if="column.dataIndex === 'path'">
@@ -82,14 +84,15 @@
           <template v-if="column.dataIndex === 'dataScope'">
             <a-flex vertical>
               <a-radio-group v-model:value="record.dataScope" option-type="button" button-style="solid">
-                <!-- 数据范围(字典 1本人 2本机构 3本机构及以下 4自定义) -->
+                <!-- 数据范围(字典 1本人 2本机构 3本机构及以下 4本公司及以下 5自定义) -->
                 <a-radio-button :value="0">不限制</a-radio-button>
                 <a-radio-button :value="1">仅本人</a-radio-button>
                 <a-radio-button :value="2">仅本机构</a-radio-button>
                 <a-radio-button :value="3">本机构及以下</a-radio-button>
-                <a-radio-button :value="4">自定义</a-radio-button>
+                <a-radio-button :value="4">本公司及以下</a-radio-button>
+                <a-radio-button :value="5">自定义</a-radio-button>
               </a-radio-group>
-              <OrgTreeSelect v-if="record.dataScope === 4" :tree-data="treeData" :defaultValue="record.scopeList" multiSelect @onChange="(value) => onScopeChange(value, record)"/>
+              <OrgTreeSelect v-if="record.dataScope === 5" :tree-data="treeData" :defaultValue="record.scopeList" multiSelect @onChange="(value) => onScopeChange(value, record)"/>
             </a-flex>
           </template>
         </template>
@@ -106,6 +109,7 @@
 
 <script setup>
   import resourceApi from "@/api/system/resourceApi.js";
+  import orgApi from "@/api/system/orgApi.js";
   import roleApi from '@/api/system/roleApi'
   import { h, ref } from "vue";
   import { message } from "ant-design-vue";
@@ -114,7 +118,6 @@
   import { useUserStore } from '@/store/user'
   import { useSettingsStore } from "@/store/settings";
   import OrgTreeSelect from "@/views/system/components/orgTreeSelect.vue";
-  import userCenterApi from "@/api/system/userCenterApi.js";
 
   // store
   const settingsStore = useSettingsStore()
@@ -127,6 +130,11 @@
   // 抽屉宽度
   const drawerWidth = computed(() => {
     return settingsStore.menuCollapsed ? `calc(100% - 80px)` : `calc(100% - 210px)`
+  })
+
+  // 计算属性 表格宽度 超过宽度则会出现x轴上的scroll
+  const tableWidth = computed(() => {
+    return settingsStore.menuCollapsed ? `calc(100% - 80px -24px)` : `calc(100% - 210px - 50px - 25px)`
   })
 
   // 表单数据
@@ -150,13 +158,14 @@
   // 组织树
   const treeData = ref([])
   // 表格列配置
-  const columns = [
+  const columns = ref([
     // 不需要序号可以删掉
     {
       title: '序号',
       dataIndex: 'index',
-      align: 'center',
-      width: 40,
+      align: "center",
+      resizable: true,
+      width: 50,
     },
     {
       title: "接口名称",
@@ -165,6 +174,14 @@
       resizable: true,
       ellipsis: true,
       width: 120,
+    },
+    {
+      title: '唯一编码',
+      dataIndex: 'code',
+      align: "center",
+      resizable: true,
+      ellipsis: true,
+      width: 150
     },
     {
       title: "接口地址",
@@ -185,9 +202,9 @@
       dataIndex: "dataScope",
       resizable: true,
       ellipsis: true,
-      width: 400,
+      width: 550,
     },
-  ]
+  ]);
 
   // 打开抽屉
   const onOpen = async (record) => {
@@ -218,10 +235,10 @@
     }
   }
 
-  // 加载左侧的树
+  // 加载组织机构树，用于自定义数据范围
   const loadTreeData = async () => {
     // 获取当前登陆者的orgTree 获取所有组织机构可使用orgApi.orgTree
-    userCenterApi.loginUserOrgTree().then((res) => {
+    orgApi.orgTree().then((res) => {
       if (res.data !== null) {
         treeData.value = res.data
       }
@@ -251,6 +268,11 @@
     dataLoading.value = false
   }
 
+  // 可伸缩列
+  const onResizeColumn = (w, col) => {
+    col.width = w
+  }
+
   // 模块发生变更
   const onModuleChange = (value) => {
     queryFormData.value.module = value
@@ -277,8 +299,8 @@
     const scopeList = []
     tableData.value.forEach((record) => {
       const scopeInfo = { code: record.code, dataScope: record.dataScope }
-      // <!-- 数据范围(字典 1本人 2本机构 3本机构及以下 4自定义) -->
-      if (record.dataScope === 4 && record.scopeList) {
+      // <!-- 数据范围(字典 1本人 2本机构 3本机构及以下 4本公司及以下 5自定义) -->
+      if (record.dataScope === 5 && record.scopeList) {
         scopeInfo.scopes = record.scopeList.join(',');
       } else {
         scopeInfo.scopes = null;

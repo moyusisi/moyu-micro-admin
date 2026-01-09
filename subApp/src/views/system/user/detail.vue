@@ -1,7 +1,7 @@
 <template>
   <a-drawer
       :open="visible"
-      title="岗位信息详情"
+      title="用户信息详情"
       :width="drawerWidth"
       :closable="false"
       :maskClosable="false"
@@ -21,26 +21,82 @@
           </template>
           <a-row :gutter="24">
             <a-col :span="8">
-              <a-form-item name="name" label="岗位名称" tooltip="" >
+              <a-form-item name="account" label="账号" tooltip="账号" >
+                <span><a>{{ formData.account }}</a></span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="name" label="姓名" tooltip="" >
                 <span>{{ formData.name }}</span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="code" label="唯一编码" tooltip="" >
-                <span><a>{{ formData.code }}</a></span>
+              <a-form-item name="staffCode" label="员工编码" tooltip="" >
+                <span>{{ formData.staffCode }}</span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="status" label="使用状态" tooltip="使用状态（0正常 1停用）" >
+              <a-form-item name="orgCode" label="直属组织" tooltip="">
+                <OrgTreeSelect :defaultValue="formData.orgCode" disabled/>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="gender" label="性别 " tooltip="" >
+                <span>
+                  <a-tag v-if="formData.gender === 1" color="blue">男</a-tag>
+                  <a-tag v-else-if="formData.gender === 2" color="pink">女</a-tag>
+                  <a-tag v-else>未知</a-tag>
+                </span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="birthday" label="出生日期" tooltip="" >
+                <span>{{ formData.birthday }}</span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="idNo" label="身份证号" tooltip="" >
+                <span>{{ formData.idNo }}</span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="phone" label="手机" tooltip="" >
+                <span>{{ formData.phone }}</span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="email" label="邮箱" tooltip="" >
+                <span>{{ formData.email }}</span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="nickName" label="昵称" tooltip="" >
+                <span>{{ formData.nickName }}</span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="entryDate" label="入职日期" tooltip="" >
+                <span>{{ formData.entryDate }}</span>
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="status" label="账号状态" tooltip="" >
                 <span>
                   <a-tag v-if="formData.status === 0" color="green">正常</a-tag>
                   <a-tag v-else>已停用</a-tag>
                 </span>
               </a-form-item>
             </a-col>
+          </a-row>
+        </a-card>
+        <a-card>
+          <template #title>
+            <span><RightSquareFilled style="color: dodgerblue;"/>更多信息</span>
+          </template>
+          <a-row :gutter="24">
             <a-col :span="8">
-              <a-form-item name="orgCode" label="直属组织" tooltip="">
-                <OrgTreeSelect :defaultValue="formData.orgCode" disabled/>
+              <a-form-item name="address" label="联系地址" tooltip="" >
+                <span>{{ formData.address }}</span>
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -86,12 +142,15 @@
   </a-drawer>
 </template>
 <script setup>
-  import groupApi from '@/api/system/groupApi'
+  import userApi from '@/api/system/userApi.js'
 
   import { useSettingsStore } from "@/store"
+  import { useRoute, useRouter } from "vue-router";
   import OrgTreeSelect from "@/views/system/components/orgTreeSelect.vue";
 
   // store
+  const route = useRoute();
+  const router = useRouter();
   const settingsStore = useSettingsStore()
 
   // 默认是关闭状态
@@ -123,8 +182,8 @@
   const loadData = (row) => {
     dataLoading.value = true
     // 组装请求参数
-    let param = { code: row.code }
-    groupApi.groupDetail(param).then((res) => {
+    let param = { id: row.id }
+    userApi.userDetail(param).then((res) => {
       formData.value = res.data
     }).finally(() => {
       dataLoading.value = false
