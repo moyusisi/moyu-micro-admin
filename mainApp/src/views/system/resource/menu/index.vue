@@ -15,7 +15,7 @@
     <MTable ref="tableRef"
             :columns="columns"
             :loadData="loadData"
-            :row-key="(row) => row.id"
+            :row-key="(row) => row.code"
             :pagination="false"
             showRowSelection
             @selectedChange="onSelectedChange"
@@ -117,7 +117,6 @@
   import BatchDeleteButton from '@/components/BatchDeleteButton/index.vue'
   import MTable from "@/components/MTable/index.vue"
   import Detail from "@/views/system/resource/detail.vue"
-
 
   // store
   const route = useRoute();

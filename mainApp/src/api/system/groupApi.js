@@ -52,4 +52,8 @@ export default {
 	groupDeleteUser(data) {
 		return service.postJson('/api/sys/group/deleteUser', data)
 	},
+	// 查询用户的岗位列表
+	userGroupList(data) {
+		return service.postJson('/api/sys/group/userGroupList', data)
+	},
 }
