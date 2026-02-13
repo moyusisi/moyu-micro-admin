@@ -2,14 +2,14 @@
   <a-card size="small">
     <a-form ref="queryFormRef" :model="queryFormData">
       <a-row :gutter="24">
+        <a-col :span="6">
+          <a-form-item name="code" label="唯一编码">
+            <a-input v-model:value="queryFormData.code" placeholder="请输入编码" allowClear />
+          </a-form-item>
+        </a-col>
         <a-col :span="8">
           <a-form-item name="name" label="名称">
             <a-input v-model:value="queryFormData.name" placeholder="搜索名称" allowClear />
-          </a-form-item>
-        </a-col>
-        <a-col :span="6">
-          <a-form-item label="状态" name="status">
-            <a-select v-model:value="queryFormData.status" placeholder="请选择状态" :options="statusOptions" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6">

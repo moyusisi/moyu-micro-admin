@@ -58,7 +58,6 @@ export const useUserStore = defineStore('userStore', () => {
   // 切换用户岗位身份
   const switchUserGroup = async (groupCode: string) => {
     const res = await userCenterApi.switchUserGroup({ code: groupCode })
-    localStorage.setItem('TOKEN', res.data)
     await refreshUserInfo()
   }
 

@@ -18,6 +18,7 @@ export default defineConfig(({ mode }): UserConfig => {
     resolve: {
       alias
     },
+    // 开发环境服务器选项
     server: {
       // 允许IP访问
       host: "0.0.0.0",

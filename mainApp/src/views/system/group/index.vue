@@ -9,13 +9,13 @@
           </a-form-item>
         </a-col>
         <a-col :span="6">
-          <a-form-item name="name" label="岗位名称">
-            <a-input v-model:value="queryFormData.name" placeholder="搜索岗位名称" allowClear />
+          <a-form-item name="code" label="唯一编码">
+            <a-input v-model:value="queryFormData.code" placeholder="请输入编码" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6">
-          <a-form-item label="状态" name="status">
-            <a-select v-model:value="queryFormData.status" placeholder="请选择状态" :options="statusOptions" allowClear />
+          <a-form-item name="name" label="岗位名称">
+            <a-input v-model:value="queryFormData.name" placeholder="搜索岗位名称" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6">
@@ -113,11 +113,6 @@
   // 查询表单相关对象
   const queryFormRef = ref()
   const queryFormData = ref({})
-  // 使用状态options（0正常 1停用）
-  const statusOptions = [
-    { label: "正常", value: 0 },
-    { label: "已停用", value: 1 }
-  ]
   // 定义treeRef
   const treeRef = ref()
 

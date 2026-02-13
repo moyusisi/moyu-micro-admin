@@ -9,21 +9,35 @@
       <a-card size="small">
         <a-form ref="queryFormRef" :model="queryFormData">
           <a-row :gutter="24">
-            <a-col :span="8">
+            <a-col :span="6">
+              <a-form-item name="account" label="账号">
+                <a-input v-model:value="queryFormData.account" placeholder="请输入账号" allowClear />
+              </a-form-item>
+            </a-col>
+            <a-col :span="6">
               <a-form-item name="name" label="姓名">
                 <a-input v-model:value="queryFormData.name" placeholder="搜索姓名" allowClear />
               </a-form-item>
             </a-col>
-            <a-col :span="6">
-              <a-form-item label="用户状态" name="status">
-                <a-select v-model:value="queryFormData.status" placeholder="请选择状态" :options="statusOptions" allowClear />
+            <a-col :span="5">
+              <a-form-item name="phone" label="手机">
+                <a-input v-model:value="queryFormData.phone" placeholder="请输入手机" allowClear />
               </a-form-item>
             </a-col>
-            <a-col :span="8">
-              <a-space>
-                <a-button type="primary" :icon="h(SearchOutlined)" @click="querySubmit">查询</a-button>
-                <a-button :icon="h(RedoOutlined)" @click="reset">重置</a-button>
-              </a-space>
+            <a-col :span="6">
+              <a-form-item>
+                <a-flex gap="small">
+                  <a-button type="primary" :icon="h(SearchOutlined)" @click="querySubmit">查询</a-button>
+                  <a-button :icon="h(RedoOutlined)" @click="reset">重置</a-button>
+                  <a-button v-if="!showMore" type="link" @click="showMore = !showMore">更多条件<DownOutlined /></a-button>
+                  <a-button v-else type="link"  @click="showMore = !showMore">收起<UpOutlined /></a-button>
+                </a-flex>
+              </a-form-item>
+            </a-col>
+            <a-col :span="6" v-if="showMore">
+              <a-form-item name="userId" label="userId">
+                <a-input v-model:value="queryFormData.userId" placeholder="请输入userId" allowClear />
+              </a-form-item>
             </a-col>
           </a-row>
         </a-form>
@@ -120,11 +134,8 @@
   // 查询表单相关对象
   const queryFormRef = ref()
   const queryFormData = ref({})
-  // 使用状态options（0正常 1停用）
-  const statusOptions = [
-    { label: "正常", value: 0 },
-    { label: "已停用", value: 1 }
-  ]
+  // 是否展示更多搜索条件
+  const showMore = ref(false)
 
   // 其他页面操作
   const formRef = ref()
@@ -274,7 +285,7 @@
 
   // 重置用户密码
   const resetPassword = (record) => {
-    let data = { ids: [record.id] }
+    let data = { account: record.account }
     userApi.resetPassword(data).then((res) => {
       message.success(res.message)
     })

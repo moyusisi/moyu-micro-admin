@@ -9,14 +9,19 @@
       <a-card size="small">
         <a-form ref="queryFormRef" :model="queryFormData">
           <a-row :gutter="24">
-            <a-col :span="8">
-              <a-form-item name="name" label="组织名称">
-                <a-input v-model:value="queryFormData.name" placeholder="搜索组织名称" allowClear />
+            <a-col :span="6">
+              <a-form-item name="code" label="编码">
+                <a-input v-model:value="queryFormData.code" placeholder="组织编码" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="6">
-              <a-form-item label="使用状态" name="status">
-                <a-select v-model:value="queryFormData.status" placeholder="请选择状态" :options="statusOptions" allowClear />
+              <a-form-item name="name" label="名称">
+                <a-input v-model:value="queryFormData.name" placeholder="搜索组织名称" allowClear />
+              </a-form-item>
+            </a-col>
+            <a-col :span="5">
+              <a-form-item name="orgType" label="类型">
+                <a-select v-model:value="queryFormData.orgType" placeholder="请选择" :options="orgTypeOptions" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="6">
@@ -24,7 +29,14 @@
                 <a-flex gap="small">
                   <a-button type="primary" :icon="h(SearchOutlined)" @click="querySubmit">查询</a-button>
                   <a-button :icon="h(RedoOutlined)" @click="reset">重置</a-button>
+                  <a-button v-if="!showMore" type="link" @click="showMore = !showMore">更多条件<DownOutlined /></a-button>
+                  <a-button v-else type="link"  @click="showMore = !showMore">收起<UpOutlined /></a-button>
                 </a-flex>
+              </a-form-item>
+            </a-col>
+            <a-col :span="6" v-if="showMore">
+              <a-form-item name="orgLevel" label="组织层级">
+                <a-select v-model:value="queryFormData.orgLevel" placeholder="请选择" :options="orgLevelOptions" allowClear />
               </a-form-item>
             </a-col>
           </a-row>
@@ -105,10 +117,19 @@
   // 查询表单相关对象
   const queryFormRef = ref()
   const queryFormData = ref({})
-  // 使用状态options（0正常 1停用）
-  const statusOptions = [
-    { label: "正常", value: 0 },
-    { label: "已停用", value: 1 }
+  // 是否展示更多搜索条件
+  const showMore = ref(false)
+  // 组织机构类型(字典 1公司组织 2部门机构 3虚拟节点)
+  const orgTypeOptions = [
+    { label: "公司组织", value: 1 },
+    { label: "部门机构", value: 2 },
+    { label: "虚拟节点", value: 3 }
+  ]
+  // 组织层级(字典 1一级公司 2二级公司 3三级公司)
+  const orgLevelOptions = [
+    { label: "一级公司", value: 1 },
+    { label: "二级公司", value: 2 },
+    { label: "三级公司", value: 3 }
   ]
   // 其他页面操作
   const formRef = ref()
