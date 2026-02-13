@@ -114,7 +114,7 @@
       width: 100
     },
     {
-      title: '令牌创建时间',
+      title: '令牌签发时间',
       dataIndex: 'createTime',
       align: 'center',
       width: 160

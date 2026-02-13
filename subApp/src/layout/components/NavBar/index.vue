@@ -16,6 +16,7 @@
       <div class="bar-item" @click="fullscreen">
         <FullscreenOutlined/>
       </div>
+      <NoticeBar/>
       <UserBar/>
       <SettingBar/>
     </div>
@@ -29,6 +30,7 @@
   import Hamburger from "@/layout/components/NavBar/Hamburger/index.vue"
   import ModuleMenu from "@/layout/components/NavBar/ModuleMenu/index.vue"
   import SearchBar from "@/layout/components/NavBar/SearchBar/index.vue"
+  import NoticeBar from "@/layout/components/NavBar/NoticeBar/index.vue"
   import UserBar from "@/layout/components/NavBar/UserBar/index.vue"
   import SettingBar from "@/layout/components/NavBar/SettingBar/index.vue";
 
