@@ -207,6 +207,8 @@ export const useMenuStore = defineStore('menuStore', () => {
       // 微应用模式使用EmptyLayout，独立运行时使用Layout
       if (qiankunWindow.__POWERED_BY_QIANKUN__) {
         item = EmptyLayout
+      } else if(window.__POWERED_BY_WUJIE__) {
+        item = EmptyLayout
       } else {
         item = Layout
       }

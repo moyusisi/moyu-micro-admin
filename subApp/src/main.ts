@@ -15,6 +15,20 @@ import 'highlight.js/styles/github-dark.min.css'
 import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
 
+// 无界的全局变量
+declare global {
+  interface Window {
+    // 是否存在无界
+    __POWERED_BY_WUJIE__?: boolean;
+    // 子应用mount函数
+    __WUJIE_MOUNT: () => void;
+    // 子应用unmount函数
+    __WUJIE_UNMOUNT: () => void | Promise<void>;
+    // 子应用无界实例
+    __WUJIE: { mount: () => void };
+  }
+}
+
 let vueApp: VueApp | null = null
 /**
  * 使用工厂函数创建vue实例，目的是支持微应用模式每次加载子应用得到新实例
