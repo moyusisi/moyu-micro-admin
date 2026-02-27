@@ -23,7 +23,7 @@
         <a-input v-model:value="formData.path" placeholder="请输入模块路径地址" allow-clear />
       </a-form-item>
       <a-form-item name="component" label="组件地址" tooltip="">
-        <a-input v-model:value="formData.component" placeholder="请输入组件地址" allow-clear/>
+        <a-input v-model:value="formData.component" placeholder="请输入组件:Layout" allow-clear/>
       </a-form-item>
       <a-form-item name="link" label="模块主页" tooltip="内部链接以反斜杠'/'开头，外部链接以反斜杠'http(s)'开头">
         <a-input v-model:value="formData.link" placeholder="请输入模块主页地址" allow-clear />
