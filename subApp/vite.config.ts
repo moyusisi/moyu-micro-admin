@@ -5,7 +5,6 @@ import AutoImport from 'unplugin-auto-import/vite'
 import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
-import qiankun from 'vite-plugin-qiankun'
 import { resolve } from 'path'
 
 // 微应用的唯一标识（需与主应用注册的名称一致）
@@ -75,11 +74,6 @@ export default defineConfig(({ mode }): UserConfig => {
     },
     plugins: [
       vue(),
-      // 1. 注册 qiankun 插件
-      qiankun(appName, {
-        // 开发环境是否开启沙箱（默认 true）
-        useDevMode: true
-      }),
       viteMockServe({
         // mock文件存放路径（默认是 src/mock）
         mockPath: 'mock',

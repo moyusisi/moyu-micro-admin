@@ -3,21 +3,21 @@ import systemRouter from './systemRouter'
 import NProgress from '@/utils/nprogress'
 import settings from "@/config/settings.ts"
 import { useMenuStore, useUserStore } from "@/store";
-import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 
 export const constRoutes: RouteRecordRaw[] = [...systemRouter]
 
-// 微应用模式：base 为微应用路径；独立运行：base 为 '/'
-const base = qiankunWindow.__POWERED_BY_QIANKUN__ ? '/subApp1/' : '/'
+// 把router的敌营封装成函数，使其可接收 base 参数（默认值为 '/'，兼容独立运行）
+export function createNewRouter(base: string = '/') {
+  return createRouter({
+    history: createWebHistory(base),
+    routes: constRoutes as RouteRecordRaw[],
+    // routes: [] as RouteRecordRaw[],
+    // 刷新时，滚动条位置还原
+    scrollBehavior: () => ({ left: 0, top: 0 }),
+  })
+}
 
-const router = createRouter({
-  // 注意：微应用必须使用 createWebHistory，不能用 createWebHashHistory（qiankun 对 hash 路由支持有限）
-  history: createWebHistory(base),
-  routes: constRoutes as RouteRecordRaw[],
-  // routes: [] as RouteRecordRaw[],
-  // 刷新时，滚动条位置还原
-  scrollBehavior: () => ({ left: 0, top: 0 }),
-})
+const router = createNewRouter()
 
 // 白名单路由
 const whiteList = ["/login", "/callback"]
