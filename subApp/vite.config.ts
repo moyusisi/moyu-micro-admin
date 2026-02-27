@@ -7,9 +7,6 @@ import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
 import { resolve } from 'path'
 
-// 微应用的唯一标识（需与主应用注册的名称一致）
-const appName = 'subApp1'
-
 export default defineConfig(({ mode }): UserConfig => {
   // const env = loadEnv(mode, './')
   const env = loadEnv(mode, process.cwd());
@@ -27,7 +24,7 @@ export default defineConfig(({ mode }): UserConfig => {
       host: "0.0.0.0",
       // 应用端口 (默认:3000)
       port: Number(env.VITE_PORT),
-      // 2.允许跨域（允许qiankun主应用域名跨域访问）
+      // 允许跨域（允许主应用域名跨域访问）
       cors: {
         origin: [
           'http://localhost:81',   // 主应用开发环境域名
@@ -53,7 +50,7 @@ export default defineConfig(({ mode }): UserConfig => {
         }
       }
     },
-    // 3. 构建配置：输出兼容的资源名称
+    // 构建配置：输出兼容的资源名称
     build: {
       manifest: true,
       // 生成静态资源的存放路径
@@ -93,12 +90,5 @@ export default defineConfig(({ mode }): UserConfig => {
         dts: "src/types/auto-imports.d.ts",
       })
     ],
-
-    // 4.定义全局变量：解决 qiankun 沙箱中 window 指向问题
-    define: {
-      'process.env': process.env,
-      '__VUE_OPTIONS_API__': true,
-      '__VUE_PROD_DEVTOOLS__': false
-    }
   }
 })

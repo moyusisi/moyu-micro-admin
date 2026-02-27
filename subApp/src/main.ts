@@ -1,12 +1,9 @@
-import { createApp } from 'vue'
+import { createApp, h } from 'vue'
 import { createPinia } from 'pinia'
 import router, { createNewRouter } from '@/router'
-
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
-
-import { h } from 'vue';
 import { vueBridge } from '@garfish/bridge-vue-v3';
 
 // style
