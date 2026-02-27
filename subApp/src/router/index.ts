@@ -7,7 +7,7 @@ import { useMenuStore, useUserStore } from "@/store";
 export const constRoutes: RouteRecordRaw[] = [...systemRouter]
 
 // 把router的敌营封装成函数，使其可接收 base 参数（默认值为 '/'，兼容独立运行）
-export function createNewRouter(base: string = '/') {
+export function createAppRouter(base: string = '/') {
   return createRouter({
     history: createWebHistory(base),
     routes: constRoutes as RouteRecordRaw[],
@@ -17,7 +17,7 @@ export function createNewRouter(base: string = '/') {
   })
 }
 
-const router = createNewRouter()
+const router = createAppRouter()
 
 // 白名单路由
 const whiteList = ["/login", "/callback"]
