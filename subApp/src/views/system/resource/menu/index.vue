@@ -53,11 +53,13 @@
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">
             <a-tag v-if="node.path" :bordered="false">{{ node.path }}</a-tag>
+            <span v-else>-</span>
           </a-tooltip>
         </template>
         <template v-if="column.dataIndex === 'component'">
           <a-tooltip :title="text" placement="topLeft">
             <a-tag v-if="node.component" :bordered="false">{{ node.component }}</a-tag>
+            <span v-else>-</span>
           </a-tooltip>
         </template>
         <template v-if="column.dataIndex === 'permission'">
@@ -85,13 +87,17 @@
               <a-divider type="vertical" />
             </a-tooltip>
             <a-tooltip v-else-if="node.resourceType === 3" title="添加按钮">
-              <a style="color:#53C61D;" @click="formRef.onOpen(null, module, 6, node.code)"><PlusSquareOutlined /></a>
+              <a style="color:#53C61D;" @click="buttonFormRef.onOpen(null, module, node.code)"><PlusSquareOutlined /></a>
               <a-divider type="vertical" />
             </a-tooltip>
-            <a-tooltip title="编辑">
-              <a @click="formRef.onOpen(node, module)"><FormOutlined /></a>
+            <a-tooltip v-if="node.resourceType === 6" title="编辑">
+              <a @click="buttonFormRef.onOpen(node, module)"><FormOutlined /></a>
+              <a-divider type="vertical" />
             </a-tooltip>
-            <a-divider type="vertical" />
+            <a-tooltip v-else title="编辑">
+              <a @click="formRef.onOpen(node, module)"><FormOutlined /></a>
+              <a-divider type="vertical" />
+            </a-tooltip>
             <a-tooltip title="删除">
               <a-popconfirm title="确定要删除吗？" @confirm="deleteMenu(node)">
                 <a style="color:#FF4D4F;"><DeleteOutlined/></a>
@@ -103,6 +109,7 @@
     </MTable>
   </a-card>
   <Form ref="formRef" @successful="handleSuccess" />
+  <ButtonForm ref="buttonFormRef" @successful="handleSuccess" />
   <Detail ref="detailRef"/>
 </template>
 
@@ -114,6 +121,7 @@
   import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue"
   import { message } from "ant-design-vue"
   import Form from './form.vue'
+  import ButtonForm from '../button/form.vue'
   import BatchDeleteButton from '@/components/BatchDeleteButton/index.vue'
   import MTable from "@/components/MTable/index.vue"
   import Detail from "@/views/system/resource/detail.vue"
@@ -128,6 +136,7 @@
   const moduleId = ref()
   // 其他页面操作
   const formRef = ref()
+  const buttonFormRef = ref()
   const detailRef = ref()
 
   /***** 表格相关对象 start *****/

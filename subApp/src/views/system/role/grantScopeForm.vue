@@ -255,15 +255,6 @@
     // 查询数据权限列表
     dataLoading.value = true
     const res = await roleApi.permScopeForGrant(param)
-    if(res.data) {
-      res.data.forEach((record) => {
-        if (record.scopes) {
-          record.scopeList = record.scopes.split(',')
-        } else {
-          record.scopeList = []
-        }
-      })
-    }
     tableData.value = res.data
     dataLoading.value = false
   }
@@ -296,20 +287,14 @@
   // 验证并提交数据
   const onSubmit = () => {
     // 数据范围列表
-    const scopeList = []
+    const grantScopeList = []
     tableData.value.forEach((record) => {
-      const scopeInfo = { code: record.code, dataScope: record.dataScope }
-      // <!-- 数据范围(字典 1本人 2本机构 3本机构及以下 4本公司及以下 5自定义) -->
-      if (record.dataScope === 5 && record.scopeList) {
-        scopeInfo.scopes = record.scopeList.join(',');
-      } else {
-        scopeInfo.scopes = null;
-      }
-      scopeList.push(scopeInfo)
+      const scopeInfo = { code: record.code, dataScope: record.dataScope, scopeList: record.scopeList }
+      grantScopeList.push(scopeInfo)
     })
     const param = {
       code: roleCode.value,
-      grantScopeList: [...scopeList]
+      grantScopeList: grantScopeList
     }
     submitLoading.value = true
     roleApi.roleGrantScope(param).then((res) => {

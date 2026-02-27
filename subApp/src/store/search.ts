@@ -36,7 +36,7 @@ export const useSearchStore = defineStore('search', () => {
 				if (m.children) {
 					push(m.children)
 				} else {
-					// 菜单且非隐藏则需要搜索
+					// 无children的菜单且非隐藏则需要搜索
 					if (m.meta.title && !m.meta.hidden) {
 						var item: SearchItem = {
 							icon: m.meta.icon,

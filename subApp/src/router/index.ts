@@ -57,7 +57,7 @@ router.beforeEach(async (to, from) => {
 
   // console.log("history.state", history.state)
   // fullPath是包括 路径、查询参数和哈希值的完整地址。
-  console.log("subApp 访问地址: " + to.fullPath)
+  console.log("subApp 访问地址: " + to.fullPath, to)
   // 如果未加载用户信息，则先加载用户信息
   if (!userStore.userInfo.account) {
     console.log("subApp 加载userInfo...")
@@ -70,7 +70,7 @@ router.beforeEach(async (to, from) => {
     console.log("subApp 动态加载异步路由...")
     // console.log(router.getRoutes())
     // 由于新增加了路由，所以重新导航
-    console.log("subApp 重新导航...", to)
+    console.log("subApp 重新导航..." + to.fullPath)
     return { path: to.path, query: to.query, replace: true }
   }
 
