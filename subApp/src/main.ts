@@ -63,6 +63,14 @@ renderWithQiankun({
   mount(props) {
     console.log('subApp mount...', props)
     render(props)
+    if (props?.token) {
+      // 存储token
+      localStorage.setItem('TOKEN', props.token)
+    }
+    if (props?.userInfo) {
+      // 存储到userInfo
+      localStorage.setItem('USER_INFO', JSON.stringify(props.userInfo))
+    }
   },
   // 卸载（每次离开微应用时执行）
   unmount() {
