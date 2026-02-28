@@ -51,8 +51,12 @@ router.beforeEach(async (to, from) => {
   }
 
   // console.log("history.state", history.state)
+  // if (from.fullPath === to.fullPath && from.name === to.name) {
+  //   console.log('过滤重复的导航守卫触发...');
+  //   return true;
+  // }
   // fullPath是包括 路径、查询参数和哈希值的完整地址。
-  console.log("访问地址: " + to.fullPath, to)
+  console.log("访问地址: " + to.fullPath, from, to)
   // 如果未加载用户信息，则先加载用户信息
   if (!userStore.userInfo.account) {
     console.log("加载userInfo...")
