@@ -14,14 +14,14 @@ const route = useRoute()
 
 // 首次加载会调用onMounted但route不会改变
 onMounted(() => {
-  console.log('AppMain#microApp onMounted...')
+  console.log('主应用容器#microApp onMounted...')
   // 确保启动Garfish时挂载点已经就绪
   startGarfish()
 })
 
 // 非首次加载则不再调用onMounted，但route会改变
 watch(route, (to) => {
-  console.log('AppMain#microApp onWatch...')
+  // console.log('mainApp容器#microApp onWatch...')
 })
 
 </script>
