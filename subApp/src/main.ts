@@ -5,7 +5,6 @@ import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
 import { vueBridge } from '@garfish/bridge-vue-v3';
-import { useUserStore } from '@/store/index.js'
 
 // style
 import 'ant-design-vue/dist/reset.css'
