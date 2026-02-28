@@ -1,7 +1,7 @@
 <template>
   <div class="admin-ui-main">
     <div id="microApp"></div>
-    <router-view v-slot="{ Component, route }" v-if="!microApp">
+    <router-view v-slot="{ Component, route }" v-if="!isMicroApp">
       <keep-alive :include="cachedViews">
         <component :is="currentComponent(Component, route)" :key="route.fullPath"/>
       </keep-alive>
@@ -26,7 +26,7 @@ const { cachedViews } = toRefs(tagsViewStore);
 // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
 const route = useRoute()
 // 是否为子应用
-const microApp = ref(false)
+const isMicroApp = ref(false)
 
 // 首次加载会调用onMounted但route不会改变
 onMounted(() => {
@@ -46,7 +46,7 @@ const checkMicroApp = (to) => {
   // 定义子应用的路由前缀列表
   const microAppRules = ['/subApp1', '/subApp2']
   // 判断当前路由是否属于子应用
-  microApp.value = microAppRules.some(prefix => to.path.startsWith(prefix))
+  isMicroApp.value = microAppRules.some(prefix => to.path.startsWith(prefix))
 }
 
 // 当前组件 keep-alive通过组件的name匹配,而不是route的name
