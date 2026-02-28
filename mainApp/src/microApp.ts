@@ -1,4 +1,5 @@
 import { registerMicroApps, start, setDefaultMountApp } from 'qiankun'
+import Garfish from 'garfish';
 
 // 打印 import.meta.env
 console.log('===== 打印 import.meta.env =====', import.meta.env)
@@ -41,3 +42,29 @@ export const startQiankun = () => {
     // fetch: customFetch
   });
 };
+
+// 注册子应用并启动 Garfish
+export const startGarfish = () => {
+  Garfish.run({
+    basename: '/',
+    domGetter: '#microApp',
+    apps: [
+      {
+        name: 'subApp1',
+        activeWhen: '/subApp1',
+        entry: import.meta.env.MODE === 'dev' ? '//localhost:82/' : '/subApp1/',
+        sandbox: false,
+        // 可选：传递给子应用的自定义参数（子应用 provider 导出函数 生命周期方法中接收）
+        props: {
+          token: localStorage.getItem('TOKEN'),
+          userInfo: localStorage.getItem('USER_INFO'),
+        },
+      },
+      {
+        name: 'vue',
+        activeWhen: '/vue',
+        entry: 'http://localhost:8080/index.js', // js入口
+      },
+    ],
+  });
+}

@@ -15,7 +15,7 @@ import IframeView from "./iframeView.vue"
 import { useTagsViewStore } from "@/store"
 import { useRoute } from "vue-router";
 import { watch } from "vue";
-import { startQiankun } from "@/microApp.js";
+import { startGarfish } from "@/microApp.js";
 const NotFound  = () => import('@/layout/other/404.vue')
 
 const tagsViewStore = useTagsViewStore()
@@ -32,7 +32,7 @@ const microApp = ref(false)
 onMounted(() => {
   console.log('AppMain onMounted...')
   checkMicroApp(route)
-  startQiankun()
+  startGarfish()
 })
 
 // 非首次加载则不再调用onMounted，但route会改变
