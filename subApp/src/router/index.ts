@@ -58,7 +58,7 @@ router.beforeEach(async (to, from) => {
   // fullPath是包括 路径、查询参数和哈希值的完整地址。
   console.log("subApp 访问地址: " + to.fullPath, to)
   // 如果未加载用户信息，则先加载用户信息
-  if (!userStore.userInfo.account) {
+  if (!userStore.userInfo?.account) {
     console.log("subApp 加载userInfo...")
     await userStore.initUserInfo();
   }

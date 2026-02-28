@@ -1,4 +1,4 @@
-import { createApp, h } from 'vue'
+import { createApp, App as VueApp, h } from 'vue'
 import { createPinia } from 'pinia'
 import router from '@/router'
 import Antd from 'ant-design-vue'
@@ -16,14 +16,11 @@ import 'highlight.js/styles/github-dark.min.css'
 import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
 
-// 创建 Pinia 实例（全局唯一）
-const pinia = createPinia();
-
 /**
  * 使用工厂函数创建vue实例，目的是支持微应用模式每次加载子应用得到新实例
  */
 const usePlugin = (app) => {
-  app.use(pinia)
+  app.use(createPinia())
   app.use(router)
   app.use(Antd)
   app.use(i18n)
@@ -71,9 +68,5 @@ export const provider = vueBridge({
       localStorage.setItem('USER_INFO', JSON.stringify(props.userInfo))
       // console.log('userInfo 已存储到子应用');
     }
-    // 必须先让 pinia 生效，才能使用 useUserStore
-    const userStore = useUserStore(pinia);
-    // 等待用户信息初始化完成（异步）
-    userStore.initUserInfo();
   },
 });
