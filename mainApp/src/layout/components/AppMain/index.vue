@@ -1,7 +1,6 @@
 <template>
   <div class="admin-ui-main">
-    <div id="microApp"></div>
-    <router-view v-slot="{ Component, route }" v-if="!microApp">
+    <router-view v-slot="{ Component, route }">
       <keep-alive :include="cachedViews">
         <component :is="currentComponent(Component, route)" :key="route.fullPath"/>
       </keep-alive>
@@ -31,14 +30,14 @@ const microApp = ref(false)
 // 首次加载会调用onMounted但route不会改变
 onMounted(() => {
   console.log('AppMain onMounted...')
-  checkMicroApp(route)
-  startQiankun()
+  // checkMicroApp(route)
+  // startQiankun()
 })
 
 // 非首次加载则不再调用onMounted，但route会改变
 watch(route, (to) => {
   // console.log('watch')
-  checkMicroApp(to)
+  // checkMicroApp(to)
 })
 
 // 判断路由是否为子应用路由
