@@ -12,9 +12,11 @@ export const startGarfish = () => {
     domGetter: '#microApp',
     apps: [
       {
+        // 子应用的名称，需要唯一
         name: 'subApp1',
         activeWhen: '/subApp1',
-        entry: import.meta.env.MODE === 'dev' ? '//localhost:82/' : '/subApp1/',
+        // 子应用的入口资源地址，支持 HTML 和 JS
+        entry: import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:83/' : 'http://82.157.187.160:83/',
         sandbox: false,
         // 可选：传递给子应用的自定义参数（子应用 provider 导出函数 生命周期方法中接收）
         props: {
