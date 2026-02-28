@@ -64,12 +64,12 @@ export const provider = vueBridge({
     if (props?.token) {
       // 存储token
       localStorage.setItem('TOKEN', props.token)
-      console.log('token 已存储到子应用');
+      // console.log('token 已存储到子应用');
     }
     if (props?.userInfo) {
       // 存储到userInfo
       localStorage.setItem('USER_INFO', JSON.stringify(props.userInfo))
-      console.log('userInfo 已存储到子应用');
+      // console.log('userInfo 已存储到子应用');
     }
     // 必须先让 pinia 生效，才能使用 useUserStore
     const userStore = useUserStore(pinia);
