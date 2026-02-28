@@ -59,7 +59,7 @@ export const provider = vueBridge({
   handleInstance: (vueInstance, { basename, dom, appName, props}) => {
     console.log(appName, "handleInstance...");
     usePlugin(vueInstance)
-    console.log(window.Garfish)
+    // console.log(window.Garfish)
 
     if (props?.token) {
       // 存储token
