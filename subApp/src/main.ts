@@ -22,27 +22,24 @@ const pinia = createPinia();
 /**
  * 使用工厂函数创建vue实例，目的是支持微应用模式每次加载子应用得到新实例
  */
-const createNewApp = () => {
-  const app = createApp(App);
+const usePlugin = (app) => {
   app.use(pinia)
   app.use(router)
   app.use(Antd)
   app.use(i18n)
-
   // 统一注册antdv图标
   for (const icon in antdvIcons) {
     app.component(icon, antdvIcons[icon])
   }
-
   // 注册代码高亮组件 https://www.jb51.net/javascript/339354fqv.htm
   app.use(hljsVuePlugin)
-  return app
 }
 
 // 独立运行模式直接渲染
 if (!window.__GARFISH__) {
   // 非微前端环境直接运行
-  const app = createNewApp();
+  const app = createApp(App);
+  usePlugin(app)
   app.mount('#app')
 }
 
@@ -63,9 +60,7 @@ export const provider = vueBridge({
   handleInstance: (vueInstance, { basename, dom, appName, props}) => {
     console.log("handleInstance...");
     console.log(basename, dom, appName, props);
-    vueInstance.use(pinia)
-    vueInstance.use(Antd)
-    vueInstance.use(router)
+    usePlugin(vueInstance)
 
     if (props?.token) {
       // 存储token
