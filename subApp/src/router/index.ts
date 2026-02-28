@@ -6,18 +6,17 @@ import { useMenuStore, useUserStore } from "@/store";
 
 export const constRoutes: RouteRecordRaw[] = [...systemRouter]
 
-// 把router的定义封装成函数，使其可接收 base 参数（默认值为 '/'，兼容独立运行）
-export function createAppRouter(base: string = '/') {
-  return createRouter({
-    history: createWebHistory(base),
-    routes: constRoutes as RouteRecordRaw[],
-    // routes: [] as RouteRecordRaw[],
-    // 刷新时，滚动条位置还原
-    scrollBehavior: () => ({ left: 0, top: 0 }),
-  })
-}
+// 微应用模式：base 为微应用路径；独立运行：base 为 '/'
+const base = window.__GARFISH__ ? '/subApp1/' : '/'
 
-const router = createAppRouter("/subApp1")
+// 把router的定义封装成函数，使其可接收 base 参数（默认值为 '/'，兼容独立运行）
+const router = createRouter({
+  history: createWebHistory(base),
+  routes: constRoutes as RouteRecordRaw[],
+  // routes: [] as RouteRecordRaw[],
+  // 刷新时，滚动条位置还原
+  scrollBehavior: () => ({ left: 0, top: 0 }),
+})
 
 // 白名单路由
 const whiteList = ["/login", "/callback"]
