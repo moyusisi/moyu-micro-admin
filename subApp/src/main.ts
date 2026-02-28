@@ -1,6 +1,6 @@
 import { createApp, h } from 'vue'
 import { createPinia } from 'pinia'
-import router, { createAppRouter } from '@/router'
+import router from '@/router'
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
@@ -52,7 +52,21 @@ export const provider = vueBridge({
   rootComponent: App,
   // 可选，注册 vue-router或状态管理对象
   appOptions: ({ basename, dom, appName, props }) => {
+    console.log("appOptions...");
     console.log(basename, dom, appName, props);
+    return {
+      el: '#app',
+      render: () => h(App),
+      // router: createAppRouter(basename),
+    };
+  },
+  handleInstance: (vueInstance, { basename, dom, appName, props}) => {
+    console.log("handleInstance...");
+    console.log(basename, dom, appName, props);
+    vueInstance.use(pinia)
+    vueInstance.use(Antd)
+    vueInstance.use(router)
+
     if (props?.token) {
       // 存储token
       localStorage.setItem('TOKEN', props.token)
@@ -60,18 +74,12 @@ export const provider = vueBridge({
     }
     if (props?.userInfo) {
       // 存储到userInfo
-      localStorage.setItem('USER_INFO', props.userInfo)
+      localStorage.setItem('USER_INFO', JSON.stringify(props.userInfo))
       console.log('userInfo 已存储到子应用');
     }
     // 必须先让 pinia 生效，才能使用 useUserStore
     const userStore = useUserStore(pinia);
     // 等待用户信息初始化完成（异步）
     userStore.initUserInfo();
-
-    return {
-      el: '#app',
-      render: () => h(App),
-      router: createAppRouter(basename),
-    };
   },
 });
