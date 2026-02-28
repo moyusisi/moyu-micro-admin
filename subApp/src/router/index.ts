@@ -17,7 +17,7 @@ export function createAppRouter(base: string = '/') {
   })
 }
 
-const router = createAppRouter()
+const router = createAppRouter("/subApp1")
 
 // 白名单路由
 const whiteList = ["/login", "/callback"]
