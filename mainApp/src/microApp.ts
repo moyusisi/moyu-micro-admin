@@ -29,13 +29,16 @@ export const startGarfish = () => {
       },
     ],
     afterLoad(appInfo) {
-      console.log('子应用afterLoad..', appInfo.name);
+      console.log('子应用加载完成', appInfo.name);
     },
     afterMount(appInfo) {
-      console.log('子应用afterMount..', appInfo.name);
+      console.log('子应用渲染完成', appInfo.name);
+    },
+    afterEval(appInfo) {
+      console.log('子应用代码执行完成', appInfo.name);
     },
     afterUnmount(appInfo) {
-      console.log('子应用afterUnmount..', appInfo.name);
+      console.log('子应用卸载完成', appInfo.name);
     }
   });
 }
