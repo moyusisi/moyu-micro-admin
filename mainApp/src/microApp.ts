@@ -61,8 +61,8 @@ export const startGarfish = () => {
         },
       },
       {
-        name: 'vue',
-        activeWhen: '/vue',
+        name: 'subApp2',
+        activeWhen: '/subApp2',
         entry: 'http://localhost:82/index.js', // js入口
       },
     ],
