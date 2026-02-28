@@ -49,8 +49,7 @@ export const provider = vueBridge({
   rootComponent: App,
   // 可选，注册 vue-router或状态管理对象
   appOptions: ({ basename, dom, appName, props }) => {
-    console.log("appOptions...");
-    console.log(basename, dom, appName, props);
+    console.log(appName, "appOptions...");
     return {
       el: '#app',
       render: () => h(App),
@@ -58,9 +57,9 @@ export const provider = vueBridge({
     };
   },
   handleInstance: (vueInstance, { basename, dom, appName, props}) => {
-    console.log("handleInstance...");
-    console.log(basename, dom, appName, props);
+    console.log(appName, "handleInstance...");
     usePlugin(vueInstance)
+    console.log(window.Garfish)
 
     if (props?.token) {
       // 存储token
