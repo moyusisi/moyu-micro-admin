@@ -57,7 +57,7 @@ export const startGarfish = () => {
         // 可选：传递给子应用的自定义参数（子应用 provider 导出函数 生命周期方法中接收）
         props: {
           token: localStorage.getItem('TOKEN'),
-          userInfo: localStorage.getItem('USER_INFO'),
+          userInfo: JSON.parse(<string>localStorage.getItem('USER_INFO')),
         },
       },
       {
