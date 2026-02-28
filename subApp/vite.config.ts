@@ -18,6 +18,8 @@ export default defineConfig(({ mode }): UserConfig => {
     resolve: {
       alias
     },
+    // 开发或生产环境服务的公共基础路径。域名部分在开发环境中不会被使用
+    base: mode === 'dev' ? '/' : 'http://82.157.187.160:83/',
     // 开发环境服务器选项
     server: {
       // 允许IP访问
