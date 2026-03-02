@@ -1,8 +1,7 @@
 <template>
   <div class="admin-ui-main">
-    <div id="microApp"></div>
     <!--保活模式，name相同则复用一个子应用实例，改变url无效，必须采用通信的方式告知路由变化 -->
-    <WujieVue width="100%" height="100%" name="subApp1" :url="subAppUrl" :sync="true"></WujieVue>
+    <WujieVue width="100%" height="100%" :name="subAppName" :url="subAppUrl" :sync="false"></WujieVue>
   </div>
 </template>
 
@@ -13,17 +12,18 @@ import { microMap } from "@/microApp.ts";
 
 // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
 const route = useRoute()
-const subAppUrl = ref("");
+const subAppUrl = ref(null);
+let subAppName = ref("subApp");
 
 // 首次加载会调用onMounted但route不会改变
 onMounted(() => {
-  console.log('主应用中的挂载容器#microApp已就绪...')
+  console.log('主应用中的挂载容器已就绪...')
   // 通过 fullPath 自动匹配子应用
   let fullPath = route.fullPath;
-  let subAppName = 'subApp';
   for (const appName of Object.keys(microMap)) {
     if (fullPath.startsWith(`/${appName}`)) {
       subAppName = appName;
+      break;
     }
   }
   fullPath = fullPath.replace(`/${subAppName}`, '');
