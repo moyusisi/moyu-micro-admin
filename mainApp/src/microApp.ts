@@ -22,18 +22,13 @@ export const startGarfish = () => {
       token: localStorage.getItem('TOKEN'),
       userInfo: JSON.parse(<string>localStorage.getItem('USER_INFO')),
     },
-    // 生命周期监控
-    afterLoad(appInfo) {
-      console.log('子应用加载完成', appInfo.name);
-    },
+    // 在调用 app.mount 或 app.show 触发
     afterMount(appInfo) {
-      console.log('子应用渲染完成', appInfo.name);
+      console.log('子应用mount完成', appInfo.name);
     },
-    afterEval(appInfo) {
-      console.log('子应用代码执行完成', appInfo.name);
-    },
+    // 调用 app.unmount 或 app.hide 触发
     afterUnmount(appInfo) {
-      console.log('子应用卸载完成', appInfo.name);
+      console.log('子应用unmount完成', appInfo.name);
     }
   });
   // 注册子应用信息
