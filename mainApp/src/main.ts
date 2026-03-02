@@ -4,9 +4,8 @@ import router from './router'
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
-import { startQiankun } from './microApp.ts';
 import WujieVue from "wujie-vue3";
-const { bus, setupApp, preloadApp, destroyApp } = WujieVue;
+import { startWujie } from './microApp.ts';
 
 // style
 import 'ant-design-vue/dist/reset.css'
@@ -32,14 +31,6 @@ for (const icon in antdvIcons) {
 // 注册代码高亮组件 https://www.jb51.net/javascript/339354fqv.htm
 app.use(hljsVuePlugin)
 
-setupApp({
-  props: {}, // 主应用给子应用传递的参数
-  name: "sub1",
-  url: "//82.157.187.160:81/",
-  exec: true,
-  alive: false
-});
-
 // 挂载app
 app.mount('#app')
 
@@ -48,5 +39,5 @@ export default function fetch(url, options) {
   console.log("fetch", url, options);
   return window.fetch(url, { ...options, credentials: "omit" });
 }
-// 启动 qiankun 微前端
-// startQiankun();
+// 启动 wujie 微前端
+startWujie();
