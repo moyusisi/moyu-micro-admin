@@ -10,7 +10,7 @@ console.log('是否为开发环境：', import.meta.env.DEV)
 // 子应用的域名(<name,host>)映射
 export const microMap: Record<string, string> = {
   "subApp1": "//localhost:82",
-  "subApp2": "//localhost:82",
+  "subApp2": "//localhost:83",
 };
 
 const lifecycles = {
@@ -26,24 +26,28 @@ const lifecycles = {
 
 // 启动 wujie 微前端
 export const startWujie = () => {
+  const props = {
+    "token": localStorage.getItem('TOKEN'),
+    "userInfo": JSON.parse(<string>localStorage.getItem('USER_INFO')),
+  };
   setupApp({
     // 应用唯一name
     name: "subApp1",
     // 需要渲染的url
-    url: "//localhost:82/",
+    url: microMap["subApp1"],
     // 注入给子应用的属性
-    props: {},
+    props: props,
     // 预执行
     exec: true,
-    ...lifecycles
+    // ...lifecycles
   });
   setupApp({
     // 应用唯一name
     name: "subApp2",
     // 需要渲染的url
-    url: "//localhost:82/",
+    url: microMap["subApp2"],
     // 注入给子应用的属性
-    props: {},
+    props: props,
     // 预执行
     exec: true,
     ...lifecycles
