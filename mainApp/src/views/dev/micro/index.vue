@@ -18,7 +18,16 @@ const subAppUrl = ref("");
 // 首次加载会调用onMounted但route不会改变
 onMounted(() => {
   console.log('AppMain#microApp onMounted...')
-  subAppUrl.value = microMap['subApp1'] + route.fullPath.replace(`/subApp1`, '');
+  // 通过 fullPath 自动匹配子应用
+  let fullPath = route.fullPath;
+  let subAppName = 'subApp';
+  for (const appName of Object.keys(microMap)) {
+    if (fullPath.startsWith(`/${appName}`)) {
+      subAppName = appName;
+    }
+  }
+  fullPath = fullPath.replace(`/${subAppName}`, '');
+  subAppUrl.value = microMap[subAppName] + fullPath
 })
 
 // 非首次加载则不再调用onMounted，但route会改变
