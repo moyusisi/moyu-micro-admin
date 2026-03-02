@@ -5,11 +5,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
-import qiankun from 'vite-plugin-qiankun'
 import { resolve } from 'path'
-
-// 微应用的唯一标识（需与主应用注册的名称一致）
-const appName = 'subApp1'
 
 export default defineConfig(({ mode }): UserConfig => {
   // const env = loadEnv(mode, './')
@@ -22,13 +18,15 @@ export default defineConfig(({ mode }): UserConfig => {
     resolve: {
       alias
     },
+    // 开发或生产环境服务的公共基础路径。域名部分在开发环境中不会被使用
+    base: mode === 'dev' ? '/' : 'http://82.157.187.160:83/',
     // 开发环境服务器选项
     server: {
       // 允许IP访问
       host: "0.0.0.0",
       // 应用端口 (默认:3000)
       port: Number(env.VITE_PORT),
-      // 2.允许跨域（允许qiankun主应用域名跨域访问）
+      // 允许跨域（允许主应用域名跨域访问）
       cors: {
         origin: [
           'http://localhost:81',   // 主应用开发环境域名
@@ -54,7 +52,7 @@ export default defineConfig(({ mode }): UserConfig => {
         }
       }
     },
-    // 3. 构建配置：输出兼容的资源名称
+    // 构建配置：输出兼容的资源名称
     build: {
       manifest: true,
       // 生成静态资源的存放路径
@@ -75,11 +73,6 @@ export default defineConfig(({ mode }): UserConfig => {
     },
     plugins: [
       vue(),
-      // 1. 注册 qiankun 插件
-      qiankun(appName, {
-        // 开发环境是否开启沙箱（默认 true）
-        useDevMode: true
-      }),
       viteMockServe({
         // mock文件存放路径（默认是 src/mock）
         mockPath: 'mock',
@@ -99,12 +92,5 @@ export default defineConfig(({ mode }): UserConfig => {
         dts: "src/types/auto-imports.d.ts",
       })
     ],
-
-    // 4.定义全局变量：解决 qiankun 沙箱中 window 指向问题
-    define: {
-      'process.env': process.env,
-      '__VUE_OPTIONS_API__': true,
-      '__VUE_PROD_DEVTOOLS__': false
-    }
   }
 })

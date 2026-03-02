@@ -3,15 +3,13 @@ import systemRouter from './systemRouter'
 import NProgress from '@/utils/nprogress'
 import settings from "@/config/settings.ts"
 import { useMenuStore, useUserStore } from "@/store";
-import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 
 export const constRoutes: RouteRecordRaw[] = [...systemRouter]
 
-// 微应用模式：base 为微应用路径；独立运行：base 为 '/'
-const base = qiankunWindow.__POWERED_BY_QIANKUN__ ? '/subApp1/' : '/'
+const base = '/'
 
+// 把router定义时可接收 base 参数（默认值为 '/'）
 const router = createRouter({
-  // 注意：微应用必须使用 createWebHistory，不能用 createWebHashHistory（qiankun 对 hash 路由支持有限）
   history: createWebHistory(base),
   routes: constRoutes as RouteRecordRaw[],
   // routes: [] as RouteRecordRaw[],
@@ -59,7 +57,7 @@ router.beforeEach(async (to, from) => {
   // fullPath是包括 路径、查询参数和哈希值的完整地址。
   console.log("subApp 访问地址: " + to.fullPath)
   // 如果未加载用户信息，则先加载用户信息
-  if (!userStore.userInfo.account) {
+  if (!userStore.userInfo?.account) {
     console.log("subApp 加载userInfo...")
     await userStore.initUserInfo();
   }
@@ -70,7 +68,7 @@ router.beforeEach(async (to, from) => {
     console.log("subApp 动态加载异步路由...")
     // console.log(router.getRoutes())
     // 由于新增加了路由，所以重新导航
-    console.log("subApp 重新导航...", to)
+    console.log("subApp 重新导航..." + to.fullPath)
     return { path: to.path, query: to.query, replace: true }
   }
 

@@ -4,7 +4,6 @@ import router from './router'
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
-import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 
 // style
 import 'ant-design-vue/dist/reset.css'
@@ -50,44 +49,21 @@ const createNewApp = () => {
   return app
 }
 
-// 1. 独立运行时直接渲染
-if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
-  render()
-}
-
-// 封装渲染函数
-function render(props: any = {}) {
-  const { container } = props
-  // 微应用模式：挂载到主应用提供的容器；独立运行：挂载到自身的节点 #app
-  const mountNode = container ? container.querySelector('#app') : '#app'
+if (window.__POWERED_BY_WUJIE__) {
+  window.__WUJIE_MOUNT = () => {
+    vueApp = createNewApp()
+    vueApp.mount("#app");
+  };
+  window.__WUJIE_UNMOUNT = () => {
+    vueApp?.unmount();
+  };
+  /*
+    由于vite是异步加载，而无界可能采用fiber执行机制
+    所以mount的调用时机无法确认，框架调用时可能vite还没有加载回来，这里采用主动调用防止用没有mount
+    无界mount函数内置标记，不用担心重复mount
+  */
+  window.__WUJIE.mount()
+} else {
   vueApp = createNewApp()
-  vueApp.mount(mountNode!)
+  vueApp.mount("#app");
 }
-
-/********** 子应用模式 **********/
-
-// 2. 微应用模式：导出 qiankun 生命周期
-renderWithQiankun({
-  // 初始化（只会执行一次）
-  bootstrap() {
-    console.log('subApp bootstrap...');
-  },
-  // 挂载（每次切换到微应用时执行）
-  mount(props) {
-    console.log('subApp mount...', props)
-    render(props)
-  },
-  // 卸载（每次离开微应用时执行）
-  unmount() {
-    console.log('subApp unmount...');
-    if(vueApp) {
-      vueApp.unmount()
-      vueApp = null
-    }
-  },
-  // 可选，仅使用 loadMicroApp 方式加载微应用时生效
-  update(props) {
-    console.log('subApp update props...', props);
-    return undefined;
-  },
-})
