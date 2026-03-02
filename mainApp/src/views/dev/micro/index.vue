@@ -17,7 +17,7 @@ const subAppUrl = ref("");
 
 // 首次加载会调用onMounted但route不会改变
 onMounted(() => {
-  console.log('AppMain#microApp onMounted...')
+  console.log('主应用中的挂载容器#microApp已就绪...')
   // 通过 fullPath 自动匹配子应用
   let fullPath = route.fullPath;
   let subAppName = 'subApp';
