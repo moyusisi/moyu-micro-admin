@@ -22,6 +22,7 @@ export const startGarfish = () => {
       token: localStorage.getItem('TOKEN'),
       userInfo: JSON.parse(<string>localStorage.getItem('USER_INFO')),
     },
+    // 生命周期监控
     afterLoad(appInfo) {
       console.log('子应用加载完成', appInfo.name);
     },
@@ -35,11 +36,12 @@ export const startGarfish = () => {
       console.log('子应用卸载完成', appInfo.name);
     }
   });
-  // 注册子应用信息，
+  // 注册子应用信息
   Garfish.registerApp([
       {
         // 子应用的名称，需要唯一
         name: 'subApp1',
+        // 基于路由匹配的应用加载模式，会通activeWhen自动判断当前应加载的子应用；手动加载模式（Garfish.loadApp）时将忽略activeWhen选项
         activeWhen: '/subApp1',
         // 子应用的入口资源地址，支持 HTML 和 JS
         entry: import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:83/' : 'http://82.157.187.160:83/',
@@ -55,6 +57,6 @@ export const startGarfish = () => {
       },
     ]
   );
-
+  // 基于路由匹配模式加载应用(用run时不要用loadApp)
   Garfish.run();
 }
