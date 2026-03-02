@@ -5,7 +5,7 @@ console.log('===== 打印 import.meta.env =====', import.meta.env)
 console.log('当前环境模式：', import.meta.env.MODE)
 console.log('是否为开发环境：', import.meta.env.DEV)
 
-// 子应用的激活路径(<name,activeWhen>)，使用手动加载 loadApp 时将忽略 activeWhen，需要根据路径手动激活指定应用
+// 子应用的激活路径(<name,activePath>)映射
 export const microMap: Record<string, string> = {
   "subApp1": "/subApp1",
   "subApp2": "/subApp2",
@@ -42,7 +42,7 @@ export const startGarfish = () => {
         // 子应用的名称，需要唯一
         name: 'subApp1',
         // 基于路由匹配的应用加载模式，会通activeWhen自动判断当前应加载的子应用；手动加载模式（Garfish.loadApp）时将忽略activeWhen选项
-        activeWhen: '/subApp1',
+        activeWhen: microMap['subApp1'],
         // 子应用的入口资源地址，支持 HTML 和 JS
         entry: import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:83/' : 'http://82.157.187.160:83/',
         sandbox: false,
@@ -50,13 +50,13 @@ export const startGarfish = () => {
       {
         // 子应用的名称，需要唯一
         name: 'subApp2',
-        activeWhen: '/subApp2',
+        activeWhen: microMap['subApp2'],
         // 子应用的入口资源地址，支持 HTML 和 JS
         entry: import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:83/' : 'http://82.157.187.160:83/',
         sandbox: false,
       },
     ]
   );
-  // 基于路由匹配模式加载应用(用run时不要用loadApp)
-  Garfish.run();
+  // 基于路由匹配模式加载(run) 或 手动加载(loadApp)。要保证Garfish在渲染时挂载点存在
+  // Garfish.run();
 }
