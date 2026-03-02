@@ -52,9 +52,20 @@ const createNewApp = () => {
 if (window.__POWERED_BY_WUJIE__) {
   window.__WUJIE_MOUNT = () => {
     vueApp = createNewApp()
+    console.log("子应用 mount")
+    const props = window.$wujie?.props;
+    // 存储token
+    if (props?.token) {
+      localStorage.setItem('TOKEN', props.token)
+    }
+    // 存储到userInfo
+    if (props?.userInfo) {
+      localStorage.setItem('USER_INFO', JSON.stringify(props.userInfo))
+    }
     vueApp.mount("#app");
   };
   window.__WUJIE_UNMOUNT = () => {
+    console.log("子应用 unmount")
     vueApp?.unmount();
   };
   /*
