@@ -18,7 +18,7 @@ const subAppUrl = ref("");
 // 首次加载会调用onMounted但route不会改变
 onMounted(() => {
   console.log('AppMain#microApp onMounted...')
-  subAppUrl.value = microMap['subApp1'] + route.fullPath.replace(`/${subAppName}`, '');
+  subAppUrl.value = microMap['subApp1'] + route.fullPath.replace(`/subApp1`, '');
 })
 
 // 非首次加载则不再调用onMounted，但route会改变
