@@ -14,18 +14,26 @@ import 'highlight.js/styles/github-dark.min.css'
 import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
 
-// 无界的全局变量
+// 无界会在子应用的window对象中注入一些全局变量
 declare global {
   interface Window {
     // 是否存在无界
     __POWERED_BY_WUJIE__?: boolean;
+    // 原生的window对象
+    __WUJIE_RAW_WINDOW__: Window;
+    // 子应用沙盒实例
+    __WUJIE: { mount: () => void };
     // 子应用mount函数
     __WUJIE_MOUNT: () => void;
     // 子应用unmount函数
     __WUJIE_UNMOUNT: () => void | Promise<void>;
-    // 子应用无界实例
-    __WUJIE: { mount: () => void };
-    $wujie: any
+    // 注入对象
+    $wujie: {
+      bus: any;
+      shadowRoot?: ShadowRoot;
+      props?: { [key: string]: any };
+      location?: Object;
+    };
   }
 }
 
@@ -77,5 +85,6 @@ if (window.__POWERED_BY_WUJIE__) {
   window.__WUJIE.mount()
 } else {
   vueApp = createNewApp()
+  console.log("独立运行 mount")
   vueApp.mount("#app");
 }
