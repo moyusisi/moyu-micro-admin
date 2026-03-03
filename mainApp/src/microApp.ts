@@ -39,7 +39,7 @@ export const startWujie = () => {
     props: props,
     // 预执行
     exec: true,
-    // ...lifecycles
+    ...lifecycles
   });
   setupApp({
     // 应用唯一name
