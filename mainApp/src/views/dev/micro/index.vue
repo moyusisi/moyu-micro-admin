@@ -7,7 +7,6 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { watch } from "vue";
 import { microMap } from "@/microApp.ts";
 
 // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
@@ -15,9 +14,9 @@ const route = useRoute()
 const subAppUrl = ref(null);
 let subAppName = ref("subApp");
 
-// 首次加载会调用onMounted但route不会改变
-onMounted(() => {
-  console.log('主应用中的挂载容器已就绪...')
+// 在mount之前初始化无界所需参数
+onBeforeMount(() => {
+  console.log('主应用挂载容器前初始化无界参数')
   // 通过 fullPath 自动匹配子应用
   let fullPath = route.fullPath;
   for (const appName of Object.keys(microMap)) {
@@ -28,11 +27,6 @@ onMounted(() => {
   }
   fullPath = fullPath.replace(`/${subAppName}`, '');
   subAppUrl.value = microMap[subAppName] + fullPath
-})
-
-// 非首次加载则不再调用onMounted，但route会改变
-watch(route, (to) => {
-  console.log('AppMain#microApp onWatch...')
 })
 
 </script>
