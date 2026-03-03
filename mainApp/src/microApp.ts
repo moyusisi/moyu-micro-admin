@@ -9,8 +9,8 @@ console.log('是否为开发环境：', import.meta.env.DEV)
 
 // 子应用的域名(<name,host>)映射
 export const microMap: Record<string, string> = {
-  "subApp1": "//localhost:82",
-  "subApp2": "//localhost:83",
+  "subApp1": import.meta.env.MODE === 'dev' ? '//localhost:82/' : '//localhost:84/',
+  "subApp2": "//localhost:84",
 };
 
 const lifecycles = {
