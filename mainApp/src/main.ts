@@ -34,10 +34,5 @@ app.use(hljsVuePlugin)
 // 挂载app
 app.mount('#app')
 
-// 携带登录态credentials必须为include
-export default function fetch(url, options) {
-  console.log("fetch", url, options);
-  return window.fetch(url, { ...options, credentials: "omit" });
-}
 // 启动 wujie 微前端
 startWujie();
