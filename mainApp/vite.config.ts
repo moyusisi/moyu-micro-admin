@@ -40,6 +40,7 @@ export default defineConfig(({ mode }): UserConfig => {
         }
       }
     },
+    // 构建配置选项
     build: {
       // 指定生成静态资源的存放路径,默认:assets。库模式下不能使用
       assetsDir: 'assets',
@@ -47,15 +48,41 @@ export default defineConfig(({ mode }): UserConfig => {
       chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
+          // 入口文件，默认 [name].js
+          entryFileNames: '[name].js',
+          // 静态资源名，默认 assets/[name]-[hash][extname]
+          assetFileNames: 'assets/static/[name]-[hash].[ext]',
+          // 代码分割chunk包，默认 [name]-[hash].js
+          chunkFileNames: 'assets/js/[name]-[hash].js',
           // 按模块拆分 chunk，减小单个文件体积
-          manualChunks: {
-            'vue': ['vue', 'vue-router', 'pinia', 'vue-i18n', '@vueuse/core'],
-            'axios': ['axios'],
-            'hotkeys': ['js-pinyin'],
-            'highlight': ['highlight.js'],
-            'ant-design-icons': ['@ant-design/icons-vue'],
-            'ant-design-vue': ['ant-design-vue'],
-          }
+          manualChunks: (id) => {
+            // 第三方依赖拆分
+            if (id.includes('node_modules')) {
+              // 组件名 如:@ant-design/icons-svg/es/asn/xxx.js
+              const itemName = id.split('node_modules/')[1];
+              // 模块名 如:@ant-design
+              const moduleName = itemName.split('/')[0];
+              // 框架核心库
+              if (['vue', 'vue-router', 'pinia', 'vue-i18n', '@vue'].some(prefix => moduleName.startsWith(prefix))) {
+                return 'vendor-vue';
+              }
+              // 工具类库（axios、lodash、dayjs）单独拆分
+              if (['axios', 'lodash', 'dayjs', 'qs', 'crypto-js', 'highlight.js', 'js-pinyin'].includes(moduleName)) {
+                return 'vendor-utils';
+              }
+              // 大库单独拆分
+              if (itemName.startsWith('ant-design-vue')) {
+                // 包括 底层ant-design-vue/es/vc- 和 上层封装ant-design-vue/es
+                return 'antd-vue';
+              }
+              if (itemName.startsWith('@ant-design/icons')) {
+                // 包括 底层@ant-design/icons-svg 和 上层封装@ant-design/icons-vue
+                return 'antd-icons';
+              }
+              // 其他依赖合并为 vendor-other
+              return 'vendor-other';
+            }
+          },
         }
       },
       // 库模式
