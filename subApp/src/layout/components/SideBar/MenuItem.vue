@@ -2,7 +2,7 @@
 	<template v-if="!isHidden(item)">
 		<a-menu-item v-if="hasOnlyOneShownRoute(item) && (!onlyOneRoute.children || onlyOneRoute.noShownChildren) && !item.meta?.alwaysShow" :key="onlyOneRoute.path">
       <!-- 显示具有单个子路由的菜单项或没有子路由的父路由 -->
-			<template v-if="onlyOneRoute.meta.icon" #icon>
+			<template v-if="onlyOneRoute.meta?.icon" #icon>
 				<component :is="onlyOneRoute.meta.icon" />
 			</template>
 			<!--  如果是超链接 新窗口打开  -->

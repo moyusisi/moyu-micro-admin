@@ -4,7 +4,6 @@ import { useSearchStore } from '@/store/search'
 import userCenterApi from '@/api/system/userCenterApi'
 import router, { constRoutes } from '@/router'
 import { RouteRecordRaw } from "vue-router"
-
 // 布局组件, 一般顶层目录使用
 import Layout from '@/layout/index.vue'
 import EmptyLayout from '@/layout/other/empty.vue'
@@ -138,6 +137,7 @@ export const useMenuStore = defineStore('menuStore', () => {
     currentRoutes.forEach(route => {
       let constList = constRoutePathList(constRoutes)
       const isConstRoute = constList.includes(route.path)
+      // 静态路由保留，动态路由移除
       if (!isConstRoute) {
         router.removeRoute(route.name as string)
       }
