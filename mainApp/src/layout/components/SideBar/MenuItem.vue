@@ -1,24 +1,24 @@
 <template>
-	<template v-if="!isHidden(item)">
-		<a-menu-item v-if="hasOnlyOneShownRoute(item) && (!onlyOneRoute.children || onlyOneRoute.noShownChildren) && !item.meta?.alwaysShow" :key="onlyOneRoute.path">
+  <template v-if="!isHidden(item)">
+    <a-menu-item v-if="hasOnlyOneShownRoute(item) && (!onlyOneRoute.children || onlyOneRoute.noShownChildren) && !item.meta?.alwaysShow" :key="onlyOneRoute.path">
       <!-- 显示具有单个子路由的菜单项或没有子路由的父路由 -->
-			<template v-if="onlyOneRoute.meta?.icon" #icon>
-				<component :is="onlyOneRoute.meta.icon" />
-			</template>
-			<!--  如果是超链接 新窗口打开  -->
-			<a v-if="onlyOneRoute.meta?.type === 'link'" :href="onlyOneRoute.meta.url" target="_blank" @click.stop="() => {}">
-				{{ onlyOneRoute.meta?.title }}
-			</a>
-			<a v-else>{{ onlyOneRoute.meta?.title }}</a>
-		</a-menu-item>
-		<a-sub-menu v-else :key="item.path" :title="item.meta?.title">
+      <template v-if="onlyOneRoute.meta?.icon" #icon>
+        <component :is="onlyOneRoute.meta.icon"/>
+      </template>
+      <!--  如果是超链接 新窗口打开  -->
+      <a v-if="onlyOneRoute.meta?.type === 'link'" :href="onlyOneRoute.meta.url" target="_blank" @click.stop="() => {}">
+        {{ onlyOneRoute.meta?.title }}
+      </a>
+      <a v-else>{{ onlyOneRoute.meta?.title }}</a>
+    </a-menu-item>
+    <a-sub-menu v-else :key="item.path" :title="item.meta?.title">
       <!-- 显示具有多个子路由的父菜单项 -->
-			<template v-if="item.meta?.icon" #icon>
-				<component :is="item.meta.icon" />
-			</template>
-			<MenuItem v-for="child in item.children" :key="child.path" :item="child" />
-		</a-sub-menu>
-	</template>
+      <template v-if="item.meta?.icon" #icon>
+        <component :is="item.meta.icon"/>
+      </template>
+      <MenuItem v-for="child in item.children" :key="child.path" :item="child"/>
+    </a-sub-menu>
+  </template>
 </template>
 
 <script setup>
