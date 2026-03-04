@@ -69,7 +69,7 @@ export default defineConfig(({ mode }): UserConfig => {
                 return 'vendor-vue';
               }
               // 工具类库（axios、lodash、dayjs）单独拆分
-              if (['axios', 'lodash', 'dayjs', 'qs', 'crypto-js', 'highlight.js', 'js-pinyin'].includes(moduleName)) {
+              if (['axios', 'lodash', 'dayjs', 'qs', 'crypto-js', 'highlight.js', '@highlightjs', 'js-pinyin'].includes(moduleName)) {
                 return 'vendor-utils';
               }
               // 大库单独拆分
@@ -87,17 +87,6 @@ export default defineConfig(({ mode }): UserConfig => {
           },
         }
       },
-      // 库模式
-      // lib: {
-      //   // 口文件 必需
-      //   entry: ['src/main.js'],
-      //   // 全局名称(umd/iife 格式必填),浏览器环境下挂载到 window 的名称
-      //   name: 'subApp',
-      //   // 输出格式（可选，默认 ['es', 'umd']）
-      //   formats: ['es', 'umd'],
-      //   // 输出的库文件名（可选，默认取 package.json 的 name）
-      //   fileName: (format, entryName) => `index.${format}.js`,
-      // },
     },
     plugins: [
       vue(),
