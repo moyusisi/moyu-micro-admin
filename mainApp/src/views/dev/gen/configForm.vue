@@ -152,7 +152,7 @@
     </template>
   </a-drawer>
 </template>
-<script setup name="stepsForm">
+<script setup>
 import codegenApi from '@/api/dev/codegenApi'
 
 import { message, TreeSelect } from 'ant-design-vue'

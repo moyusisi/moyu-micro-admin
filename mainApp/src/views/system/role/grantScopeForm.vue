@@ -255,15 +255,6 @@
     // 查询数据权限列表
     dataLoading.value = true
     const res = await roleApi.permScopeForGrant(param)
-    if(res.data) {
-      res.data.forEach((record) => {
-        if (record.scopes) {
-          record.scopeList = record.scopes.split(',')
-        } else {
-          record.scopeList = []
-        }
-      })
-    }
     tableData.value = res.data
     dataLoading.value = false
   }

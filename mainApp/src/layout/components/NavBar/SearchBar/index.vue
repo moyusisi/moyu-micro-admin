@@ -97,9 +97,9 @@ const closeSearch = () => {
 const fuse = computed(() => {
   return new Fuse(pool.value, {
     shouldSort: true, // 按分数对结果列表进行排序
-    threshold: 0.6, // 什么时候放弃
+    threshold: 0.3, // 什么时候放弃
     location: 0, // 大致位置
-    distance: 100, // 接近程度
+    distance: 5, // 接近程度
     minMatchCharLength: 1, // 匹配长度
     keys: ['name', 'namePinyin', 'namePinyinFirst']
   })
