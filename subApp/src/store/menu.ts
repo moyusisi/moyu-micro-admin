@@ -4,6 +4,7 @@ import { useSearchStore } from '@/store/search'
 import userCenterApi from '@/api/system/userCenterApi'
 import router, { constRoutes } from '@/router'
 import { RouteRecordRaw } from "vue-router"
+
 // 布局组件, 一般顶层目录使用
 import Layout from '@/layout/index.vue'
 import EmptyLayout from '@/layout/other/empty.vue'
