@@ -2,7 +2,6 @@ import { defineConfig, loadEnv, UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueJSX from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
-import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
 import { resolve } from 'path'
@@ -30,7 +29,6 @@ export default defineConfig(({ mode }): UserConfig => {
       cors: {
         origin: [
           'http://localhost:81',   // 主应用开发环境域名
-          'https://main-app.com'   // 主应用生产环境域名
         ],
         // 允许携带 cookie（如需）
         credentials: true
@@ -52,27 +50,66 @@ export default defineConfig(({ mode }): UserConfig => {
         }
       }
     },
-    // 构建配置：输出兼容的资源名称
+    // 构建配置选项
     build: {
-      manifest: true,
-      // 生成静态资源的存放路径
+      // 指定生成静态资源的存放路径,默认:assets。库模式下不能使用
       assetsDir: 'assets',
+      // 调整 chunk 体积警告阈值，默认:500 单位KB
+      chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
-          // 静态资源命名规则
-          assetFileNames: 'assets/[name].[hash].[ext]',
-          chunkFileNames: 'js/[name].[hash].js',
-          entryFileNames: 'js/[name].[hash].js',
-          manualChunks: {
-            'ant-design-vue': ['ant-design-vue'],
-            vue: ['vue', 'vue-router', 'pinia', 'vue-i18n']
-          }
+          // 入口文件，默认 [name].js
+          entryFileNames: '[name].js',
+          // 静态资源名，默认 assets/[name]-[hash][extname]
+          assetFileNames: 'assets/static/[name]-[hash].[ext]',
+          // 代码分割chunk包，默认 [name]-[hash].js
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          // 按模块拆分 chunk，减小单个文件体积
+          manualChunks: (id) => {
+            // 第三方依赖拆分
+            if (id.includes('node_modules')) {
+              // 组件名 如:@ant-design/icons-svg/es/asn/xxx.js
+              const itemName = id.split('node_modules/')[1];
+              // 模块名 如:@ant-design
+              const moduleName = itemName.split('/')[0];
+              // 框架核心库
+              if (['vue', 'vue-router', 'pinia', 'vue-i18n', '@vue'].some(prefix => moduleName.startsWith(prefix))) {
+                return 'vendor-vue';
+              }
+              // 工具类库（axios、lodash、dayjs）单独拆分
+              if (['axios', 'lodash', 'dayjs', 'qs', 'crypto-js', 'highlight.js', 'js-pinyin'].includes(moduleName)) {
+                return 'vendor-utils';
+              }
+              // 大库单独拆分
+              if (itemName.startsWith('ant-design-vue')) {
+                // 包括 底层ant-design-vue/es/vc- 和 上层封装ant-design-vue/es
+                return 'antd-vue';
+              }
+              if (itemName.startsWith('@ant-design/icons')) {
+                // 包括 底层@ant-design/icons-svg 和 上层封装@ant-design/icons-vue
+                return 'antd-icons';
+              }
+              // 其他依赖合并为 vendor-other
+              return 'vendor-other';
+            }
+          },
         }
       },
-      chunkSizeWarningLimit: 1000
+      // 库模式
+      // lib: {
+      //   // 口文件 必需
+      //   entry: ['src/main.js'],
+      //   // 全局名称(umd/iife 格式必填),浏览器环境下挂载到 window 的名称
+      //   name: 'subApp',
+      //   // 输出格式（可选，默认 ['es', 'umd']）
+      //   formats: ['es', 'umd'],
+      //   // 输出的库文件名（可选，默认取 package.json 的 name）
+      //   fileName: (format, entryName) => `index.${format}.js`,
+      // },
     },
     plugins: [
       vue(),
+      VueJSX(),
       viteMockServe({
         // mock文件存放路径（默认是 src/mock）
         mockPath: 'mock',
@@ -81,9 +118,13 @@ export default defineConfig(({ mode }): UserConfig => {
         // 是否在控制台打印 mock 接口请求日志
         logger: true,
       }),
-      viteCompression(),
-      vueSetupExtend(),
-      VueJSX(),
+      viteCompression({
+        // 压缩算法，默认gizp
+        algorithm: 'gzip',
+        ext: '.gz',
+        // 仅压缩 >10KB 文件
+        threshold: 10240,
+      }),
       // 使用unplugin-auto-import插件，自动导入参考：https://cloud.tencent.com/developer/article/2236166
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
