@@ -2,7 +2,6 @@ import { defineConfig, loadEnv, UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueJSX from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
-import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
 import { resolve } from 'path'
@@ -42,19 +41,38 @@ export default defineConfig(({ mode }): UserConfig => {
       }
     },
     build: {
-      manifest: true,
+      // 指定生成静态资源的存放路径,默认:assets。库模式下不能使用
+      assetsDir: 'assets',
+      // 调整 chunk 体积警告阈值，默认:500 单位KB
+      chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
+          // 按模块拆分 chunk，减小单个文件体积
           manualChunks: {
+            'vue': ['vue', 'vue-router', 'pinia', 'vue-i18n', '@vueuse/core'],
+            'axios': ['axios'],
+            'hotkeys': ['js-pinyin'],
+            'highlight': ['highlight.js'],
+            'ant-design-icons': ['@ant-design/icons-vue'],
             'ant-design-vue': ['ant-design-vue'],
-            vue: ['vue', 'vue-router', 'pinia', 'vue-i18n']
           }
         }
       },
-      chunkSizeWarningLimit: 1000
+      // 库模式
+      // lib: {
+      //   // 口文件 必需
+      //   entry: ['src/main.js'],
+      //   // 全局名称(umd/iife 格式必填),浏览器环境下挂载到 window 的名称
+      //   name: 'subApp',
+      //   // 输出格式（可选，默认 ['es', 'umd']）
+      //   formats: ['es', 'umd'],
+      //   // 输出的库文件名（可选，默认取 package.json 的 name）
+      //   fileName: (format, entryName) => `index.${format}.js`,
+      // },
     },
     plugins: [
       vue(),
+      VueJSX(),
       viteMockServe({
         // mock文件存放路径（默认是 src/mock）
         mockPath: 'mock',
@@ -63,9 +81,13 @@ export default defineConfig(({ mode }): UserConfig => {
         // 是否在控制台打印 mock 接口请求日志
         logger: true,
       }),
-      viteCompression(),
-      vueSetupExtend(),
-      VueJSX(),
+      viteCompression({
+        // 压缩算法，默认gizp
+        algorithm: 'gzip',
+        ext: '.gz',
+        // 仅压缩 >10KB 文件
+        threshold: 10240,
+      }),
       // 使用unplugin-auto-import插件，自动导入参考：https://cloud.tencent.com/developer/article/2236166
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
