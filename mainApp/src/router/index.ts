@@ -55,7 +55,7 @@ router.beforeEach(async (to, from) => {
   // console.log("访问地址: " + to.fullPath, from, to)
   console.log("访问地址: " + to.fullPath)
   // 如果未加载用户信息，则先加载用户信息
-  if (!userStore.userInfo.account) {
+  if (!userStore.userInfo?.account) {
     console.log("加载userInfo...")
     await userStore.initUserInfo();
   }
