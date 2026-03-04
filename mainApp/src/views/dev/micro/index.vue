@@ -7,6 +7,7 @@
 
 <script setup>
 import { useRoute } from "vue-router";
+import WujieVue from "wujie-vue3";
 import { microMap } from "@/microApp.ts";
 
 // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
