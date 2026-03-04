@@ -18,7 +18,7 @@ export default defineConfig(({ mode }): UserConfig => {
       alias
     },
     // 开发或生产环境服务的公共基础路径。域名部分在开发环境中不会被使用
-    base: mode === 'dev' ? '/' : 'http://82.157.187.160:83/',
+    // base: mode === 'dev' ? '/' : 'http://82.157.187.160:83/',
     // 开发环境服务器选项
     server: {
       // 允许IP访问
@@ -54,6 +54,8 @@ export default defineConfig(({ mode }): UserConfig => {
     build: {
       // 指定生成静态资源的存放路径,默认:assets。库模式下不能使用
       assetsDir: 'assets',
+      // 构建后是否生成 source map 文件
+      sourcemap: true,
       // 调整 chunk 体积警告阈值，默认:500 单位KB
       chunkSizeWarningLimit: 1500,
       rollupOptions: {
