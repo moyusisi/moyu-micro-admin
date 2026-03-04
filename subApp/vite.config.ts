@@ -73,7 +73,7 @@ export default defineConfig(({ mode }): UserConfig => {
             'vendor-utils': ['axios', 'lodash', 'dayjs', 'nprogress', 'fuse.js', 'js-pinyin', 'highlight.js'],
             'antd-icons': ['@ant-design/icons-vue'],
             'antd-vue': ['ant-design-vue'],
-          }
+          },
         }
       },
     },
