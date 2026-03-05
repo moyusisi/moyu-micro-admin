@@ -14,8 +14,8 @@ const route = useRoute()
 const subAppUrl = ref(null);
 let subAppName = ref("subApp");
 
-
-onMounted(() => {
+// 在mount之前初始化乾坤所需参数
+onBeforeMount(() => {
   console.log('主应用中的挂载容器#microApp已就绪...')
   // 确保启动Qiankun时挂载点已经就绪
   startQiankun()
