@@ -37,7 +37,10 @@ export const useTagsViewStore = defineStore('tagsView', () => {
     }
     // 如果视图是固定的（affix），则在已访问的视图列表的开头添加
     if (view.affix) {
-      visitedViews.value.unshift(view);
+      // filter返回所有affix元素组成的数组，length即为个数
+      let count = visitedViews.value.filter(item => view.affix).length;
+      // 新view插入到前面所有affix后面
+      visitedViews.value.splice(count, 0, view);
     } else {
       // 如果视图不是固定的，则在已访问的视图列表的末尾添加
       visitedViews.value.push(view);
