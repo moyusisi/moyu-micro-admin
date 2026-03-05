@@ -249,7 +249,7 @@
     padding-bottom: 5px;
   }
   .analyse-card-title {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     font-size: 16px;
   }
