@@ -2,11 +2,14 @@ import Layout from '@/layout/index.vue'
 
 /**
  * 静态路由
- * * path 要以"/"开头的绝对路径,children中的path也要写绝对路径
- * * name 必填
- * * meta.title 菜单名称
- * * meta.hidden 是否隐藏
- * * meta.alwaysShow 空目录是否显示
+ * * path 以"/"开头的绝对路径,children中的path也要写绝对路径
+ * * name 唯一标识，必填
+ * * meta.title      标题名称
+ * * meta.icon       图标
+ * * meta.hidden     是否隐藏
+ * * meta.brief     【目录】是否简洁模式(目录下只有一个菜单时，不显示目录直接显示该菜单)
+ * * meta.affix     【菜单】是否固定显示(标签页)
+ * * meta.keepAlive 【菜单】是否支持缓存(标签页)
  */
 const routes = [
 	{
@@ -14,7 +17,7 @@ const routes = [
 		path: '/',
 		component: Layout,
 		redirect: '/index',
-		meta: { title: '系统菜单', hidden: false, alwaysShow: false, icon: 'home-outlined' },
+		meta: { title: '系统菜单', hidden: false, brief: true, icon: 'home-outlined' },
 		children: [
 			{
 				path: '/index',
