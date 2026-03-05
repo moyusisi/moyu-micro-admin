@@ -20,7 +20,7 @@ registerMicroApps([
     // - 开发环境：子应用的 Vite 开发服务器地址（需先启动子应用）
     // - 生产环境：子应用打包后的静态资源地址（如 CDN 或主应用的子路径）
     // entry: '//localhost:82/',
-    entry: import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:82/' : 'http://82.157.187.160:82/',
+    entry: import.meta.env.MODE === 'dev' ? '//localhost:82/' : 'http://82.157.187.160:82/',
     // 主应用中挂载子应用的容器 DOM 节点（需在主应用模板中定义）
     container: '#microApp',
     // 子应用的激活规则：当主应用路由匹配到该路径时，自动挂载子应用
