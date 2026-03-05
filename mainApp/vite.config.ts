@@ -2,7 +2,6 @@ import { defineConfig, loadEnv, UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueJSX from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
-import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
 import { resolve } from 'path'
@@ -41,20 +40,34 @@ export default defineConfig(({ mode }): UserConfig => {
         }
       }
     },
+    // 构建配置选项
     build: {
-      manifest: true,
+      // 指定生成静态资源的存放路径,默认:assets。库模式下不能使用
+      assetsDir: 'assets',
+      // 调整 chunk 体积警告阈值，默认:500 单位KB
+      chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
+          // 入口文件，默认 [name].js
+          entryFileNames: '[name].js',
+          // 静态资源名，默认 assets/[name]-[hash][extname]
+          assetFileNames: 'assets/static/[name]-[hash].[ext]',
+          // 代码分割chunk包，默认 [name]-[hash].js
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          // 按模块拆分 chunk，减小单个文件体积
           manualChunks: {
-            'ant-design-vue': ['ant-design-vue'],
-            vue: ['vue', 'vue-router', 'pinia', 'vue-i18n']
-          }
+            'vendor-vue': ['vue', 'vue-router', 'pinia', 'vue-i18n'],
+            // 工具类库（axios、lodash、dayjs）单独拆分
+            'vendor-utils': ['axios', 'lodash', 'dayjs', 'nprogress', 'fuse.js', 'js-pinyin', 'highlight.js'],
+            'antd-icons': ['@ant-design/icons-vue'],
+            'antd-vue': ['ant-design-vue'],
+          },
         }
       },
-      chunkSizeWarningLimit: 1000
     },
     plugins: [
       vue(),
+      VueJSX(),
       viteMockServe({
         // mock文件存放路径（默认是 src/mock）
         mockPath: 'mock',
@@ -63,9 +76,13 @@ export default defineConfig(({ mode }): UserConfig => {
         // 是否在控制台打印 mock 接口请求日志
         logger: true,
       }),
-      viteCompression(),
-      vueSetupExtend(),
-      VueJSX(),
+      viteCompression({
+        // 压缩算法，默认gizp
+        algorithm: 'gzip',
+        ext: '.gz',
+        // 仅压缩 >10KB 文件
+        threshold: 10240,
+      }),
       // 使用unplugin-auto-import插件，自动导入参考：https://cloud.tencent.com/developer/article/2236166
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
