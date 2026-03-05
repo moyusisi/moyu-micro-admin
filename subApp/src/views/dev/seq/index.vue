@@ -27,7 +27,6 @@
              :data-source="tableData"
              :row-key="(row) => row.idKey"
              :pagination="paginationRef"
-             @resizeColumn="onResizeColumn"
              bordered>
       <template #bodyCell="{ column, record, index, text }">
         <template v-if="column.dataIndex === 'index'">

@@ -75,7 +75,7 @@
         </template>
         <template v-if="column.dataIndex === 'visible'">
           <span v-if="node.resourceType !== 6" >
-            <a-tag v-if="node.visible === 1" color="green">可见</a-tag>
+            <a-tag v-if="node.visible === 1" color="green">显示</a-tag>
             <a-tag v-else>隐藏</a-tag>
           </span>
           <span v-else ></span>
@@ -181,13 +181,6 @@
     {
       title: '组件',
       dataIndex: 'component',
-      resizable: true,
-      ellipsis: true,
-      width: 150
-    },
-    {
-      title: '权限',
-      dataIndex: 'permission',
       resizable: true,
       ellipsis: true,
       width: 150

@@ -216,7 +216,8 @@
       title: "时间",
       dataIndex: "startTime",
       align: "center",
-      width: 160,
+      resizable: true,
+      width: 170,
     },
     {
       title: "操作人",
@@ -309,7 +310,8 @@
       title: "结束时间",
       dataIndex: "endTime",
       align: "center",
-      width: 160,
+      resizable: true,
+      width: 170,
     },
     {
       title: "执行耗时(ms)",
@@ -322,7 +324,8 @@
       title: "创建时间",
       dataIndex: "createTime",
       align: "center",
-      width: 160,
+      resizable: true,
+      width: 170,
     },
     // 单行操作，不需要可以删掉
     {
