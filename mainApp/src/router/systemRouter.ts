@@ -23,6 +23,12 @@ const routes = [
 				name: 'Index',
 				component: () => import('@/views/home/index.vue'),
 				meta: { title: '首页', icon: 'home-outlined', affix: true }
+			},
+			{
+				path: '/subApp2/auth/monitor',
+				name: 'subApp2',
+				component: () => import('@/views/dev/micro/index.vue'),
+				meta: { title: '子应用', icon: 'home-outlined' }
 			}
 		]
 	},
