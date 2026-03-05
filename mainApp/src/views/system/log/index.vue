@@ -216,7 +216,8 @@
       title: "时间",
       dataIndex: "startTime",
       align: "center",
-      width: 160,
+      resizable: true,
+      width: 170,
     },
     {
       title: "操作人",
