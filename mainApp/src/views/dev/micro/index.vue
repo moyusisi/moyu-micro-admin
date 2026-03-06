@@ -13,6 +13,10 @@ import { microMap } from "@/microApp.ts";
 
 // 获取当前路由对象（route 是响应式的，路由变化时会自动更新）
 const route = useRoute()
+
+// 子应用loading
+const subLoading = ref(false);
+
 // 子应用所需参数
 const subAppUrl = ref(null);
 let subAppName = ref("subApp");
@@ -55,7 +59,12 @@ function initProps() {
 }
 
 // 子应用生命周期钩子函数
+function beforeLoad() {
+  console.log(`${subAppName.value} beforeLoad 生命周期`)
+  subLoading.value = true;
+}
 function beforeMount() {
+  subLoading.value = false;
   console.log(`${subAppName.value} beforeMount 生命周期`)
 }
 
