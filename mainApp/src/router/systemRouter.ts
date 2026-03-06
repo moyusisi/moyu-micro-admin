@@ -28,8 +28,8 @@ const routes = [
 				meta: { title: '首页', icon: 'home-outlined', affix: true }
 			},
 			{
-				path: '/subApp2/auth/monitor',
-				name: 'subApp2',
+				path: '/subApp1/auth/monitor',
+				name: 'subApp1',
 				component: () => import('@/views/dev/micro/index.vue'),
 				meta: { title: '子应用', icon: 'home-outlined' }
 			}
