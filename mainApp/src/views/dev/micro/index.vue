@@ -1,5 +1,6 @@
 <template>
   <div class="admin-ui-main">
+    <a-spin :spinning="subLoading" tip="子应用加载中..." size="large" v-if="subLoading" style="background-color: #f6f8f9" />
     <!--保活模式，name相同则复用一个子应用实例，改变url无效，必须采用通信的方式告知路由变化 -->
     <WujieVue width="100%" height="100%" :name="subAppName" :url="subAppUrl" :sync="false"
               :beforeMount="beforeMount"></WujieVue>
@@ -15,7 +16,7 @@ import { microMap } from "@/microApp.ts";
 const route = useRoute()
 
 // 子应用loading
-const subLoading = ref(false);
+const subLoading = ref(true);
 
 // 子应用所需参数
 const subAppUrl = ref(null);
