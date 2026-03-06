@@ -13,6 +13,7 @@ export const microMap: Record<string, string> = {
   "subApp2": import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:84' : 'http://82.157.187.160:84',
 };
 
+// 默认的子应用周期，可在WujieVue中覆盖
 const lifecycles = {
   beforeLoad: (window) => console.log(`${window.__WUJIE.id} beforeLoad 生命周期`),
   beforeMount: (window) => console.log(`${window.__WUJIE.id} beforeMount 生命周期`),
