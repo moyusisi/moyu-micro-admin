@@ -16,14 +16,15 @@ export const microMap: Record<string, string> = {
 // 默认的子应用周期，可在WujieVue中覆盖
 const lifecycles = {
   beforeLoad: (window) => console.log(`${window.__WUJIE.id} beforeLoad 生命周期`),
+  // 如果子应用没有做生命周期的改造，那么 beforeMount、afterMount、beforeUnmount、afterUnmount 这四个生命周期将不会调用
   beforeMount: (window) => console.log(`${window.__WUJIE.id} beforeMount 生命周期`),
-  afterMount: (window) => {
-    console.log(`${window.__WUJIE.id} afterMount 生命周期`);
-  },
+  afterMount: (window) => console.log(`${window.__WUJIE.id} afterMount 生命周期`),
   beforeUnmount: (window) => console.log(`${window.__WUJIE.id} beforeUnmount 生命周期`),
   afterUnmount: (window) => console.log(`${window.__WUJIE.id} afterUnmount 生命周期`),
+  // 子应用保活模式独有
   activated: (window) => console.log(`${window.__WUJIE.id} activated 生命周期`),
   deactivated: (window) => console.log(`${window.__WUJIE.id} deactivated 生命周期`),
+  // 子应用加载资源失败后触发
   loadError: (url, e) => console.log(`${url} 加载失败`, e),
 };
 
