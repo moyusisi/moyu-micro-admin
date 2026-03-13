@@ -57,7 +57,7 @@
           <template v-if="column.dataIndex === 'tokenTimeout'">
             <a-tooltip>
               <template #title>
-                <span v-if="record.sessionTimeout <= 0">永久有效</span>
+                <span v-if="record.tokenTimeout <= 0">永久有效</span>
                 <a-statistic-countdown v-else :value="record.deadline" format="D 天 H 时 m 分 s 秒" :valueStyle="{fontSize:'14px', color:'#fff'}" />
               </template>
               <a-progress v-if="record.tokenTimeoutPercent * 100 > 80"
