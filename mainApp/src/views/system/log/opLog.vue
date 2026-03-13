@@ -197,7 +197,10 @@
 
   // 查询表单相关对象
   const queryFormRef = ref()
-  const queryFormData = ref({})
+  const queryFormData = ref({
+    // 日志类型(字典 0默认 1访问日志 2操作日志 3交互日志)
+    logType: 2,
+  })
   // 是否展示更多搜索条件
   const showMore = ref(false)
 
@@ -240,14 +243,6 @@
       width: 100,
     },
     {
-      title: "系统/模块",
-      dataIndex: "module",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 150,
-    },
-    {
       title: "业务",
       dataIndex: "business",
       align: "center",
@@ -264,32 +259,8 @@
       width: 150,
     },
     {
-      title: "内容说明",
-      dataIndex: "content",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 150,
-    },
-    {
       title: "浏览器",
       dataIndex: "opBrowser",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 100,
-    },
-    {
-      title: "平台",
-      dataIndex: "opPlatform",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 100,
-    },
-    {
-      title: "操作系统",
-      dataIndex: "opOs",
       align: "center",
       resizable: true,
       ellipsis: true,
@@ -325,6 +296,13 @@
       align: "center",
       resizable: true,
       width: 120,
+    },
+    {
+      title: "结束时间",
+      dataIndex: "endTime",
+      align: "center",
+      resizable: true,
+      width: 170,
     },
     {
       title: "创建时间",

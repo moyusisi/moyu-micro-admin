@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="角色授权-数据权限"
+    title="角色授权-数据范围"
     :open="visible"
     :width="drawerWidth"
     :closable="false"

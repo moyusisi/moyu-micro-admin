@@ -9,13 +9,13 @@
           </a-form-item>
         </a-col>
         <a-col :span="6">
-          <a-form-item name="module" label="系统/模块">
-            <a-input v-model:value="queryFormData.module" placeholder="搜索系统/模块" allowClear />
+          <a-form-item name="createBy" label="操作人">
+            <a-input v-model:value="queryFormData.createBy" placeholder="请输入操作人ID" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6">
-          <a-form-item name="business" label="业务">
-            <a-input v-model:value="queryFormData.business" placeholder="搜索业务名称" allowClear />
+          <a-form-item name="name" label="名称">
+            <a-input v-model:value="queryFormData.name" placeholder="搜索日志名称" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6">
@@ -26,6 +26,16 @@
               <a-button v-if="!showMore" type="link" @click="showMore = !showMore">更多条件<DownOutlined /></a-button>
               <a-button v-else type="link"  @click="showMore = !showMore">收起<UpOutlined /></a-button>
             </a-flex>
+          </a-form-item>
+        </a-col>
+        <a-col :span="6" v-if="showMore">
+          <a-form-item name="module" label="系统/模块">
+            <a-input v-model:value="queryFormData.module" placeholder="搜索系统/模块" allowClear />
+          </a-form-item>
+        </a-col>
+        <a-col :span="6" v-if="showMore">
+          <a-form-item name="business" label="业务">
+            <a-input v-model:value="queryFormData.business" placeholder="搜索业务名称" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6" v-if="showMore">
@@ -46,11 +56,6 @@
         <a-col :span="6" v-if="showMore">
           <a-form-item name="requestContent" label="请求参数">
             <a-input v-model:value="queryFormData.requestContent" placeholder="搜索请求参数" allowClear />
-          </a-form-item>
-        </a-col>
-        <a-col :span="6" v-if="showMore">
-          <a-form-item name="createBy" label="操作人">
-            <a-input v-model:value="queryFormData.createBy" placeholder="请输入操作人ID" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6" v-if="showMore">
@@ -220,6 +225,14 @@
       width: 170,
     },
     {
+      title: "名称",
+      dataIndex: "name",
+      align: "center",
+      resizable: true,
+      ellipsis: true,
+      width: 150,
+    },
+    {
       title: "操作人",
       dataIndex: "createBy",
       align: "center",
@@ -305,13 +318,6 @@
       resizable: true,
       ellipsis: true,
       width: 150,
-    },
-    {
-      title: "结束时间",
-      dataIndex: "endTime",
-      align: "center",
-      resizable: true,
-      width: 170,
     },
     {
       title: "执行耗时(ms)",

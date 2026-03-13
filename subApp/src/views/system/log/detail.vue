@@ -1,7 +1,7 @@
 <template>
   <a-drawer
       :open="visible"
-      title="系统日志详情"
+      title="日志详情"
       :width="drawerWidth"
       :closable="false"
       :maskClosable="false"
@@ -26,6 +26,16 @@
               </a-form-item>
             </a-col>
             <a-col :span="8">
+              <a-form-item name="name" label="日志名称" tooltip="" >
+                {{ formData.name }}
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="createBy" label="操作人" tooltip="" >
+                {{ formData.createBy }}
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
               <a-form-item name="module" label="系统/模块" tooltip="系统/模块" >
                 {{ formData.module }}
               </a-form-item>
@@ -41,6 +51,11 @@
               </a-form-item>
             </a-col>
             <a-col :span="8">
+              <a-form-item name="content" label="自定义内容" tooltip="" >
+                {{ formData.content }}
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
               <a-form-item name="requestUrl" label="请求路径地址" tooltip="" >
                 <a-tag :bordered="false">{{ formData.requestUrl }}</a-tag>
               </a-form-item>
@@ -48,16 +63,6 @@
             <a-col :span="8">
               <a-form-item name="executionTime" label="执行耗时" tooltip="" >
                 {{ formData.executionTime }}ms
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item name="createBy" label="操作人ID" tooltip="" >
-                {{ formData.createBy }}
-              </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-form-item name="content" label="内容说明" tooltip="" >
-                {{ formData.content }}
               </a-form-item>
             </a-col>
             <a-col :span="8">

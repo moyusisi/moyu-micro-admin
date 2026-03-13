@@ -96,7 +96,7 @@
                   </a-popconfirm>
                 </a-tooltip>
                 <a-divider type="vertical" />
-                <a-tooltip title="岗位列表">
+                <a-tooltip title="用户岗位">
                   <a style="color:#1980FF;" @click="userGroupRef.onOpen(record)"><TeamOutlined /></a>
                 </a-tooltip>
                 <a-divider type="vertical" />
