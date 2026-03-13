@@ -4,8 +4,8 @@
     <a-form ref="queryFormRef" :model="queryFormData">
       <a-row :gutter="24">
         <a-col :span="6">
-          <a-form-item name="keyword" label="关键词">
-            <a-input v-model:value="queryFormData.keyword" placeholder="关键词搜索" allowClear />
+          <a-form-item name="keyword" label="序列器">
+            <a-input v-model:value="queryFormData.keyword" placeholder="搜索序列器" allowClear />
           </a-form-item>
         </a-col>
         <a-col :span="6">
