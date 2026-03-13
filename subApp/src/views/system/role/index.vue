@@ -67,13 +67,13 @@
             <template #split>
               <a-divider type="vertical" />
             </template>
-            <a-tooltip title="分配用户">
+            <a-tooltip title="用户列表">
               <a style="color:#53C61D;" @click="roleUserRef.onOpen(record)"><UserAddOutlined /></a>
             </a-tooltip>
             <a-tooltip title="功能权限">
               <a style="color:#1980FF;" @click="grantMenuFormRef.onOpen(record)"><PicLeftOutlined /></a>
             </a-tooltip>
-            <a-tooltip title="数据权限">
+            <a-tooltip title="数据范围">
               <a style="color:#fa541c;" @click="grantScopeFormRef.onOpen(record)"><ApiOutlined /></a>
             </a-tooltip>
             <a-tooltip title="编辑">

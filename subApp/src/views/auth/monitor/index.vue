@@ -91,8 +91,18 @@
           </a-tooltip>
         </template>
         <template v-if="column.dataIndex === 'sessionTimeout'">
-          <span v-if="record.sessionTimeout <= 0">永久有效</span>
-          <a-statistic-countdown v-else :value="record.deadline" format="D 天 H 时 m 分 s 秒" :valueStyle="{fontSize:'14px'}" />
+          <a-tooltip>
+            <template #title>
+              <span v-if="record.sessionTimeout <= 0">永久有效</span>
+              <a-statistic-countdown v-else :value="record.deadline" format="D 天 H 时 m 分 s 秒" :valueStyle="{fontSize:'14px', color:'#fff'}" />
+            </template>
+            <a-progress v-if="record.sessionTimeoutPercent * 100 > 80"
+                        status="success" :percent="record.sessionTimeoutPercent * 100" :show-info="false"/>
+            <a-progress v-if="record.sessionTimeoutPercent * 100 > 20 && record.sessionTimeoutPercent * 100 < 80"
+                        status="active" :percent="record.sessionTimeoutPercent * 100" :show-info="false"/>
+            <a-progress v-if="record.sessionTimeoutPercent * 100 < 20"
+                        status="exception" :percent="record.sessionTimeoutPercent * 100" :show-info="false"/>
+          </a-tooltip>
         </template>
 
         <template v-if="column.dataIndex === 'action'">
