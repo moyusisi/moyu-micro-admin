@@ -4,6 +4,7 @@ import VueJSX from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
+import qiankun from 'vite-plugin-qiankun'
 import { resolve } from 'path'
 
 export default defineConfig(({ mode }): UserConfig => {
@@ -17,6 +18,8 @@ export default defineConfig(({ mode }): UserConfig => {
     resolve: {
       alias
     },
+    // 开发或生产环境服务的公共基础路径。域名部分在开发环境中不会被使用
+    base: mode === 'dev' ? '/' : 'http://82.157.187.160:82/',
     // 开发环境服务器选项
     server: {
       // 允许IP访问
@@ -76,6 +79,11 @@ export default defineConfig(({ mode }): UserConfig => {
     plugins: [
       vue(),
       VueJSX(),
+      // 1. 注册 qiankun 插件
+      qiankun('subApp1', {
+        // 开发环境是否开启沙箱（默认 true）
+        useDevMode: true
+      }),
       viteMockServe({
         // mock文件存放路径（默认是 src/mock）
         mockPath: 'mock',
@@ -99,5 +107,12 @@ export default defineConfig(({ mode }): UserConfig => {
         dts: "src/types/auto-imports.d.ts",
       })
     ],
+
+    // 定义全局变量：解决 qiankun 沙箱中 window 指向问题
+    define: {
+      'process.env': process.env,
+      '__VUE_OPTIONS_API__': true,
+      '__VUE_PROD_DEVTOOLS__': false
+    }
   }
 })

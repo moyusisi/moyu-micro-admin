@@ -4,6 +4,7 @@ import router from './router'
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
+import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 
 // style
 import 'ant-design-vue/dist/reset.css'
@@ -13,29 +14,6 @@ import * as antdvIcons from '@ant-design/icons-vue'
 import 'highlight.js/styles/github-dark.min.css'
 import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
-
-// 无界会在子应用的window对象中注入一些全局变量
-declare global {
-  interface Window {
-    // 是否存在无界
-    __POWERED_BY_WUJIE__?: boolean;
-    // 原生的window对象
-    __WUJIE_RAW_WINDOW__: Window;
-    // 子应用沙盒实例
-    __WUJIE: { mount: () => void };
-    // 子应用mount函数
-    __WUJIE_MOUNT: () => void;
-    // 子应用unmount函数
-    __WUJIE_UNMOUNT: () => void | Promise<void>;
-    // 注入对象
-    $wujie: {
-      bus: any;
-      shadowRoot?: ShadowRoot;
-      props?: { [key: string]: any };
-      location?: Object;
-    };
-  }
-}
 
 let vueApp: VueApp | null = null
 /**
@@ -58,33 +36,53 @@ const createNewApp = () => {
   return app
 }
 
-if (window.__POWERED_BY_WUJIE__) {
-  window.__WUJIE_MOUNT = () => {
-    vueApp = createNewApp()
-    console.log("子应用 mount")
-    const props = window.$wujie?.props;
-    // 存储token
+// 1. 独立运行时直接渲染
+if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
+  render()
+}
+
+// 封装渲染函数
+function render(props: any = {}) {
+  const { container } = props
+  // 微应用模式：挂载到主应用提供的容器；独立运行：挂载到自身的节点 #app
+  // const mountNode = container ? container.querySelector('#app') : '#app'
+  const mountNode = container ? container : '#app'
+  vueApp = createNewApp()
+  vueApp.mount(mountNode!)
+}
+
+/********** 子应用模式 **********/
+
+// 2. 微应用模式：导出 qiankun 生命周期
+renderWithQiankun({
+  // 初始化（只会执行一次）
+  bootstrap() {
+    console.log('subApp bootstrap...');
+  },
+  // 挂载（每次切换到微应用时执行）
+  mount(props) {
+    console.log('subApp mount...', props)
+    render(props)
     if (props?.token) {
+      // 存储token
       localStorage.setItem('TOKEN', props.token)
     }
-    // 存储到userInfo
     if (props?.userInfo) {
+      // 存储到userInfo
       localStorage.setItem('USER_INFO', JSON.stringify(props.userInfo))
     }
-    vueApp.mount("#app");
-  };
-  window.__WUJIE_UNMOUNT = () => {
-    console.log("子应用 unmount")
-    vueApp?.unmount();
-  };
-  /*
-    由于vite是异步加载，而无界可能采用fiber执行机制
-    所以mount的调用时机无法确认，框架调用时可能vite还没有加载回来，这里采用主动调用防止用没有mount
-    无界mount函数内置标记，不用担心重复mount
-  */
-  window.__WUJIE.mount()
-} else {
-  vueApp = createNewApp()
-  console.log("独立运行 mount")
-  vueApp.mount("#app");
-}
+  },
+  // 卸载（每次离开微应用时执行）
+  unmount() {
+    console.log('subApp unmount...');
+    if(vueApp) {
+      vueApp.unmount()
+      vueApp = null
+    }
+  },
+  // 可选，仅使用 loadMicroApp 方式加载微应用时生效
+  update(props) {
+    console.log('subApp update props...', props);
+    return undefined;
+  },
+})

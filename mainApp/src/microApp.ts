@@ -1,59 +1,67 @@
-import WujieVue from "wujie-vue3";
-
-const { bus, setupApp, preloadApp, destroyApp } = WujieVue;
+import { registerMicroApps, start, setDefaultMountApp } from 'qiankun'
 
 // 打印 import.meta.env
 console.log('===== 打印 import.meta.env =====', import.meta.env)
 console.log('当前环境模式：', import.meta.env.MODE)
 console.log('是否为开发环境：', import.meta.env.DEV)
 
-// 子应用的域名(<name,host>)映射
+// 子应用的激活路径(<name,activePath>)映射
 export const microMap: Record<string, string> = {
-  "subApp1": import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:84' : 'http://82.157.187.160:84',
-  "subApp2": import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:84' : 'http://82.157.187.160:84',
+  "subApp1": "/subApp1",
+  "subApp2": "/subApp2",
 };
 
-// 默认的子应用周期，可在WujieVue中覆盖
-const lifecycles = {
-  beforeLoad: (window) => console.log(`${window.__WUJIE.id} beforeLoad 生命周期`),
-  // 如果子应用没有做生命周期的改造，那么 beforeMount、afterMount、beforeUnmount、afterUnmount 这四个生命周期将不会调用
-  beforeMount: (window) => console.log(`${window.__WUJIE.id} beforeMount 生命周期`),
-  afterMount: (window) => console.log(`${window.__WUJIE.id} afterMount 生命周期`),
-  beforeUnmount: (window) => console.log(`${window.__WUJIE.id} beforeUnmount 生命周期`),
-  afterUnmount: (window) => console.log(`${window.__WUJIE.id} afterUnmount 生命周期`),
-  // 子应用保活模式独有
-  activated: (window) => console.log(`${window.__WUJIE.id} activated 生命周期`),
-  deactivated: (window) => console.log(`${window.__WUJIE.id} deactivated 生命周期`),
-  // 子应用加载资源失败后触发
-  loadError: (url, e) => console.log(`${url} 加载失败`, e),
-};
+// 注册微应用列表
+registerMicroApps([
+  {
+    // 子应用唯一标识：必须与子应用 vite.config.js 中定义的 appName 一致
+    name: 'subApp1',
+    // 子应用入口地址：
+    // - 开发环境：子应用的 Vite 开发服务器地址（需先启动子应用）
+    // - 生产环境：子应用打包后的静态资源地址（如 CDN 或主应用的子路径）
+    // entry: '//localhost:82/',
+    entry: import.meta.env.MODE === 'dev' ? 'http://82.157.187.160:82/' : 'http://82.157.187.160:82/',
+    // 主应用中挂载子应用的容器 DOM 节点（需在主应用模板中定义）
+    container: '#microApp',
+    // 子应用的激活规则：当主应用路由匹配到该路径时，自动挂载子应用
+    activeRule: microMap['subApp1'],
+    // 可选：主应用传递给子应用的数据（子应用在 mount 生命周期方法中接收）
+    props: {
+      token: localStorage.getItem('TOKEN'),
+      userInfo: JSON.parse(<string>localStorage.getItem('USER_INFO')),
+    },
+  },
+  {
+    // 子应用唯一标识：必须与子应用 vite.config.js 中定义的 appName 一致
+    name: 'subApp2',
+    // 子应用入口地址：
+    // - 开发环境：子应用的 Vite 开发服务器地址（需先启动子应用）
+    // - 生产环境：子应用打包后的静态资源地址（如 CDN 或主应用的子路径）
+    // entry: '//localhost:82/',
+    entry: import.meta.env.MODE === 'dev' ? '//localhost:82/' : 'http://82.157.187.160:82/',
+    // 主应用中挂载子应用的容器 DOM 节点（需在主应用模板中定义）
+    container: '#microApp',
+    // 子应用的激活规则：当主应用路由匹配到该路径时，自动挂载子应用
+    activeRule: microMap['subApp2'],
+    // 可选：主应用传递给子应用的数据（子应用在 mount 生命周期方法中接收）
+    props: {
+      token: localStorage.getItem('TOKEN'),
+      userInfo: JSON.parse(<string>localStorage.getItem('USER_INFO')),
+    },
+  },
+]);
 
-// 启动 wujie 微前端
-export const startWujie = () => {
-  const props = {
-    "token": localStorage.getItem('TOKEN'),
-    "userInfo": JSON.parse(<string>localStorage.getItem('USER_INFO')),
-  };
-  setupApp({
-    // 应用唯一name
-    name: "subApp1",
-    // 需要渲染的url
-    url: microMap["subApp1"],
-    // 注入给子应用的属性
-    props: props,
-    // 预执行
-    exec: true,
-    ...lifecycles
-  });
-  setupApp({
-    // 应用唯一name
-    name: "subApp2",
-    // 需要渲染的url
-    url: microMap["subApp2"],
-    // 注入给子应用的属性
-    props: props,
-    // 预执行
-    exec: true,
-    ...lifecycles
+// 可选：设置默认挂载的子应用（启动主应用时自动激活）
+// setDefaultMountApp('/subApp1');
+
+// 启动 qiankun 微前端
+export const startQiankun = () => {
+  start({
+    // 可选：开启严格的样式隔离
+    sandbox: { experimentalStyleIsolation: true },
+    // 可选：禁用预加载（开发环境可关闭，生产环境建议开启）
+    prefetch: false,
+    // 可选：自定义 fetch 方法（解决跨域或请求拦截）
+    // fetch: customFetch
   });
 };

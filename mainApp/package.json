@@ -27,12 +27,12 @@
     "js-pinyin": "0.2.7",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.4",
+    "qiankun": "^2.10.16",
     "screenfull": "6.0.2",
     "vue": "^3.5.29",
     "vue-i18n": "11.2.8",
     "vue-router": "^5.0.3",
-    "vuedraggable-es": "4.1.1",
-    "wujie-vue3": "^1.0.29"
+    "vuedraggable-es": "4.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.18.0",

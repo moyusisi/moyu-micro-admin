@@ -4,6 +4,7 @@ import { useSearchStore } from '@/store/search'
 import userCenterApi from '@/api/system/userCenterApi'
 import router, { constRoutes } from '@/router'
 import { RouteRecordRaw } from "vue-router"
+import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper'
 
 // 布局组件, 一般顶层目录使用
 import Layout from '@/layout/index.vue'
@@ -205,7 +206,7 @@ export const useMenuStore = defineStore('menuStore', () => {
       item = undefined;
     } else if (component?.toString() === "Layout") {
       // 微应用模式使用EmptyLayout，独立运行时使用Layout
-      if(window.__POWERED_BY_WUJIE__) {
+      if (qiankunWindow.__POWERED_BY_QIANKUN__) {
         item = EmptyLayout
       } else {
         item = Layout
