@@ -67,22 +67,27 @@
             </a-col>
             <a-col :span="8">
               <a-form-item name="createBy" label="用户IP" tooltip="" >
-                {{ formData.opIp }}
+                {{ formData.ip }}
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="opBrowser" label="浏览器" tooltip="" >
-                {{ formData.opBrowser }}
+              <a-form-item name="createBy" label="地区" tooltip="" >
+                {{ (formData.province??'') + ' ' + (formData.city??'') }}
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="opPlatform" label="平台" tooltip="" >
-                {{ formData.opPlatform }}
+              <a-form-item name="browser" label="浏览器" tooltip="" >
+                {{ formData.browser }}
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="opOs" label="操作系统" tooltip="" >
-                {{ formData.opOs }}
+              <a-form-item name="platform" label="平台" tooltip="" >
+                {{ formData.platform }}
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="os" label="操作系统" tooltip="" >
+                {{ formData.os }}
               </a-form-item>
             </a-col>
             <a-col :span="8">

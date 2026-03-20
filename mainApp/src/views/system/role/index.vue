@@ -79,7 +79,7 @@
             <a-tooltip title="编辑">
               <a @click="formRef.onOpen(record)"><FormOutlined /></a>
             </a-tooltip>
-            <a-tooltip title="删除" v-if="hasPerm(['sys:role:delete'])">
+            <a-tooltip title="删除" v-if="hasPerm('sys:role:delete') || hasRole(['ROOT'])">
               <a-popconfirm title="确定要删除吗？" @confirm="deleteRole(record)">
                 <a style="color:#FF4D4F;"><DeleteOutlined/></a>
               </a-popconfirm>
@@ -102,7 +102,7 @@
   import { h, ref } from "vue"
   import { PlusOutlined, DeleteOutlined, RedoOutlined, SearchOutlined } from "@ant-design/icons-vue"
   import { message } from "ant-design-vue"
-  import { hasPerm } from "@/utils/permission"
+  import { hasPerm, hasRole } from "@/utils/permission"
   import MTable from "@/components/MTable/index.vue"
   import Form from "./form.vue"
   import Detail from "./detail.vue"
