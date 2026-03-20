@@ -1,10 +1,9 @@
-import { createApp, App as VueApp, h } from 'vue'
+import { createApp, App as VueApp } from 'vue'
 import { createPinia } from 'pinia'
-import router from '@/router'
+import router from './router'
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
-import { vueBridge } from '@garfish/bridge-vue-v3';
 
 // style
 import 'ant-design-vue/dist/reset.css'
@@ -15,57 +14,77 @@ import 'highlight.js/styles/github-dark.min.css'
 import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
 
+// 无界会在子应用的window对象中注入一些全局变量
+declare global {
+  interface Window {
+    // 是否存在无界
+    __POWERED_BY_WUJIE__?: boolean;
+    // 原生的window对象
+    __WUJIE_RAW_WINDOW__: Window;
+    // 子应用沙盒实例
+    __WUJIE: { mount: () => void };
+    // 子应用mount函数
+    __WUJIE_MOUNT: () => void;
+    // 子应用unmount函数
+    __WUJIE_UNMOUNT: () => void | Promise<void>;
+    // 注入对象
+    $wujie: {
+      bus: any;
+      shadowRoot?: ShadowRoot;
+      props?: { [key: string]: any };
+      location?: Object;
+    };
+  }
+}
+
+let vueApp: VueApp | null = null
 /**
  * 使用工厂函数创建vue实例，目的是支持微应用模式每次加载子应用得到新实例
  */
-const usePlugin = (app) => {
+const createNewApp = () => {
+  const app = createApp(App);
   app.use(createPinia())
   app.use(router)
   app.use(Antd)
   app.use(i18n)
+
   // 统一注册antdv图标
   for (const icon in antdvIcons) {
     app.component(icon, antdvIcons[icon])
   }
+
   // 注册代码高亮组件 https://www.jb51.net/javascript/339354fqv.htm
   app.use(hljsVuePlugin)
+  return app
 }
 
-// 独立运行模式直接渲染
-if (!window.__GARFISH__) {
-  // 非微前端环境直接运行
-  const app = createApp(App);
-  usePlugin(app)
-  app.mount('#app')
-}
-
-/********** 子应用模式 **********/
-// 导出Garfish的provider函数
-export const provider = vueBridge({
-  rootComponent: App,
-  // 可选，注册 vue-router或状态管理对象
-  appOptions: ({ basename, dom, appName, props }) => {
-    // console.log(appName, "appOptions...");
-    return {
-      el: '#app',
-      render: () => h(App),
-      // router: createAppRouter(basename),
-    };
-  },
-  handleInstance: (vueInstance, { basename, dom, appName, props}) => {
-    // console.log(appName, "handleInstance...");
-    usePlugin(vueInstance)
-    // console.log(window.Garfish)
-
+if (window.__POWERED_BY_WUJIE__) {
+  window.__WUJIE_MOUNT = () => {
+    vueApp = createNewApp()
+    console.log("子应用 mount")
+    const props = window.$wujie?.props;
+    // 存储token
     if (props?.token) {
-      // 存储token
       localStorage.setItem('TOKEN', props.token)
-      // console.log('token 已存储到子应用');
     }
+    // 存储到userInfo
     if (props?.userInfo) {
-      // 存储到userInfo
       localStorage.setItem('USER_INFO', JSON.stringify(props.userInfo))
-      // console.log('userInfo 已存储到子应用');
     }
-  },
-});
+    vueApp.mount("#app");
+  };
+  window.__WUJIE_UNMOUNT = () => {
+    console.log("子应用 unmount")
+    vueApp?.unmount();
+  };
+  /*
+    由于vite是异步加载，而无界可能采用fiber执行机制
+    所以mount的调用时机无法确认，框架调用时可能vite还没有加载回来，这里采用主动调用防止用没有mount
+    无界mount函数内置标记，不用担心重复mount
+  */
+  window.__WUJIE.mount()
+} else {
+  vueApp = createNewApp()
+  console.log("独立运行 mount")
+  vueApp.mount("#app");
+}

@@ -205,7 +205,7 @@ export const useMenuStore = defineStore('menuStore', () => {
       item = undefined;
     } else if (component?.toString() === "Layout") {
       // 微应用模式使用EmptyLayout，独立运行时使用Layout
-      if (window.__GARFISH__) {
+      if(window.__POWERED_BY_WUJIE__) {
         item = EmptyLayout
       } else {
         item = Layout
