@@ -32,8 +32,7 @@
     "vue": "^3.5.29",
     "vue-i18n": "11.2.8",
     "vue-router": "^5.0.3",
-    "vuedraggable-es": "4.1.1",
-    "wujie-vue3": "^1.0.29"
+    "vuedraggable-es": "4.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.18.0",

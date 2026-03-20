@@ -6,7 +6,8 @@ import { useMenuStore, useUserStore } from "@/store";
 
 export const constRoutes: RouteRecordRaw[] = [...systemRouter]
 
-const base = '/'
+// 微应用模式：base 为微应用路径；独立运行：base 为 '/'
+const base = window.__GARFISH__ ? '/subApp1/' : '/'
 
 // 把router定义时可接收 base 参数（默认值为 '/'）
 const router = createRouter({

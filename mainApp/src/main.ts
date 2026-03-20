@@ -4,8 +4,7 @@ import router from './router'
 import Antd from 'ant-design-vue'
 import i18n from "@/locale"
 import App from './App.vue'
-import WujieVue from "wujie-vue3";
-import { startWujie } from './microApp.ts';
+import { startGarfish } from "@/microApp.ts";
 
 // style
 import 'ant-design-vue/dist/reset.css'
@@ -21,7 +20,6 @@ app.use(createPinia())
 app.use(router)
 app.use(Antd)
 app.use(i18n)
-app.use(WujieVue)
 
 // 统一注册antdv图标
 for (const icon in antdvIcons) {
@@ -34,5 +32,5 @@ app.use(hljsVuePlugin)
 // 挂载app
 app.mount('#app')
 
-// 启动 wujie 微前端
-startWujie();
+// 初始化Garfish
+startGarfish()
