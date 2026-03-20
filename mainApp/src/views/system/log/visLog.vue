@@ -101,19 +101,25 @@
             <span>{{ text }}</span>
           </a-tooltip>
         </template>
-        <template v-if="column.dataIndex === 'opBrowser'">
+        <template v-if="column.dataIndex === 'ip'">
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">
             <span>{{ text }}</span>
           </a-tooltip>
         </template>
-        <template v-if="column.dataIndex === 'opPlatform'">
+        <template v-if="column.dataIndex === 'province'">
+          <!-- 长文本省略提示 -->
+          <a-tooltip :title="(record.province??'') + ' ' + (record.city??'')" placement="topLeft">
+            <span>{{ (record.province??'') + ' ' + (record.city??'') }}</span>
+          </a-tooltip>
+        </template>
+        <template v-if="column.dataIndex === 'browser'">
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">
             <span>{{ text }}</span>
           </a-tooltip>
         </template>
-        <template v-if="column.dataIndex === 'opOs'">
+        <template v-if="column.dataIndex === 'os'">
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">
             <span>{{ text }}</span>
@@ -213,16 +219,24 @@
       width: 100,
     },
     {
-      title: "浏览器",
-      dataIndex: "opBrowser",
+      title: "IP地址",
+      dataIndex: "ip",
       align: "center",
       resizable: true,
       ellipsis: true,
       width: 100,
     },
     {
-      title: "平台",
-      dataIndex: "opPlatform",
+      title: "地区",
+      dataIndex: "province",
+      align: "center",
+      resizable: true,
+      ellipsis: true,
+      width: 100,
+    },
+    {
+      title: "浏览器",
+      dataIndex: "browser",
       align: "center",
       resizable: true,
       ellipsis: true,
@@ -230,7 +244,7 @@
     },
     {
       title: "操作系统",
-      dataIndex: "opOs",
+      dataIndex: "os",
       align: "center",
       resizable: true,
       ellipsis: true,
