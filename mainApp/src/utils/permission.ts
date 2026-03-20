@@ -16,24 +16,13 @@ const userPerms = userStore.userInfo?.perms ?? [];
 
 /**
  * 检查是否有权限
- * @param perms 权限标识数组
+ * @param value 权限标识
  * @returns 是否有权限
  */
-export function hasPerm(perms: string[]): boolean {
-  return userPerms.some((perm: string) => {
-    return perms.includes(perm)
-  })
-}
-
-/**
- * 检查是否有角色
- * @param roles 角色标识数组
- * @returns 是否有角色
- */
-export function hasRole(roles: string[]): boolean {
-  return userRoles.some((role: string) => {
-    return roles.includes(role)
-  })
+export function hasPerm(value: string | string[]): boolean {
+  return Array.isArray(value)
+    ? hasAnyPerm(value)
+    : userPerms.includes(value)
 }
 
 /**
@@ -55,5 +44,38 @@ export function hasAnyPerm(perms: string[]): boolean {
 export function hasAllPerms(perms: string[]): boolean {
   return perms.every((perm: string) => {
     return userPerms.includes(perm)
+  })
+}
+
+/**
+ * 检查是否有角色
+ * @param value 角色标识
+ * @returns 是否有角色
+ */
+export function hasRole(value: string | string[]): boolean {
+  return Array.isArray(value)
+    ? hasAnyRole(value)
+    : userRoles.includes(value)
+}
+
+/**
+ * 检查是否有任一角色
+ * @param roles 角色标识数组
+ * @returns 是否有任一角色
+ */
+export function hasAnyRole(roles: string[]): boolean {
+  return roles.some((role: string) => {
+    return userPerms.includes(role)
+  })
+}
+
+/**
+ * 检查是否有所有角色
+ * @param roles 角色标识数组
+ * @returns 是否有所有角色
+ */
+export function hasAllRoles(roles: string[]): boolean {
+  return roles.every((role: string) => {
+    return userPerms.includes(role)
   })
 }

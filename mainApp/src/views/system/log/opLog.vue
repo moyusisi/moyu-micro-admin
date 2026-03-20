@@ -131,19 +131,13 @@
             <span>{{ text }}</span>
           </a-tooltip>
         </template>
-        <template v-if="column.dataIndex === 'opBrowser'">
+        <template v-if="column.dataIndex === 'browser'">
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">
             <span>{{ text }}</span>
           </a-tooltip>
         </template>
-        <template v-if="column.dataIndex === 'opPlatform'">
-          <!-- 长文本省略提示 -->
-          <a-tooltip :title="text" placement="topLeft">
-            <span>{{ text }}</span>
-          </a-tooltip>
-        </template>
-        <template v-if="column.dataIndex === 'opOs'">
+        <template v-if="column.dataIndex === 'os'">
           <!-- 长文本省略提示 -->
           <a-tooltip :title="text" placement="topLeft">
             <span>{{ text }}</span>
@@ -260,7 +254,7 @@
     },
     {
       title: "浏览器",
-      dataIndex: "opBrowser",
+      dataIndex: "browser",
       align: "center",
       resizable: true,
       ellipsis: true,
