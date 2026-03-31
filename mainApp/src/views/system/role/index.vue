@@ -24,74 +24,51 @@
     </a-form>
   </a-card>
   <a-card size="small">
-    <MTable ref="tableRef"
-            :columns="columns"
-            :loadData="loadData"
-            :row-key="(row) => row.id"
-            showRowSelection
-            @selectedChange="onSelectedChange"
-    >
+    <vxe-grid ref="gridRef" v-bind="gridOptions">
+      <!-- 左侧操作栏 -->
       <template #operator>
         <a-space wrap style="margin-bottom: 6px">
           <a-button type="primary" :icon="h(PlusOutlined)" @click="formRef.onOpen()">新增角色</a-button>
-          <a-popconfirm v-if="hasPerm(['sys:role:delete'])" :title=" '确定要删除这 ' + selectedRowKeys.length + ' 条数据吗？' " :disabled ="selectedRowKeys.length < 1" @confirm="deleteBatchRole">
-            <a-button danger :icon="h(DeleteOutlined)" :disabled="selectedRowKeys.length < 1">
-              批量删除
-            </a-button>
-          </a-popconfirm>
+          <a-button danger :icon="h(DeleteOutlined)" @click="gridRef?.commitProxy('delete')">批量删除</a-button>
         </a-space>
       </template>
-      <template #bodyCell="{ column, record, index, text }">
-        <template v-if="column.dataIndex === 'name'">
-          <!-- 长文本省略提示 -->
-          <a-tooltip :title="text" placement="topLeft">
-            <span>{{ text }}</span>
-          </a-tooltip>
-        </template>
-        <template v-if="column.dataIndex === 'code'">
-          <a-tooltip :title="text" placement="topLeft">
-            <a @click="detailRef.onOpen(record)">{{ record.code }}</a>
-          </a-tooltip>
-        </template>
-        <template v-if="column.dataIndex === 'status'">
-          <a-tag v-if="record.status === 0" color="green">正常</a-tag>
-          <a-tag v-else>已停用</a-tag>
-        </template>
-        <template v-if="column.dataIndex === 'remark'">
-          <a-tooltip :title="text" placement="topLeft">
-            <span>{{ text }}</span>
-          </a-tooltip>
-        </template>
-        <template v-if="column.dataIndex === 'action'">
-          <a-space>
-            <template #split>
-              <a-divider type="vertical" />
-            </template>
-            <a-tooltip title="用户列表">
-              <a style="color:#53C61D;" @click="roleUserRef.onOpen(record)"><UserAddOutlined /></a>
-            </a-tooltip>
-            <a-tooltip title="功能权限">
-              <a style="color:#1980FF;" @click="grantMenuFormRef.onOpen(record)"><PicLeftOutlined /></a>
-            </a-tooltip>
-            <a-tooltip title="数据范围">
-              <a style="color:#fa541c;" @click="grantScopeFormRef.onOpen(record)"><ApiOutlined /></a>
-            </a-tooltip>
-            <a-tooltip title="编辑">
-              <a @click="formRef.onOpen(record)"><FormOutlined /></a>
-            </a-tooltip>
-            <a-tooltip title="删除" v-if="hasPerm('sys:role:delete') || hasRole(['ROOT'])">
-              <a-popconfirm title="确定要删除吗？" @confirm="deleteRole(record)">
-                <a style="color:#FF4D4F;"><DeleteOutlined/></a>
-              </a-popconfirm>
-            </a-tooltip>
-          </a-space>
-        </template>
+      <!-- 字段插槽 -->
+      <template #code="{row, rowIndex, column, columnIndex}">
+        <a @click="detailRef.onOpen(row)">{{ row.code }}</a>
       </template>
-    </MTable>
+      <template #status="{row, rowIndex, column, columnIndex}">
+        <a-tag v-if="row.status === 0" color="green">正常</a-tag>
+        <a-tag v-else>已停用</a-tag>
+      </template>
+      <template #action="{row:record, rowIndex, column, columnIndex}">
+        <a-space>
+          <template #split>
+            <a-divider type="vertical" />
+          </template>
+          <a-tooltip title="用户列表">
+            <a style="color:#53C61D;" @click="roleUserRef.onOpen(record)"><UserAddOutlined /></a>
+          </a-tooltip>
+          <a-tooltip title="功能权限">
+            <a style="color:#1980FF;" @click="grantMenuFormRef.onOpen(record)"><PicLeftOutlined /></a>
+          </a-tooltip>
+          <a-tooltip title="数据范围">
+            <a style="color:#fa541c;" @click="grantScopeFormRef.onOpen(record)"><ApiOutlined /></a>
+          </a-tooltip>
+          <a-tooltip title="编辑">
+            <a @click="formRef.onOpen(record)"><FormOutlined /></a>
+          </a-tooltip>
+          <a-tooltip title="删除" v-if="hasPerm('sys:role:delete') || hasRole(['ROOT'])">
+            <a-popconfirm title="确定要删除吗？" @confirm="deleteRole(record)">
+              <a style="color:#FF4D4F;"><DeleteOutlined/></a>
+            </a-popconfirm>
+          </a-tooltip>
+        </a-space>
+      </template>
+    </vxe-grid>
   </a-card>
-  <GrantMenuForm ref="grantMenuFormRef" @successful="tableRef.refresh()" />
+  <GrantMenuForm ref="grantMenuFormRef" @successful="refresh()" />
   <GrantScopeForm ref="grantScopeFormRef" />
-  <Form ref="formRef" @successful="tableRef.refresh()" />
+  <Form ref="formRef" @successful="refresh()" />
   <Detail ref="detailRef"/>
   <RoleUser ref="roleUserRef" />
 </template>
@@ -100,10 +77,9 @@
   import roleApi from '@/api/system/roleApi'
 
   import { h, ref } from "vue"
-  import { PlusOutlined, DeleteOutlined, RedoOutlined, SearchOutlined } from "@ant-design/icons-vue"
+  import { PlusOutlined, DeleteOutlined, RedoOutlined, SearchOutlined, UserAddOutlined, PicLeftOutlined, ApiOutlined, FormOutlined } from "@ant-design/icons-vue"
   import { message } from "ant-design-vue"
   import { hasPerm, hasRole } from "@/utils/permission"
-  import MTable from "@/components/MTable/index.vue"
   import Form from "./form.vue"
   import Detail from "./detail.vue"
   import GrantMenuForm from "./grantMenuForm.vue"
@@ -122,70 +98,60 @@
   const roleUserRef = ref()
 
   /***** 表格相关对象 start *****/
-  const tableRef = ref()
-  // 已选中的行
-  const selectedRowKeys = ref([])
-  // 表格列配置
-  const columns = [
-    {
-      title: '角色名称',
-      dataIndex: 'name',
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 150
+  const gridRef = ref()
+  const gridOptions = reactive({
+    // 分页配置项
+    pagerConfig: {
+      enabled: true,
     },
-    {
-      title: '唯一编码',
-      dataIndex: 'code',
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 200
+    // 数据代理配置
+    proxyConfig: {
+      // 获取响应的值配置
+      response: {
+        // 只对 pager-config 配置时有效，响应结果中获取数据列表的属性（分页场景）
+        result: "records",
+        // 只对 pager-config 配置时有效，响应结果中获取分页的属性（分页场景）
+        total: "total",
+      },
+      ajax: {
+        query: ({ page, sort, sorts, filters, form }) => {
+          // 默认接收 Promise<{ result: [], page: { total: 100 } }>
+          return loadData({ pageNum: page.currentPage, pageSize: page.pageSize })
+        },
+        delete: ({ body, form }) => {
+          // 删除已选
+          const ids = body.removeRecords.map(item => item.id);
+          return roleApi.deleteRole({ ids })
+        }
+      }
     },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      align: 'center',
-      resizable: true,
-      width: 100
+    // 列字段
+    columns: [
+      { type: 'checkbox', width: 50 },
+      { field: 'name', title: '角色名称', width: 200 },
+      { field: 'code', title: '唯一编码', width: 200, slots: { default: 'code' } },
+      { field: 'status', title: '状态', width: 100, slots: { default: 'status' } },
+      { field: 'sortNum', title: '排序顺序', width: 100 },
+      { field: 'remark', title: '备注' },
+      { field: 'updateTime', title: '更新时间', width: 170 },
+      { field: 'action', title: '操作', width: 250, slots: { default: 'action' } },
+    ],
+    // 工具栏配置
+    toolbarConfig: {
+      // 是否显示个性化列配置
+      custom: true,
+      // 是否允许最大化显示
+      zoom: true,
+      // 刷新按钮配置
+      refresh: true,
+      //插槽
+      slots: {
+        // 按钮列表
+        buttons: "operator",
+      },
     },
-    {
-      title: "排序顺序",
-      dataIndex: "sortNum",
-      align: "center",
-      resizable: true,
-      width: 100,
-    },
-    {
-      title: "备注",
-      dataIndex: "remark",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 150,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      align: 'center',
-      width: 160
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      align: 'center',
-      width: 200
-    }
-  ]
+  })
   /***** 表格相关对象 end *****/
-
-  // 使用状态options（0正常 1停用）
-  const statusOptions = [
-    { label: "正常", value: 0 },
-    { label: "已停用", value: 1 }
-  ]
-
 
   // 表格查询 返回 Promise 对象
   const loadData = (parameter) => {
@@ -196,32 +162,26 @@
   }
   // 查询
   const querySubmit = () => {
-    tableRef.value.refresh(true)
+    // reload 返回第一页触发ajax.query
+    // query 当前页触发ajax.query
+    gridRef.value?.commitProxy("reload")
   }
   // 重置
   const reset = () => {
     queryFormRef.value.resetFields()
-    tableRef.value.refresh(true)
+    refresh()
   }
-  // 选中行发生变化
-  const onSelectedChange = (selectedKeys, selectedRows) => {
-    selectedRowKeys.value = selectedKeys
-    // console.log('onSelectedChange,selectedKeys:', selectedKeys);
+  // 重置
+  const refresh = () => {
+    // 返回第一页触发ajax.query
+    gridRef.value?.commitProxy("reload")
   }
   // 删除
   const deleteRole = (record) => {
     let data = { ids: [record.id] }
     roleApi.deleteRole(data).then((res) => {
       message.success(res.message)
-      tableRef.value.refresh(true)
-    })
-  }
-  // 批量删除
-  const deleteBatchRole = (params) => {
-    let data = { ids: selectedRowKeys.value }
-    roleApi.deleteRole(data).then((res) => {
-      message.success(res.message)
-      tableRef.value.refresh(true)
+      refresh(true)
     })
   }
 </script>
@@ -234,5 +194,4 @@
   .ant-form-item {
     margin-bottom: 12px !important;
   }
-
 </style>

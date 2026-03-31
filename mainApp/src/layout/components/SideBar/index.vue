@@ -17,7 +17,7 @@
     <template #trigger>
       <div class="side-menu-footer">
         <SettingBar/>
-        <span>MY管理系统</span>
+        <span>MoyuAdmin</span>
         <Hamburger/>
       </div>
     </template>
