@@ -6,6 +6,7 @@
       :closable="false"
       :maskClosable="false"
       :destroy-on-close="true"
+      :get-container="getDrawerContainer"
       @close="onClose"
   >
     <!--  上方操作区  -->
@@ -67,22 +68,27 @@
             </a-col>
             <a-col :span="8">
               <a-form-item name="createBy" label="用户IP" tooltip="" >
-                {{ formData.opIp }}
+                {{ formData.ip }}
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="opBrowser" label="浏览器" tooltip="" >
-                {{ formData.opBrowser }}
+              <a-form-item name="createBy" label="地区" tooltip="" >
+                {{ (formData.province??'') + ' ' + (formData.city??'') }}
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="opPlatform" label="平台" tooltip="" >
-                {{ formData.opPlatform }}
+              <a-form-item name="browser" label="浏览器" tooltip="" >
+                {{ formData.browser }}
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-form-item name="opOs" label="操作系统" tooltip="" >
-                {{ formData.opOs }}
+              <a-form-item name="platform" label="平台" tooltip="" >
+                {{ formData.platform }}
+              </a-form-item>
+            </a-col>
+            <a-col :span="8">
+              <a-form-item name="os" label="操作系统" tooltip="" >
+                {{ formData.os }}
               </a-form-item>
             </a-col>
             <a-col :span="8">
@@ -203,6 +209,11 @@
     })
   }
 
+  // 获取Drawer渲染到的dom容器。 默认body,当有vxe-grid时使用表格dom
+  const getDrawerContainer = () => {
+    // vxe-grid的z-index过大，防止盖住drawer
+    return document.querySelector('.vxe-grid') || document.body
+  }
   // 调用这个函数将子组件的一些数据和方法暴露出去
   defineExpose({
     onOpen
