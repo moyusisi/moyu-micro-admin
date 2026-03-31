@@ -1,18 +1,17 @@
 import { createApp, App as VueApp } from 'vue'
-import { createPinia } from 'pinia'
 import router from './router'
 import Antd from 'ant-design-vue'
-import i18n from "@/locale"
+import * as antdvIcons from '@ant-design/icons-vue'
 import App from './App.vue'
 
 // style
 import 'ant-design-vue/dist/reset.css'
 import '@/style/index.css'
-import * as antdvIcons from '@ant-design/icons-vue'
-// 代码高亮风格，选择更多风格需导入 node_modules/hightlight.js/styles/ 目录下其它css文件
-import 'highlight.js/styles/github-dark.min.css'
-import 'highlight.js/lib/common'
-import hljsVuePlugin from '@highlightjs/vue-plugin'
+
+import { setupStore } from "@/store";
+import { setupI18n } from "@/locale";
+import { setupVxeTable } from "@/plugin/vxeTable.ts";
+import { setupHighlight } from "@/plugin/highlight.ts";
 
 // 无界会在子应用的window对象中注入一些全局变量
 declare global {
@@ -43,18 +42,21 @@ let vueApp: VueApp | null = null
  */
 const createNewApp = () => {
   const app = createApp(App);
-  app.use(createPinia())
+  // 核心配置
+  setupStore(app)
   app.use(router)
   app.use(Antd)
-  app.use(i18n)
+  setupI18n(app)
 
-  // 统一注册antdv图标
+  // 全局组件 antdv图标
   for (const icon in antdvIcons) {
     app.component(icon, antdvIcons[icon])
   }
 
-  // 注册代码高亮组件 https://www.jb51.net/javascript/339354fqv.htm
-  app.use(hljsVuePlugin)
+  // 第三方插件
+  setupVxeTable(app)
+  setupHighlight(app)
+
   return app
 }
 

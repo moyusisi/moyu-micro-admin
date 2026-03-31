@@ -6,8 +6,8 @@
           <div class="title">MY管理系统</div>
           <div class="content">
             <p>这是一个使用antdv组件的管理系统。</p>
-            <p>前端技术栈： Vue3 + Vite6 + TypeScript5 + Vue Router + Pinia + Ant Design Vue 4 等。</p>
-            <p>后端技术栈： JDK8 + SpringBoot2.7 + SpringSecurity + MySql + MyBatis-Plus等。</p>
+            <p>前端技术栈： Vue3 + Vite7 + TypeScript5 + Vue Router + Pinia + Ant Design Vue 4 等。</p>
+            <p>后端技术栈： JDK8 + SpringBoot2.7 + Redis + MyBatis-Plus等。</p>
           </div>
         </div>
       </a-col>

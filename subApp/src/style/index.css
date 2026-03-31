@@ -87,3 +87,8 @@
 	}
 }
 
+/* 修改vxe默认主题的字体颜色 */
+html[data-vxe-ui-theme="light"] {
+	--vxe-ui-font-color: #000000;
+}
+

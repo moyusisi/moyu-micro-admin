@@ -49,11 +49,8 @@
         <span><RightSquareFilled style="color: dodgerblue;"/> 触达列表</span>
       </template>
       <!--  表格数据区  -->
-      <MTable ref="tableRef"
-              :columns="columns"
-              :loadData="loadTableData"
-              :row-key="(row) => row.id"
-      >
+      <vxe-grid ref="gridRef" v-bind="gridOptions">
+        <!-- 左侧操作栏 -->
         <template #operator>
           <a-space wrap style="margin-bottom: 6px">
             <a-radio-group v-model:value="queryFormData.hasRead" button-style="solid">
@@ -64,22 +61,21 @@
             </a-radio-group>
           </a-space>
         </template>
-        <template #bodyCell="{ column, record, index, text }">
-          <template v-if="column.dataIndex === 'index'">
-            <span>{{ index + 1 }}</span>
-          </template>
-          <template v-if="column.dataIndex === 'name'">
-            <!-- 长文本省略提示 -->
-            <a-tooltip :title="text" placement="topLeft">
-              <span>{{ text }}</span>
-            </a-tooltip>
-          </template>
-          <template v-if="column.dataIndex === 'hasRead'">
-            <a-tag v-if="record.hasRead === 0">未读</a-tag>
-            <a-tag v-if="record.hasRead === 1" color="green">已读</a-tag>
-          </template>
+        <!-- 字段插槽 -->
+        <template #hasRead="{row, rowIndex, column, columnIndex}">
+          <a-tag v-if="row.hasRead === 0">未读</a-tag>
+          <a-tag v-if="row.hasRead === 1" color="green">已读</a-tag>
         </template>
-      </MTable>
+        <template #action="{row:record, rowIndex, column, columnIndex}">
+          <a-space>
+            <a-tooltip title="删除">
+              <a-popconfirm title="确定要删除吗？" @confirm="deleteMessage(record)">
+                <a style="color:#FF4D4F;">删除</a>
+              </a-popconfirm>
+            </a-tooltip>
+          </a-space>
+        </template>
+      </vxe-grid>
     </a-card>
     <!--  底部操作区  -->
     <template #footer>
@@ -93,7 +89,6 @@
   import messageApi from '@/api/dev/messageApi.js'
 
   import { useSettingsStore } from "@/store"
-  import MTable from "@/components/MTable/index.vue"
 
   // store
   const settingsStore = useSettingsStore()
@@ -114,44 +109,52 @@
     hasRead: null
   })
   /***** 表格相关对象 start *****/
-  const tableRef = ref()
-  // 表格列配置
-  const columns = ref([
-    // 不需要序号可以删掉
-    {
-      title: '序号',
-      dataIndex: 'index',
-      align: 'center',
-      width: 50,
+  const gridRef = ref()
+  const gridOptions = reactive({
+    // 分页配置项
+    pagerConfig: {
+      enabled: true,
     },
-    {
-      title: "用户名",
-      dataIndex: "name",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 150,
+    // 数据代理配置
+    proxyConfig: {
+      // 获取响应的值配置
+      response: {
+        // 只对 pager-config 配置时有效，响应结果中获取数据列表的属性（分页场景）
+        result: "records",
+        // 只对 pager-config 配置时有效，响应结果中获取分页的属性（分页场景）
+        total: "total",
+      },
+      ajax: {
+        query: ({ page, sort, sorts, filters, form }) => {
+          // 默认接收 Promise<{ result: [], page: { total: 100 } }>
+          return loadTableData({ pageNum: page.currentPage, pageSize: page.pageSize })
+        }
+      }
     },
-    {
-      title: "状态",
-      dataIndex: "hasRead",
-      align: "center",
-      resizable: true,
-      width: 100,
+    // 列字段
+    columns: [
+      { type: 'seq', width: 50 },
+      { field: 'name', title: '用户名', width: 200 },
+      { field: 'hasRead', title: '状态', width: 100, slots: { default: 'hasRead' } },
+      { field: 'createTime', title: '接收时间', width: 170 },
+      { field: 'readTime', title: '已读时间', width: 170 },
+    ],
+    // 工具栏配置
+    toolbarConfig: {
+      // 是否显示个性化列配置
+      custom: true,
+      // 是否允许最大化显示
+      zoom: true,
+      // 刷新按钮配置
+      refresh: true,
+      //插槽
+      slots: {
+        // 按钮列表
+        buttons: "operator",
+      },
     },
-    {
-      title: "接收时间",
-      dataIndex: "createTime",
-      align: "center",
-      width: 160,
-    },
-    {
-      title: "已读时间",
-      dataIndex: "readTime",
-      align: "center",
-      width: 160,
-    },
-  ])
+  })
+  /***** 表格相关对象 end *****/
 
   // 打开抽屉
   const onOpen = (row) => {
@@ -192,10 +195,15 @@
       console.error(err)
     })
   }
+  // 重置
+  const refresh = () => {
+    // 返回第一页触发ajax.query
+    gridRef.value?.commitProxy("reload")
+  }
   // 切换已读/未读
   const hasReadChange = (hasRead) => {
     queryFormData.value.hasRead = hasRead
-    tableRef.value.refresh(true)
+    refresh()
   }
 
   // 调用这个函数将子组件的一些数据和方法暴露出去
