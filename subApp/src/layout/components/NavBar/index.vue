@@ -14,7 +14,8 @@
       <SearchBar/>
       <!-- 全屏 -->
       <div class="bar-item" @click="fullscreen">
-        <FullscreenOutlined/>
+        <FullscreenOutlined v-if="showFullScreen"/>
+        <FullscreenExitOutlined v-else/>
       </div>
       <NoticeBar/>
       <UserBar/>
@@ -24,8 +25,7 @@
 </template>
 <script setup>
   import screenFull from "screenfull";
-  import { FullscreenOutlined } from "@ant-design/icons-vue";
-  import { useSettingsStore } from "@/store/index.js";
+  import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons-vue";
   import Breadcrumb from '@/layout/components/Breadcrumb/index.vue'
   import Hamburger from "@/layout/components/NavBar/Hamburger/index.vue"
   import ModuleMenu from "@/layout/components/NavBar/ModuleMenu/index.vue"
@@ -34,11 +34,13 @@
   import UserBar from "@/layout/components/NavBar/UserBar/index.vue"
   import SettingBar from "@/layout/components/NavBar/SettingBar/index.vue";
 
+  const showFullScreen = ref(true);
   // 全屏
   const fullscreen = () => {
     const element = document.documentElement
     if (screenFull.isEnabled) {
       screenFull.toggle(element)
+      showFullScreen.value = !showFullScreen.value
     }
   }
 </script>

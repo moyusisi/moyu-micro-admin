@@ -1,3 +1,5 @@
+import type { App } from 'vue'
+
 import { createI18n } from 'vue-i18n'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import enGB from 'ant-design-vue/es/locale/en_GB'
@@ -23,5 +25,10 @@ const i18n = createI18n({
   messages: messages,
   globalInjection: true,
 })
+
+// 全局注册 i18n
+export function setupI18n(app: App<Element>) {
+  app.use(i18n);
+}
 
 export default i18n
