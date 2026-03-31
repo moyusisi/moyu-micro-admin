@@ -106,7 +106,7 @@
     // 总条数，需要通过接口获取
     total: 0,
     // 显示总记录数
-    showTotal: (total, range) => `共 ${total} 条 `,
+    showTotal: (total, range) => `共 ${total} 条记录 `,
     // 是否可改变每页显示条数
     showSizeChanger: true,
     // 只有一页或没有数据时隐藏分页栏

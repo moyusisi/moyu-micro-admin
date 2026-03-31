@@ -6,6 +6,7 @@
       :closable="false"
       :maskClosable="false"
       :destroy-on-close="true"
+      :get-container="getDrawerContainer"
       @close="onClose"
   >
     <!--  上方操作区  -->
@@ -18,63 +19,63 @@
         <a-card title="基本信息">
           <a-row :gutter="24">
             <a-col :span="12">
-              <a-form-item name="requestUrl" label="请求路径地址" tooltip="请求路径地址" >
+              <a-form-item name="requestUrl" label="请求路径地址" tooltip="" >
                 <a-input v-model:value="formData.requestUrl" placeholder="请求路径地址" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="module" label="系统/模块" tooltip="系统/模块" >
+              <a-form-item name="module" label="系统/模块" tooltip="" >
                 <a-input v-model:value="formData.module" placeholder="系统/模块" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="business" label="业务" tooltip="业务" >
+              <a-form-item name="business" label="业务" tooltip="" >
                 <a-input v-model:value="formData.business" placeholder="业务" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="operate" label="操作" tooltip="操作" >
+              <a-form-item name="operate" label="操作" tooltip="" >
                 <a-input v-model:value="formData.operate" placeholder="操作" allowClear />
               </a-form-item>
             </a-col>
 
             <a-col :span="12">
-              <a-form-item name="content" label="内容说明" tooltip="内容说明" >
+              <a-form-item name="content" label="内容说明" tooltip="" >
                 <a-textarea v-model:value="formData.content" placeholder="内容说明" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="requestContent" label="请求参数" tooltip="请求参数" >
+              <a-form-item name="requestContent" label="请求参数" tooltip="" >
                 <a-textarea v-model:value="formData.requestContent" placeholder="请求参数" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="responseContent" label="返回结果" tooltip="返回结果" >
+              <a-form-item name="responseContent" label="返回结果" tooltip="" >
                 <a-textarea v-model:value="formData.responseContent" placeholder="返回结果" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="startTime" label="开始时间" tooltip="开始时间" >
+              <a-form-item name="startTime" label="开始时间" tooltip="" >
                 <a-date-picker v-model:value="formData.startTime" valueFormat="YYYY-MM-DD HH:mm:ss" show-time/>
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="endTime" label="结束时间" tooltip="结束时间" >
+              <a-form-item name="endTime" label="结束时间" tooltip="" >
                 <a-date-picker v-model:value="formData.endTime" valueFormat="YYYY-MM-DD HH:mm:ss" show-time/>
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="executionTime" label="执行耗时(m" tooltip="执行耗时(ms)" >
+              <a-form-item name="executionTime" label="执行耗时" tooltip="执行耗时(ms)" >
                 <a-input v-model:value="formData.executionTime" placeholder="执行耗时(ms)" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="createBy" label="操作人ID" tooltip="操作人ID" >
+              <a-form-item name="createBy" label="操作人ID" tooltip="" >
                 <a-input v-model:value="formData.createBy" placeholder="操作人ID" allowClear />
               </a-form-item>
             </a-col>
             <a-col :span="12">
-              <a-form-item name="createTime" label="记录时间" tooltip="记录时间" >
+              <a-form-item name="createTime" label="记录时间" tooltip="" >
                 <a-date-picker v-model:value="formData.createTime" valueFormat="YYYY-MM-DD"/>
               </a-form-item>
             </a-col>
@@ -170,6 +171,12 @@
       })
     }).catch(() => {
     })
+  }
+
+  // 获取Drawer渲染到的dom容器。 默认body,当有vxe-grid时使用表格dom
+  const getDrawerContainer = () => {
+    // vxe-grid的z-index过大，防止盖住drawer
+    return document.querySelector('.vxe-grid') || document.body
   }
   // 调用这个函数将子组件的一些数据和方法暴露出去
   defineExpose({

@@ -31,84 +31,69 @@
   </a-card>
   <a-card size="small">
     <!--  表格数据区  -->
-    <MTable
-        ref="tableRef"
-        :columns="columns"
-        :loadData="loadData"
-        :row-key="(row) => row.id"
-        showRowSelection
-        @selectedChange="onSelectedChange"
-    >
-      <!--  表格上方左侧操作区  -->
+    <vxe-grid ref="gridRef" v-bind="gridOptions">
+      <!-- 左侧操作栏 -->
       <template #operator>
         <a-space wrap style="margin-bottom: 6px">
           <a-button type="primary" :icon="h(PlusOutlined)" @click="formRef.onOpen(null, treeRef.treeData, queryFormData.orgCode)">新增</a-button>
-          <BatchDeleteButton icon="DeleteOutlined" :selectedRowKeys="selectedRowKeys" @batchDelete="batchDelete" />
+          <a-button danger :icon="h(DeleteOutlined)" @click="gridRef?.commitProxy('delete')">批量删除</a-button>
         </a-space>
       </template>
-      <template #bodyCell="{ column, record, index, text }">
-        <template v-if="column.dataIndex === 'name'">
-          <!-- 长文本省略提示 -->
-          <a-tooltip :title="text" placement="topLeft">
-            <span>{{ text }}</span>
-          </a-tooltip>
-        </template>
-        <template v-if="column.dataIndex === 'code'">
-          <a-tooltip :title="text" placement="topLeft">
-            <a @click="detailRef.onOpen(record)">{{ record.code }}</a>
-          </a-tooltip>
-        </template>
-        <template v-if="column.dataIndex === 'orgName'">
-          <a-tooltip :title="text" placement="topLeft">
-            <span>{{ text }}</span>
-          </a-tooltip>
-        </template>
-        <template v-if="column.dataIndex === 'status'">
-          <a-tag v-if="record.status === 0" color="green">正常</a-tag>
-          <a-tag v-else>已停用</a-tag>
-        </template>
-        <template v-if="column.dataIndex === 'action'">
-          <a-space>
-            <a-tooltip title="岗位角色">
-              <a style="color:#1980FF;" @click="groupRoleRef.onOpen(record)"><DeploymentUnitOutlined /></a>
-            </a-tooltip>
-            <a-divider type="vertical" />
-            <a-tooltip title="用户列表">
-              <a style="color:#53C61D;" @click="groupUserRef.onOpen(record, treeRef.treeData)"><UsergroupAddOutlined /></a>
-            </a-tooltip>
-            <a-divider type="vertical" />
-            <a-tooltip title="编辑">
-              <a @click="formRef.onOpen(record, treeRef.treeData)"><FormOutlined /></a>
-            </a-tooltip>
-            <a-divider type="vertical" />
-            <a-tooltip title="删除">
-              <a-popconfirm title="确定要删除吗？" @confirm="deleteGroup(record)">
-                <a style="color:#FF4D4F;"><DeleteOutlined/></a>
-              </a-popconfirm>
-            </a-tooltip>
-          </a-space>
-        </template>
+      <!-- 字段插槽 -->
+      <template #code="{row, rowIndex, column, columnIndex}">
+        <a @click="openDetail(row)">{{ row.code }}</a>
       </template>
-    </MTable>
+      <template #permission="{row, rowIndex, column, columnIndex}">
+        <a-tag v-if="row.permission" :bordered="false">{{ row.permission }}</a-tag>
+      </template>
+      <template #status="{row, rowIndex, column, columnIndex}">
+        <a-tag v-if="row.status === 0" color="green">正常</a-tag>
+        <a-tag v-else>已停用</a-tag>
+      </template>
+      <template #action="{row, rowIndex, column, columnIndex}">
+        <a-space>
+          <a-tooltip title="岗位角色">
+            <a style="color:#1980FF;" @click="groupRoleRef.onOpen(row)"><DeploymentUnitOutlined /></a>
+          </a-tooltip>
+          <a-divider type="vertical" />
+          <a-tooltip title="用户列表">
+            <a style="color:#53C61D;" @click="groupUserRef.onOpen(row, treeRef.treeData)"><UsergroupAddOutlined /></a>
+          </a-tooltip>
+          <a-divider type="vertical" />
+          <a-tooltip title="编辑">
+            <a @click="formRef.onOpen(row, treeRef.treeData)"><FormOutlined /></a>
+          </a-tooltip>
+          <a-divider type="vertical" />
+          <a-tooltip title="删除">
+            <a-popconfirm title="确定要删除吗？" @confirm="deleteGroup(row)">
+              <a style="color:#FF4D4F;"><DeleteOutlined/></a>
+            </a-popconfirm>
+          </a-tooltip>
+        </a-space>
+      </template>
+    </vxe-grid>
   </a-card>
-  <Form ref="formRef" @successful="tableRef.refresh(true)" />
+  <Form ref="formRef" @successful="refresh()" />
   <Detail ref="detailRef"/>
-  <GroupRole ref="groupRoleRef" @successful="handleSuccess()" />
-  <GroupUser ref="groupUserRef" @successful="handleSuccess()" />
+  <GroupRole ref="groupRoleRef" @successful="refresh()" />
+  <GroupUser ref="groupUserRef" @successful="refresh()" />
 </template>
 
 <script setup>
   import groupApi from '@/api/system/groupApi'
-  import { onMounted, h } from "vue"
-  import { message } from 'ant-design-vue'
-  import { PlusOutlined, DeleteOutlined, RedoOutlined, SearchOutlined } from "@ant-design/icons-vue"
-  import Form from './form.vue'
-  import Detail from './detail.vue'
+  import { h, ref } from "vue"
+  import { useRoute, useRouter } from "vue-router";
+  import { message } from "ant-design-vue"
+  import { PlusOutlined, DeleteOutlined, RedoOutlined, SearchOutlined, DownOutlined, UpOutlined } from "@ant-design/icons-vue"
+  import Form from "./form.vue"
+  import Detail from "./detail.vue"
   import GroupRole from './groupRole.vue'
   import GroupUser from './groupUser.vue'
-  import MTable from "@/components/MTable/index.vue"
   import OrgTreeSelect from "@/views/system/components/orgTreeSelect.vue"
-  import BatchDeleteButton from "@/components/BatchDeleteButton/index.vue";
+
+  // store
+  const route = useRoute();
+  const router = useRouter();
 
   // 查询表单相关对象
   const queryFormRef = ref()
@@ -123,71 +108,77 @@
   const groupRoleRef = ref()
 
   /***** 表格相关对象 start *****/
-  const tableRef = ref()
-  // 已选中的行
-  const selectedRowKeys = ref([])
-  // 表格列配置
-  const columns = [
-    {
-      title: "岗位名称",
-      dataIndex: "name",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 150,
+  const gridRef = ref()
+  const gridOptions = ref({
+    // 分页配置项
+    pagerConfig: {
+      enabled: true,
     },
-    {
-      title: "唯一编码",
-      dataIndex: "code",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 150
+    // 数据代理配置
+    proxyConfig: {
+      // 获取响应的值配置
+      response: {
+        // 只对 pager-config 配置时有效，响应结果中获取数据列表的属性（分页场景）
+        result: "records",
+        // 只对 pager-config 配置时有效，响应结果中获取分页的属性（分页场景）
+        total: "total",
+      },
+      ajax: {
+        query: ({ page, sort, sorts, filters, form }) => {
+          // 默认接收 Promise<{ result: [], page: { total: 100 } }>
+          return loadData({ pageNum: page.currentPage, pageSize: page.pageSize })
+        },
+        delete: ({ body, form }) => {
+          // 删除已选
+          const ids = body.removeRecords.map(item => item.id);
+          return groupApi.deleteGroup({ ids })
+        }
+      }
     },
-    {
-      title: "所属组织机构",
-      dataIndex: "orgName",
-      align: "center",
-      resizable: true,
-      ellipsis: true,
-      width: 200,
+    // 列字段
+    columns: [
+      { type: 'checkbox', width: 50 },
+      { field: 'name', title: '岗位名称', width: 150 },
+      { field: 'code', title: '唯一编码', width: 150, slots: { default: 'code' } },
+      { field: 'orgName', title: '所属组织机构', width: 200 },
+      { field: 'status', title: '状态', width: 80, slots: { default: 'status' } },
+      { field: 'sortNum', title: '排序顺序', width: 80 },
+      { field: 'remark', title: '备注' },
+      { field: 'updateTime', title: '修改时间', width: 170 },
+      { field: 'action', title: '操作', width: 200, slots: { default: 'action' } },
+    ],
+    // 工具栏配置
+    toolbarConfig: {
+      // 是否显示个性化列配置
+      custom: true,
+      // 是否允许最大化显示
+      zoom: true,
+      // 刷新按钮配置
+      refresh: true,
+      //插槽
+      slots: {
+        // 按钮列表
+        buttons: "operator",
+      },
     },
-    {
-      title: "状态",
-      dataIndex: "status",
-      align: "center",
-      resizable: true,
-      width: 80,
-    },
-    {
-      title: "排序顺序",
-      dataIndex: "sortNum",
-      align: "center",
-      resizable: true,
-      width: 80,
-    },
-    {
-      title: "修改时间",
-      dataIndex: "updateTime",
-      align: "center",
-      width: 160,
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      align: 'center',
-      width: 200,
-    }
-  ]
+  })
+  /***** 表格相关对象 end *****/
 
   // 提交查询
   const querySubmit = () => {
-    tableRef.value.refresh(true)
+    // reload 返回第一页触发ajax.query
+    // query 当前页触发ajax.query
+    gridRef.value?.commitProxy("reload")
   }
   // 重置
   const reset = () => {
     queryFormRef.value.resetFields()
-    tableRef.value.refresh(true)
+    refresh()
+  }
+  // 重置
+  const refresh = () => {
+    // 返回第一页触发ajax.query
+    gridRef.value?.commitProxy("reload")
   }
 
   // 加载数据
@@ -201,12 +192,6 @@
       console.error(err)
     })
   }
-  // 选中行发生变化
-  const onSelectedChange = (selectedKeys, selectedRows) => {
-    selectedRowKeys.value = selectedKeys
-    // console.log('onSelectedChange,selectedKeys:', selectedKeys);
-  }
-
   // 组织机构变更
   const orgChange = (value) => {
     queryFormData.value.orgCode = value
@@ -216,24 +201,14 @@
     let data = { ids: [record.id] }
     groupApi.deleteGroup(data).then((res) => {
       message.success(res.message)
-      tableRef.value.refresh()
+      refresh()
     })
   }
-  // 批量删除
-  const batchDelete = () => {
-    if (selectedRowKeys.value.length < 1) {
-      message.warning("请至少选择一条数据")
-      return
-    }
-    let data = { ids: selectedRowKeys.value }
-    groupApi.deleteGroup(data).then((res) => {
-      message.success(res.message)
-      tableRef.value.refresh()
-    })
-  }
-  // 成功回调
-  const handleSuccess = () => {
-    querySubmit()
+  // 打开详情页
+  const openDetail = (row) => {
+    detailRef.value.onOpen(row)
+    // 独立页面打开(与抽屉打开二选一)
+    // router.push({ path: "/system/sysGroup/detail", query: { id: row.id } })
   }
 </script>
 
@@ -242,7 +217,7 @@
   .ant-card .ant-form {
     margin-bottom: -12px !important;
   }
-  .ant-form-item {
+  .ant-card .ant-form-item {
     margin-bottom: 12px !important;
   }
 </style>

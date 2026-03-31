@@ -65,7 +65,7 @@ export function hasRole(value: string | string[]): boolean {
  */
 export function hasAnyRole(roles: string[]): boolean {
   return roles.some((role: string) => {
-    return userPerms.includes(role)
+    return userRoles.includes(role)
   })
 }
 
@@ -76,6 +76,6 @@ export function hasAnyRole(roles: string[]): boolean {
  */
 export function hasAllRoles(roles: string[]): boolean {
   return roles.every((role: string) => {
-    return userPerms.includes(role)
+    return userRoles.includes(role)
   })
 }

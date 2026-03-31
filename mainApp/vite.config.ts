@@ -57,6 +57,7 @@ export default defineConfig(({ mode }): UserConfig => {
           // 按模块拆分 chunk，减小单个文件体积
           manualChunks: {
             'vendor-vue': ['vue', 'vue-router', 'pinia', 'vue-i18n'],
+            'vendor-vxe': ['vxe-pc-ui', 'vxe-table', 'xe-utils'],
             // 工具类库（axios、lodash、dayjs）单独拆分
             'vendor-utils': ['axios', 'lodash', 'dayjs', 'nprogress', 'fuse.js', 'js-pinyin', 'highlight.js'],
             'antd-icons': ['@ant-design/icons-vue'],

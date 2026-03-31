@@ -78,7 +78,6 @@
   import { PlusOutlined, MinusOutlined, RedoOutlined, SearchOutlined } from "@ant-design/icons-vue";
   import { message } from "ant-design-vue";
   import GroupAddRole from './groupAddRole.vue'
-  import MTable from "@/components/MTable/index.vue";
 
   const settingsStore = useSettingsStore()
   const columns = [
