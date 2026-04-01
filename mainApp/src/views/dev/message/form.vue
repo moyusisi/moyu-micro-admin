@@ -6,6 +6,7 @@
       :closable="false"
       :maskClosable="false"
       :destroy-on-close="true"
+      :get-container="getDrawerContainer"
       @close="onClose"
   >
     <!--  上方操作区  -->
@@ -89,6 +90,11 @@
     { label: "业务", value: 2 }
   ]
 
+  // 获取Drawer渲染到的dom容器。 默认body,当有vxe-grid时使用表格dom
+  const getDrawerContainer = () => {
+    // vxe-grid的z-index过大，防止盖住drawer
+    return document.querySelector('.vxe-grid') || document.body
+  }
   // 打开抽屉
   const onOpen = (row) => {
     if (row) {

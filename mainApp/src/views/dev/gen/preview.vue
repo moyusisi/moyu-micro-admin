@@ -6,6 +6,7 @@
       :closable="false"
       :footerStyle="{display: 'flex', justifyContent: 'flex-end'}"
       :destroy-on-close="true"
+      :get-container="getDrawerContainer"
       @close="onClose"
   >
     <template #extra>
@@ -359,6 +360,11 @@ async function writeFile(dirHandle, filePath, content) {
   await writable.close();
 }
 
+// 获取Drawer渲染到的dom容器。 默认body,当有vxe-grid时使用表格dom
+const getDrawerContainer = () => {
+  // vxe-grid的z-index过大，防止盖住drawer
+  return document.querySelector('.vxe-grid') || document.body
+}
 // 对外暴露
 defineExpose({
   onOpen,
