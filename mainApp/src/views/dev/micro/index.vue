@@ -3,7 +3,7 @@
     <!--保活模式，name相同则复用一个子应用实例，改变url无效，必须采用通信的方式告知路由变化 -->
     <WujieVue width="100%" height="100%" :name="subAppName" :url="subAppUrl" :props="props" :sync="false"
               :beforeLoad="beforeLoad" :beforeMount="beforeMount"></WujieVue>
-    <a-spin :spinning="subLoading" tip="子应用加载中..." size="large" v-if="subLoading" style="background-color: #f6f8f9" />
+<!--    <a-spin :spinning="subLoading" tip="子应用加载中..." size="large" v-if="subLoading" style="background-color: #f6f8f9" />-->
   </div>
 </template>
 
@@ -59,12 +59,12 @@ function initProps() {
 
 // 子应用生命周期钩子函数
 function beforeLoad() {
-  console.log(`${subAppName.value} beforeLoad 生命周期`)
+  console.log(` 监控${subAppName.value} beforeLoad 生命周期`)
   subLoading.value = true;
 }
 function beforeMount() {
   subLoading.value = false;
-  console.log(`${subAppName.value} beforeMount 生命周期`)
+  console.log(` 监控${subAppName.value} beforeMount 生命周期`)
 }
 
 </script>
