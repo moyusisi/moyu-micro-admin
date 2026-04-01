@@ -2,6 +2,8 @@ import { defineConfig, loadEnv, UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueJSX from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 import viteCompression from 'vite-plugin-compression'
 import { viteMockServe } from "vite-plugin-mock"
 import { resolve } from 'path'
@@ -84,13 +86,26 @@ export default defineConfig(({ mode }): UserConfig => {
         // 仅压缩 >10KB 文件
         threshold: 10240,
       }),
-      // 使用unplugin-auto-import插件，自动导入参考：https://cloud.tencent.com/developer/article/2236166
+      // 使用unplugin-auto-import插件自动导入API（如 ref、reactive 等），参考：https://cloud.tencent.com/developer/article/2236166
       AutoImport({
         // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-        imports: ["vue", "vue-router", "pinia", "@vueuse/core", "vue-i18n"],
+        imports: ["vue", "vue-router", "pinia"],
         // 配置文件生成位置(false:关闭自动生成)
         dts: "src/types/auto-imports.d.ts",
-      })
+      }),
+      // 自动注册 antdv 组件 + 图标
+      Components({
+        resolvers: [
+          // antdv自动导入
+          AntDesignVueResolver({
+            // 不自动引入样式（如果你是全量引入就关）
+            importStyle: false,
+            // 自动导入 antdv 图标
+            resolveIcons: true,
+          }),
+        ],
+        dts: 'src/types/auto-components.d.ts', // 类型声明
+      }),
     ],
   }
 })
