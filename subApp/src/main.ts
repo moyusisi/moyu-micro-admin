@@ -1,10 +1,8 @@
 import { createApp, App as VueApp } from 'vue'
 import router from './router'
-import Antd from 'ant-design-vue'
-import * as antdvIcons from '@ant-design/icons-vue'
 import App from './App.vue'
 
-// style
+// 引入antdv的全量样式，组件已使用自动注册
 import 'ant-design-vue/dist/reset.css'
 import '@/style/index.css'
 
@@ -45,13 +43,7 @@ const createNewApp = () => {
   // 核心配置
   setupStore(app)
   app.use(router)
-  app.use(Antd)
   setupI18n(app)
-
-  // 全局组件 antdv图标
-  for (const icon in antdvIcons) {
-    app.component(icon, antdvIcons[icon])
-  }
 
   // 第三方插件
   setupVxeTable(app)
